@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2021-04-01T15:51:02.361Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36" etag="GX_Ka9i_LjS4aiOOZVBy" version="14.4.2" type="github" pages="4">
+<mxfile host="app.diagrams.net" modified="2021-04-01T15:53:34.327Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36" etag="nCIt5ttBiwYlkR91leo4" version="14.4.2" type="github" pages="4">
   <diagram id="R2lEEEUBdFMjLlhIrx00" name="Page-1">
     <mxGraphModel dx="4675" dy="4589" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2339" pageHeight="3300" math="0" shadow="0" extFonts="Permanent Marker^https://fonts.googleapis.com/css?family=Permanent+Marker">
       <root>
@@ -1991,7 +1991,7 @@
     </mxGraphModel>
   </diagram>
   <diagram name="Quizlet" id="wn_RAmCAlHiIXKxMDzAh">
-    <mxGraphModel dx="2213" dy="752" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+    <mxGraphModel dx="1552" dy="638" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="ZCVrGzr-vKjcNU2Sfuu1-0" />
         <mxCell id="ZCVrGzr-vKjcNU2Sfuu1-1" parent="ZCVrGzr-vKjcNU2Sfuu1-0" />
@@ -2065,7 +2065,7 @@
         <mxCell id="ZCVrGzr-vKjcNU2Sfuu1-14" value="Certificate" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;rounded=1;fontSize=14;fontStyle=0;strokeWidth=2;resizeParent=0;resizeLast=1;shadow=0;dashed=0;align=center;" vertex="1" parent="ZCVrGzr-vKjcNU2Sfuu1-1">
           <mxGeometry x="-821.5" y="1850" width="160" height="120" as="geometry" />
         </mxCell>
-        <mxCell id="ZCVrGzr-vKjcNU2Sfuu1-15" value="+ID&#xa;+name&#xa;+url" style="align=left;strokeColor=none;fillColor=none;spacingLeft=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;" vertex="1" parent="ZCVrGzr-vKjcNU2Sfuu1-14">
+        <mxCell id="ZCVrGzr-vKjcNU2Sfuu1-15" value="+ID&#xa;+name" style="align=left;strokeColor=none;fillColor=none;spacingLeft=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;" vertex="1" parent="ZCVrGzr-vKjcNU2Sfuu1-14">
           <mxGeometry y="30" width="160" height="90" as="geometry" />
         </mxCell>
         <mxCell id="ZCVrGzr-vKjcNU2Sfuu1-16" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;endFill=0;entryX=1.009;entryY=0.789;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="ZCVrGzr-vKjcNU2Sfuu1-1" source="ZCVrGzr-vKjcNU2Sfuu1-18" target="ZCVrGzr-vKjcNU2Sfuu1-15">

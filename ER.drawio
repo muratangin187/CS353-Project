@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2021-04-01T19:15:09.776Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36" etag="0ITcCH2nCPV6NEmQ0wp8" version="14.5.4" type="github" pages="4">
+<mxfile host="app.diagrams.net" modified="2021-04-01T19:55:22.459Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36" etag="6e_q0uadyPuNz4bsg7_x" version="14.5.4" type="github" pages="4">
   <diagram id="R2lEEEUBdFMjLlhIrx00" name="Page-1">
     <mxGraphModel dx="4214" dy="4202" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2339" pageHeight="3300" math="0" shadow="0" extFonts="Permanent Marker^https://fonts.googleapis.com/css?family=Permanent+Marker">
       <root>
@@ -1991,7 +1991,7 @@
     </mxGraphModel>
   </diagram>
   <diagram name="Quizlet" id="wn_RAmCAlHiIXKxMDzAh">
-    <mxGraphModel dx="2143" dy="622" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+    <mxGraphModel dx="2413" dy="698" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="ZCVrGzr-vKjcNU2Sfuu1-0" />
         <mxCell id="ZCVrGzr-vKjcNU2Sfuu1-1" parent="ZCVrGzr-vKjcNU2Sfuu1-0" />
@@ -2156,10 +2156,10 @@
           <mxGeometry x="200" y="2180" width="120" height="60" as="geometry" />
         </mxCell>
         <mxCell id="ZCVrGzr-vKjcNU2Sfuu1-38" value="Lecture" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;rounded=1;fontSize=14;fontStyle=0;strokeWidth=2;resizeParent=0;resizeLast=1;shadow=0;align=center;sketch=0;glass=0;" parent="ZCVrGzr-vKjcNU2Sfuu1-1" vertex="1">
-          <mxGeometry x="-290" y="1370.5" width="160" height="139.5" as="geometry" />
+          <mxGeometry x="-290" y="1370.5" width="160" height="169.5" as="geometry" />
         </mxCell>
-        <mxCell id="ZCVrGzr-vKjcNU2Sfuu1-39" value="+ID&#xa;+chapterName&#xa;+title&#xa;+duration&#xa;+date&#xa;+isVisible&#xa;+additionalMaterial" style="align=left;strokeColor=none;fillColor=none;spacingLeft=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;" parent="ZCVrGzr-vKjcNU2Sfuu1-38" vertex="1">
-          <mxGeometry y="30" width="160" height="109.5" as="geometry" />
+        <mxCell id="ZCVrGzr-vKjcNU2Sfuu1-39" value="+ID&#xa;+chapterName&#xa;+title&#xa;+duration&#xa;+date&#xa;+isVisible&#xa;+additionalMaterial&#xa;+video" style="align=left;strokeColor=none;fillColor=none;spacingLeft=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;" parent="ZCVrGzr-vKjcNU2Sfuu1-38" vertex="1">
+          <mxGeometry y="30" width="160" height="139.5" as="geometry" />
         </mxCell>
         <mxCell id="ZCVrGzr-vKjcNU2Sfuu1-40" value="Person" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;rounded=1;fontSize=14;fontStyle=0;strokeWidth=2;resizeParent=0;resizeLast=1;shadow=0;dashed=0;align=center;glass=0;sketch=0;gradientColor=none;" parent="ZCVrGzr-vKjcNU2Sfuu1-1" vertex="1">
           <mxGeometry x="-810" y="1600" width="160" height="140" as="geometry" />

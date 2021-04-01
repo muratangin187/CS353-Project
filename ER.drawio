@@ -1,6 +1,6 @@
-<mxfile host="app.diagrams.net" modified="2021-04-01T17:39:51.880Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36" etag="-OfnphsGr_amRqQ5zAgj" version="14.5.4" type="github" pages="4">
+<mxfile host="app.diagrams.net" modified="2021-04-01T17:47:29.687Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.82 Safari/537.36 Edg/89.0.774.50" etag="a6BJyfuo0qmeMgERI_3z" version="14.5.4" type="github" pages="4">
   <diagram id="R2lEEEUBdFMjLlhIrx00" name="Page-1">
-    <mxGraphModel dx="3974" dy="4202" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2339" pageHeight="3300" math="0" shadow="0" extFonts="Permanent Marker^https://fonts.googleapis.com/css?family=Permanent+Marker">
+    <mxGraphModel dx="3617" dy="3917" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2339" pageHeight="3300" math="0" shadow="0" extFonts="Permanent Marker^https://fonts.googleapis.com/css?family=Permanent+Marker">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -1991,7 +1991,7 @@
     </mxGraphModel>
   </diagram>
   <diagram name="Quizlet" id="wn_RAmCAlHiIXKxMDzAh">
-    <mxGraphModel dx="1978" dy="622" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+    <mxGraphModel dx="2128" dy="617" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="ZCVrGzr-vKjcNU2Sfuu1-0" />
         <mxCell id="ZCVrGzr-vKjcNU2Sfuu1-1" parent="ZCVrGzr-vKjcNU2Sfuu1-0" />
@@ -2626,9 +2626,6 @@
         </mxCell>
         <mxCell id="ZCVrGzr-vKjcNU2Sfuu1-126" value="Makes" style="shape=rhombus;perimeter=rhombusPerimeter;whiteSpace=wrap;html=1;align=center;rounded=0;sketch=0;" parent="ZCVrGzr-vKjcNU2Sfuu1-1" vertex="1">
           <mxGeometry x="620" y="2320" width="120" height="60" as="geometry" />
-        </mxCell>
-        <mxCell id="ZCVrGzr-vKjcNU2Sfuu1-127" value="AnnouncementOf silinsin mi?" style="rounded=1;whiteSpace=wrap;html=1;" parent="ZCVrGzr-vKjcNU2Sfuu1-1" vertex="1">
-          <mxGeometry x="635" y="2120" width="120" height="60" as="geometry" />
         </mxCell>
         <mxCell id="ZCVrGzr-vKjcNU2Sfuu1-129" value="Ikili total rel. !!!!!!" style="rounded=0;whiteSpace=wrap;html=1;" parent="ZCVrGzr-vKjcNU2Sfuu1-1" vertex="1">
           <mxGeometry x="-535" y="810" width="475" height="60" as="geometry" />

@@ -29,7 +29,6 @@ function App() {
                   <Route path='/login' component={Api}/>
                   <Route path='/register' component={RegisterPage}/>
               </Switch>
-              <Card.Footer className="m-auto text-muted text-center">Created by Group 7</Card.Footer>
           </div>
       </BrowserRouter>
   );

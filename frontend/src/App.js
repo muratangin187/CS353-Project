@@ -1,18 +1,35 @@
-import logo from './logo.svg';
 import './App.css';
-import {useEffect, useState, Component} from "react";
+import {useEffect, useState} from "react";
 import {BrowserRouter, Link, Route, Switch} from 'react-router-dom';
-
+import {Button, Card, Nav, Navbar} from 'react-bootstrap';
+import RegisterPage from "./pages/RegisterPage";
 
 function App() {
 
   return (
       <BrowserRouter>
           <div>
+              <>
+                  <Navbar bg="light" variant="light">
+                      <Navbar.Brand href="/">Ucollage</Navbar.Brand>
+                      <Nav className="m-auto">
+                          <Nav.Link href="/courses">Courses</Nav.Link>
+                          <Nav.Link href="/my-courses">My Courses</Nav.Link>
+                          <Nav.Link href="/about">About</Nav.Link>
+                      </Nav>
+                      <Link to="/login"><Button style={{marginRight: 20}} variant="outline-dark">Login</Button></Link>
+                      <Link to="/register"><Button variant="outline-dark">Register</Button></Link>
+                  </Navbar>
+              </>
               <Switch>
                   <Route exact path='/' component={Home}/>
-                  <Route path='/list' component={Api}/>
+                  <Route path='/courses' component={Api}/>
+                  <Route path='/my-courses' component={Api}/>
+                  <Route path='/about' component={Api}/>
+                  <Route path='/login' component={Api}/>
+                  <Route path='/register' component={RegisterPage}/>
               </Switch>
+              <Card.Footer className="m-auto text-muted text-center">Created by Group 7</Card.Footer>
           </div>
       </BrowserRouter>
   );
@@ -25,9 +42,9 @@ function Home(){
             <h1>Project Home</h1>
             {/* Link to List.js */}
             <Link to={'./list'}>
-                <button variant="raised">
-                    My List
-                </button>
+                <Button>
+                    Selam
+                </Button>
             </Link>
         </div>
     );

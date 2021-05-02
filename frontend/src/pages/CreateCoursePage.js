@@ -1,31 +1,42 @@
-import {Button, Card, Col, Container, Form, Image, Jumbotron, Row, Toast, Dropdown, DropdownButton} from "react-bootstrap";
+import {Button, Card, Col, Container, Form, Toast, Dropdown, DropdownButton} from "react-bootstrap";
 import {useState, useRef} from "react";
 import {Categories} from "../constants/constants";
-import {Link} from 'react-router-dom';
+import axios from 'axios';
+
+import {useHistory} from 'react-router-dom';
 
 export default function CreateCoursePage() {
     const [result, setResult] = useState(null);
     const [toastStyle, setToastStyle] = useState({});
     const [curCategory, setCurCategory] = useState(Categories[0]);
     const formRef = useRef(null);
+    let history = useHistory()
+
 
 
     const handleSubmit = async (event) => {
         setToastStyle({});
         setResult({status: 0, message: "Please wait"});
+        const elements = formRef.current;
 
-        const form = event.currentTarget;
-        console.log(form);
-        
         event.preventDefault();
-        let response = await fetch("/api/user/login", {
+        let response = await axios({
+            url:"/api/course/create",
             method: "POST",
-            body: {username: "Murat"}
+            data: {
+                title: elements[0].value,
+                price: elements[1].value,
+                description: elements[2].value,
+                thumbnail: elements[3].value,
+                category: curCategory,
+                creator_id: 1
+            }
         });
-        let body = await response.json();
-
-        setResult({status: response.status, message: body.api});
+        setResult({status: response.status, message: response.data.message});
         setToastStyle({backgroundColor: response.status == 200 ? "rgb(200,255,200)" : "rgb(255,200,200)"});
+        setTimeout(()=>{
+            history.push("/");
+        },1000);
     }
 
     return (
@@ -86,7 +97,7 @@ export default function CreateCoursePage() {
                         </Form>
                     </Col>
                 </Card.Body>
-                <Card.Footer></Card.Footer>
+                <Card.Footer/>
             </Card>
         </Container>
     );

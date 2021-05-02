@@ -10,9 +10,7 @@ export default function CreateCoursePage() {
     const [toastStyle, setToastStyle] = useState({});
     const [curCategory, setCurCategory] = useState(Categories[0]);
     const formRef = useRef(null);
-    let history = useHistory()
-
-
+    let history = useHistory();
 
     const handleSubmit = async (event) => {
         setToastStyle({});

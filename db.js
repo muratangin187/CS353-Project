@@ -35,6 +35,22 @@ class Db{
         });
     }
 
+    getCourse(cid){
+        return new Promise(resolve=>{
+            this._db.query(
+                'SELECT * FROM Course WHERE id = ? LIMIT 1',
+                [cid],
+                (error, results, fields)=>{
+                    if(error){
+                        console.log(error);
+                        resolve(null);
+                    }else{
+                        resolve(results[0]);
+                    }
+                });
+        });
+    }
+
     insertPerson(username, email, photo, name, surname, password){
         return new Promise(resolve=> {
             this._db.query(

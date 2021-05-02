@@ -5,11 +5,14 @@ export default function RegisterPage() {
     const [result, setResult] = useState(null);
     const [toastStyle, setToastStyle] = useState({});
 
+
     const handleSubmit = async (event) => {
         setToastStyle({});
         setResult({status: 0, message: "Please wait"});
 
         const form = event.currentTarget;
+        console.log(form);
+        
         event.preventDefault();
         let response = await fetch("/api/user/login", {
             method: "POST",

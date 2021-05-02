@@ -1,10 +1,11 @@
+const config = require("./config.js");
 const mysql = require("mysql");
 
 let db = mysql.createConnection({
-    host     : "localhost",
-    user     : "root",
-    password : "123456789",
-    database : "ucollage"
+    host     : config.HOST,
+    user     : config.USER,
+    password : config.PASSWORD,
+    database : config.DB
 });
 
 async function main (){
@@ -49,6 +50,19 @@ async function main (){
     await db.query('CREATE TABLE Admin( ID INT AUTO_INCREMENT,\n' +
         'PRIMARY KEY (ID),\n' +
         'FOREIGN KEY (ID) REFERENCES Person(ID)\n' +
+        ');');
+
+    await db.query('CREATE TABLE Course( ID INT AUTO_INCREMENT,\n' +
+        'title VARCHAR(64) NOT NULL,' +
+        'price NUMERIC(6, 2) NOT NULL,' +
+        'description VARCHAR(255) NOT NULL,' +
+        'thumbnail VARCHAR(255) NOT NULL,' +
+        'category VARCHAR(64) NOT NULL,' +
+        'creator_id INT NOT NULL,' +
+        'averageRating FLOAT NOT NULL DEFAULT 0,' +
+        'ratingCount INT NOT NULL DEFAULT 0,'   +
+        'PRIMARY KEY (ID),' +
+        'FOREIGN KEY (creator_id) REFERENCES Creator(ID)' +
         ');');
 
     console.log("DB tables created.");

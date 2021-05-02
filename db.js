@@ -35,11 +35,29 @@ class Db{
         });
     }
 
-    insertPerson(username,email, photo, name, surname, password){
+    insertPerson(username, email, photo, name, surname, password){
         return new Promise(resolve=> {
             this._db.query(
                 'INSERT INTO Person (username, email, name, surname, password, photo) VALUES ?',
                 [[[username, email, name, surname, password, photo]]],
+                (error, results, fields) => {
+                    if (error){
+                        console.log(error);
+                        resolve(null);
+                    }else{
+                        console.log(results.insertId);
+                        resolve(results.insertId);
+                    }
+                }
+            );
+        });
+    }
+
+    insertCourse(title, price, description, thumbnail, category, creator_id){
+        return new Promise(resolve=> {
+            this._db.query(
+                'INSERT INTO Course (title, price, description, thumbnail, category, creator_id) VALUES ?',
+                [[[title, price, description, thumbnail, category, creator_id]]],
                 (error, results, fields) => {
                     if (error){
                         console.log(error);

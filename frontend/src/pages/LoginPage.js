@@ -1,17 +1,20 @@
 import {Button, Card, Col, Container, Form, Image, Jumbotron, Row, Toast} from "react-bootstrap";
-import {useState} from "react";
+import {useState, useRef} from "react";
 import {Link} from 'react-router-dom';
 
 export default function LoginPage() {
     const [result, setResult] = useState(null);
     const [signedIn, setSignedIn] = useState(false);
     const [toastStyle, setToastStyle] = useState({});
+    const formRef = useRef(null);
+
 
     const handleSubmit = async (event) => {
         setToastStyle({});
         setResult({status: 0, message: "Please wait"});
+        var elements = formRef.current;
+        console.log(elements[0].value);
 
-        const form = event.currentTarget;
         event.preventDefault();
 
         let response = await fetch("/api/user/login", {
@@ -49,7 +52,7 @@ export default function LoginPage() {
                         <h2>New User? <span> <Link to="/register">Register!</Link>
 </span></h2>
                         </div>
-                        <Form onSubmit={handleSubmit}>
+                        <Form onSubmit={handleSubmit} ref={formRef}>
                             <Form.Group controlId="formGridUsername">
                                 <Form.Label>Username</Form.Label>
                                 <Form.Control type="text" placeholder="Enter username" required/>

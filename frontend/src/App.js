@@ -3,6 +3,7 @@ import {useEffect, useState} from "react";
 import {BrowserRouter, Link, Route, Switch} from 'react-router-dom';
 import {Button, Card, Nav, Navbar} from 'react-bootstrap';
 import RegisterPage from "./pages/RegisterPage";
+import LoginPage from './pages/LoginPage';
 
 function App() {
 
@@ -26,7 +27,7 @@ function App() {
                   <Route path='/courses' component={Api}/>
                   <Route path='/my-courses' component={Api}/>
                   <Route path='/about' component={Api}/>
-                  <Route path='/login' component={Api}/>
+                  <Route path='/login' component={LoginPage}/>
                   <Route path='/register' component={RegisterPage}/>
               </Switch>
           </div>

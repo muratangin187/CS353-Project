@@ -1,9 +1,26 @@
 const db = require("../db");
 const express = require('express')
+const jwt = require("jsonwebtoken");
+const {SECRET} = require("../config");
 const router = express.Router()
 
-router.post("/login", (req, res) => {
-    res.json({"api": "login"});
+router.post("/login", async (req, res) => {
+    if(!req.body.username || !req.body.password){
+        res.status(400).send({message:"You need to provide username and password."});
+        return;
+    }
+    let result = await db.checkCreds(
+        req.body.username,
+        req.body.password
+    );
+    if(result == null){
+        res.status(400).send({message:"There is no user exists with given username and password"});
+    }else{
+        const token = jwt.sign({ id: result }, SECRET, {
+            expiresIn: 86400
+        });
+        res.send({message:"Login successfully", id: result, token: token});
+    }
 });
 
 /**
@@ -47,8 +64,8 @@ router.post("/register", async(req, res) => {
         return;
     }
     if(!req.body.username || !req.body.email || !req.body.photo ||
-        !req.body.name || !req.body.surname || !req.body.password){
-        res.status(400).send({message:"You need to provide username, email, photo, name, surname, password."});
+        !req.body.name || !req.body.surname || !req.body.password || !req.body.isCreator){
+        res.status(400).send({message:"You need to provide username, email, photo, name, surname, password and account type."});
         return;
     }
 
@@ -63,9 +80,13 @@ router.post("/register", async(req, res) => {
     if(!result){
         res.status(400).send({"message": "There is an error occured in the db write stage of person."});
     }else{
-        let result2 = await db.insertUser(result);
+        let result2;
+        if(req.body.isCreator)
+            result2 = await db.insertCreator(result);
+        else
+            result2 = await db.insertUser(result);
         if(!result){
-            res.status(400).send({"message": "There is an error occured in the db write stage of user."});
+            res.status(400).send({"message": "There is an error occured in the db write stage of a user."});
         }else {
             res.status(200).send({"message": "Successfully user registered."});
         }

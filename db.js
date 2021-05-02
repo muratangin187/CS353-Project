@@ -71,6 +71,22 @@ class Db{
         });
     }
 
+    insertCreator(id){
+        return new Promise(resolve=> {
+            this._db.query(
+                `INSERT INTO Creator(ID) VALUES (${id})`,
+                (error, results, fields) => {
+                    if (error){
+                        console.log(error);
+                        resolve(null);
+                    }else{
+                        resolve(true);
+                    }
+                }
+            );
+        });
+    }
+
     insertUser(id){
         return new Promise(resolve=> {
             this._db.query(
@@ -81,6 +97,26 @@ class Db{
                         resolve(null);
                     }else{
                         resolve(true);
+                    }
+                }
+            );
+        });
+    }
+
+    checkCreds(username, password){
+        return new Promise(resolve => {
+            this._db.query(
+                `SELECT ID FROM Person WHERE username = \'${username}\' AND password = \'${password}\';`,
+                (error, results, fields) => {
+                    if (error){
+                        console.log(error);
+                        resolve(null);
+                    }else{
+                        if(results.length > 0) {
+                            resolve(results[0].ID);
+                        }else{
+                            resolve(null);
+                        }
                     }
                 }
             );

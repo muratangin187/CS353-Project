@@ -6,6 +6,7 @@ import RegisterPage from "./pages/RegisterPage";
 import LoginPage from './pages/LoginPage';
 import MyCoursesPage from './pages/MyCoursesPage';
 import CreateCoursePage from './pages/CreateCoursePage';
+import MainCoursePage from './pages/MainCoursePage';
 
 function App() {
 
@@ -28,6 +29,7 @@ function App() {
                   <Route exact path='/' component={Home}/>
                   <Route path='/courses' component={Api}/>
                   <Route path='/my-courses' component={MyCoursesPage}/>
+                  <Route path='/course/:cid' component={MainCoursePage}/>
                   <Route path='/create-course' component={CreateCoursePage}/>
                   <Route path='/about' component={Api}/>
                   <Route path='/login' component={LoginPage}/>

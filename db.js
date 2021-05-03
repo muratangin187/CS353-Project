@@ -86,5 +86,24 @@ class Db{
             );
         });
     }
+
+    getCourseCreator(id){
+        return new Promise(resolve => {
+           this._db.query(
+               'SELECT * FROM Person NATURAL JOIN Creator WHERE ID = ?',
+               [id],
+               (error, results, fields)=>{
+                   if(error){
+                       console.log(error);
+                       resolve(null);
+                   }else{
+                       console.log("db.js\n");
+                       console.log(results); // TODO delete console log
+                       resolve(results);
+                   }
+               }
+           );
+        });
+    }
 }
 module.exports = new Db();

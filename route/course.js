@@ -19,4 +19,41 @@ router.post("/create", async (req, res)=>{
     }
 });
 
+/**
+ * @swaggerPath
+ *
+ * /api/course/creator/{creatorId}:
+ *   get:
+ *     summary: Get the information of the course creator
+ *     operationId: getCourseCreatorById
+ *     parameters:
+ *       - name: creatorId
+ *         in: path
+ *         required: true
+ *         schema:
+ *              type: integer
+ *              format: int64
+ *     responses:
+ *       '200':
+ *         description: Successful operation
+ *         content:
+ *              application/json
+ *       '400':
+ *         description: Unsuccessful operation
+ *         content:
+ *              application/json
+ */
+
+// TODO fix swaggerpath
+router.get("/creator/:creatorId", async (req, res) => {
+    let creatorId = req.params["creatorId"];
+    let result = await db.getCourseCreator(creatorId);
+    console.log("course.js\n");
+    console.log(result); // TODO delete console log
+    if (result == null)
+        res.status(400).send({"message": "While getting the information of course creator an error occurred."});
+    else
+        res.status(200).send(result);
+});
+
 module.exports = router;

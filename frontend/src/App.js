@@ -6,6 +6,7 @@ import RegisterPage from "./pages/RegisterPage";
 import LoginPage from './pages/LoginPage';
 import MyCoursesPage from './pages/MyCoursesPage';
 import CreateCoursePage from './pages/CreateCoursePage';
+import CreatorProfilePage from './pages/CreatorProfilePage';
 
 function App() {
 
@@ -32,6 +33,7 @@ function App() {
                   <Route path='/about' component={Api}/>
                   <Route path='/login' component={LoginPage}/>
                   <Route path='/register' component={RegisterPage}/>
+                  <Route path='/creator-profile' component={CreatorProfilePage}/>
               </Switch>
           </div>
       </BrowserRouter>

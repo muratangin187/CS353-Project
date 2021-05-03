@@ -127,8 +127,6 @@ class Db{
                        console.log(error);
                        resolve(null);
                    }else{
-                       console.log("db.js\n");
-                       console.log(results); // TODO delete console log
                        resolve(results);
                    }
                }

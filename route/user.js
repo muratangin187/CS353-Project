@@ -5,6 +5,7 @@ const {SECRET} = require("../config");
 const router = express.Router()
 
 router.post("/login", async (req, res) => {
+    console.log(JSON.stringify(req.body));
     if(!req.body.username || !req.body.password){
         res.status(400).send({message:"You need to provide username and password."});
         return;

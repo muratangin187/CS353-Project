@@ -19,10 +19,10 @@ router.post("/create", async (req, res)=>{
     }
 });
 
-router.get("/retrieve", async (req, res)=>{
-    console.log(JSON.stringify(req.body));
+router.get("/retrieve/:cid", async (req, res)=>{
+    console.log(JSON.stringify(req.params.cid));
     let result = await db.getCourse(
-        req.body.cid,
+        req.params.cid,
     );
     if(result == null){
         res.status(400).send({"message": "There is an error occured in the db retrieve stage of course creation."});

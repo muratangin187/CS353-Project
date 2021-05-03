@@ -1,9 +1,10 @@
 import {Button, Card, Col, Container, Form, Toast, Dropdown, DropdownButton} from "react-bootstrap";
-import {useState, useRef} from "react";
+import {useState, useRef, useContext, useEffect} from "react";
 import {Categories} from "../constants/constants";
 import axios from 'axios';
 
 import {useHistory} from 'react-router-dom';
+import {AuthContext} from "../services/AuthContext";
 
 export default function CreateCoursePage() {
     const [result, setResult] = useState(null);
@@ -11,6 +12,13 @@ export default function CreateCoursePage() {
     const [curCategory, setCurCategory] = useState(Categories[0]);
     const formRef = useRef(null);
     let history = useHistory();
+    const {getCurrentUser} = useContext(AuthContext);
+    const [user, setUser] = useState(null);
+
+    useEffect(async ()=>{
+        let response = await getCurrentUser;
+        setUser(response?.data);
+    }, []);
 
     const handleSubmit = async (event) => {
         setToastStyle({});
@@ -18,6 +26,7 @@ export default function CreateCoursePage() {
         const elements = formRef.current;
 
         event.preventDefault();
+        console.log(user);
         let response = await axios({
             url:"/api/course/create",
             method: "POST",
@@ -27,7 +36,7 @@ export default function CreateCoursePage() {
                 description: elements[2].value,
                 thumbnail: elements[3].value,
                 category: curCategory,
-                creator_id: 1
+                creator_id: user.id
             }
         });
         setResult({status: response.status, message: response.data.message});

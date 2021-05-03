@@ -9,8 +9,8 @@ class LecturesComp extends React.Component {
     }
     render() {
       return (
-          <Container className="ml-auto">
-            <ListGroup>
+          <Container >
+            <ListGroup style={{width:"57vw"}}>
                 <ListGroup.Item> 
                     <Row>
                         <Col>1.</Col>

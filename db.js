@@ -38,7 +38,7 @@ class Db{
     getCourse(cid){
         return new Promise(resolve=>{
             this._db.query(
-                'SELECT * FROM Course WHERE ID = ? LIMIT 1',
+                'SELECT * FROM Course WHERE id = ? LIMIT 1',
                 [cid],
                 (error, results, fields)=>{
                     if(error){
@@ -89,7 +89,7 @@ class Db{
     insertCreator(id){
         return new Promise(resolve=> {
             this._db.query(
-                `INSERT INTO Creator(ID) VALUES (${id})`,
+                `INSERT INTO Creator(id) VALUES (${id})`,
                 (error, results, fields) => {
                     if (error){
                         console.log(error);
@@ -105,7 +105,7 @@ class Db{
     insertUser(id){
         return new Promise(resolve=> {
             this._db.query(
-                `INSERT INTO User(ID) VALUES (${id})`,
+                `INSERT INTO User(id) VALUES (${id})`,
                 (error, results, fields) => {
                     if (error){
                         console.log(error);
@@ -141,17 +141,17 @@ class Db{
     checkCreds(username, password){
         return new Promise(resolve => {
             this._db.query(
-                `SELECT ID FROM Person WHERE username = \'${username}\' AND password = \'${password}\';`,
+                `SELECT id FROM Person WHERE username = \'${username}\' AND password = \'${password}\';`,
                 (error, results, fields) => {
                     if (error){
                         console.log(error);
                         resolve(null);
                     }else{
                         if(results.length > 0) {
-                            let isCreator = this.isCreator(results[0].ID);
-                            let isAdmin = this.isAdmin(results[0].ID);
+                            let isCreator = this.isCreator(results[0].id);
+                            let isAdmin = this.isAdmin(results[0].id);
                             let role = isCreator ? "creator" : (isAdmin ? "admin" : "user");
-                            resolve({id:results[0].ID, role: role});
+                            resolve({id:results[0].id, role: role});
                         }else{
                             resolve(null);
                         }
@@ -164,7 +164,7 @@ class Db{
     isCreator(userId){
         return new Promise(resolve => {
             this._db.query(
-                `SELECT ID FROM Creator WHERE ID = \'${userId}\';`,
+                `SELECT id FROM Creator WHERE id = \'${userId}\';`,
                 (error, results, fields) => {
                     if (error){
                         console.log(error);
@@ -184,7 +184,7 @@ class Db{
     isAdmin(userId){
         return new Promise(resolve => {
             this._db.query(
-                `SELECT ID FROM Admin WHERE ID = \'${userId}\';`,
+                `SELECT id FROM Admin WHERE id = \'${userId}\';`,
                 (error, results, fields) => {
                     if (error){
                         console.log(error);

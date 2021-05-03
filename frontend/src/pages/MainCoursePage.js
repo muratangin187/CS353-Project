@@ -1,4 +1,18 @@
-import {Button, Card, Row, Col, Container, Tab, Tabs, Form, Image, Toast, Dropdown, DropdownButton} from "react-bootstrap";
+import {
+    Button,
+    Card,
+    Row,
+    Col,
+    Container,
+    Tab,
+    Tabs,
+    Form,
+    Image,
+    Toast,
+    Dropdown,
+    DropdownButton,
+    Spinner
+} from "react-bootstrap";
 import {useState, useEffect} from "react";
 import {useParams} from 'react-router-dom';
 import axios from 'axios';
@@ -9,21 +23,22 @@ import { LecturesComp, QuizzesComp } from "../components/course_comps";
 export default function MainCoursePage() {
     const params = useParams();
     const [key, setKey] = useState("lectures");
-    const [courseData, setCourseData] = useState([]);
+    const [courseData, setCourseData] = useState(null);
 
-    useEffect(() => {
-        axios({
-            url:"/api/course/retrieve",
+    useEffect(async () => {
+        let response = await axios({
+            url:"/api/course/retrieve/" + params.cid,
             method: "GET",
-            data: {
-                cid: params.cid
-            }
-        }).then(
-            function (response) {
-                console.log("Response:" + response);
-                setCourseData(response.data);
-            });
-    });
+        });
+        console.log(response.status + "-Response:" + JSON.stringify(response.data,null,2));
+        setCourseData(response.data);
+    }, []);
+
+    if(!courseData){
+        return (<Container className="mt-5">
+            <Spinner className="mt-5" style={{width:"35vw", height:"35vw"}} animation="border" variant="dark"/>
+        </Container>);
+    }
 
     return (
         <Container className="mt-5 ml-auto mr-auto">

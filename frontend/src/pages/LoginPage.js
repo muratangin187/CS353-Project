@@ -3,11 +3,12 @@ import {useState, useRef, useContext} from "react";
 import {Link, useHistory} from 'react-router-dom';
 import axios from "axios";
 import AuthService from "../services/AuthService";
-import {NotificationService} from "../services/NotificationService";
+import {NotificationContext} from "../services/NotificationContext";
+import {AuthContext} from "../services/AuthContext";
 
 export default function LoginPage() {
     const [signedIn, setSignedIn] = useState(false);
-    const {setShow, setContent, setIntent} = useContext(NotificationService);
+    const {setShow, setContent, setIntent} = useContext(NotificationContext);
     const formRef = useRef(null);
     const history = useHistory();
 
@@ -25,9 +26,7 @@ export default function LoginPage() {
         if(response.status == 200){
             setIntent("success");
             setContent("Success", response.data.message);
-            setTimeout(()=>{
-                history.push("/");
-            },2000);
+            window.location = window.location.origin;
         }else{
             setIntent("failure");
             setContent("Login failed", response.data.message);

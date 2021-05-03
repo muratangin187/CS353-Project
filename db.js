@@ -61,7 +61,6 @@ class Db{
                         console.log(error);
                         resolve(null);
                     }else{
-                        console.log(results.insertId);
                         resolve(results.insertId);
                     }
                 }
@@ -79,7 +78,6 @@ class Db{
                         console.log(error);
                         resolve(null);
                     }else{
-                        console.log(results.insertId);
                         resolve(results.insertId);
                     }
                 }
@@ -119,6 +117,26 @@ class Db{
         });
     }
 
+    getUserById(userId){
+        return new Promise(resolve => {
+            this._db.query(
+                `SELECT * FROM Person WHERE id = \'${userId}\';`,
+                (error, results, fields) => {
+                    if (error){
+                        console.log(error);
+                        resolve(null);
+                    }else{
+                        if(results.length > 0) {
+                            resolve(results[0]);
+                        }else{
+                            resolve(null);
+                        }
+                    }
+                }
+            );
+        });
+    }
+
     checkCreds(username, password){
         return new Promise(resolve => {
             this._db.query(
@@ -129,9 +147,52 @@ class Db{
                         resolve(null);
                     }else{
                         if(results.length > 0) {
-                            resolve(results[0].ID);
+                            let isCreator = this.isCreator(results[0].ID);
+                            let isAdmin = this.isAdmin(results[0].ID);
+                            let role = isCreator ? "creator" : (isAdmin ? "admin" : "user");
+                            resolve({id:results[0].ID, role: role});
                         }else{
                             resolve(null);
+                        }
+                    }
+                }
+            );
+        });
+    }
+
+    isCreator(userId){
+        return new Promise(resolve => {
+            this._db.query(
+                `SELECT ID FROM Creator WHERE ID = \'${userId}\';`,
+                (error, results, fields) => {
+                    if (error){
+                        console.log(error);
+                        resolve(false);
+                    }else{
+                        if(results.length > 0) {
+                            resolve(true);
+                        }else{
+                            resolve(false);
+                        }
+                    }
+                }
+            );
+        });
+    }
+
+    isAdmin(userId){
+        return new Promise(resolve => {
+            this._db.query(
+                `SELECT ID FROM Admin WHERE ID = \'${userId}\';`,
+                (error, results, fields) => {
+                    if (error){
+                        console.log(error);
+                        resolve(false);
+                    }else{
+                        if(results.length > 0) {
+                            resolve(true);
+                        }else{
+                            resolve(false);
                         }
                     }
                 }

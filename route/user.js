@@ -2,10 +2,15 @@ const db = require("../db");
 const express = require('express')
 const jwt = require("jsonwebtoken");
 const {SECRET} = require("../config");
+const {verifyToken} = require("../authMiddle");
 const router = express.Router()
 
+router.get("/:id", async (req, res) => {
+    let result = await db.getUserById(req.params.id);
+    res.status(200).send(result);
+});
+
 router.post("/login", async (req, res) => {
-    console.log(JSON.stringify(req.body));
     if(!req.body.username || !req.body.password){
         res.status(400).send({message:"You need to provide username and password."});
         return;
@@ -17,10 +22,10 @@ router.post("/login", async (req, res) => {
     if(result == null){
         res.status(400).send({message:"There is no user exists with given username and password"});
     }else{
-        const token = jwt.sign({ id: result }, SECRET, {
+        const token = jwt.sign({ id: result.id }, SECRET, {
             expiresIn: 86400
         });
-        res.send({message:"Login successfully", id: result, token: token});
+        res.send({message:"Login successfully", id: result.id, role: result.role, token: token});
     }
 });
 
@@ -65,7 +70,7 @@ router.post("/register", async(req, res) => {
         return;
     }
     if(!req.body.username || !req.body.email || !req.body.photo ||
-        !req.body.name || !req.body.surname || !req.body.password || !req.body.isCreator){
+        !req.body.name || !req.body.surname || !req.body.password){
         res.status(400).send({message:"You need to provide username, email, photo, name, surname, password and account type."});
         return;
     }

@@ -2,11 +2,12 @@ import {Button, Card, Col, Container, Form, Image, Jumbotron, Row, Toast} from "
 import {useContext, useRef, useState} from "react";
 import {useHistory} from "react-router-dom";
 import axios from "axios";
-import {NotificationService} from "../services/NotificationService";
+import {NotificationContext} from "../services/NotificationContext";
+import AuthService from "../services/AuthService";
 
 export default function RegisterPage() {
     const [type, setType] = useState(false);
-    const {setShow, setContent, setIntent} = useContext(NotificationService);
+    const {setShow, setContent, setIntent} = useContext(NotificationContext);
     const formRef = useRef(null);
     let history = useHistory();
 
@@ -17,26 +18,20 @@ export default function RegisterPage() {
         const elements = formRef.current;
 
         event.preventDefault();
-        let response = await axios({
-            url:"/api/user/register",
-            method: "POST",
-            data: {
-                username:elements[0].value,
-                email:elements[1].value,
-                name:elements[2].value,
-                surname:elements[3].value,
-                password:elements[4].value,
-                photo:"placeholder.jpg",
-                isCreator: type
-            }
-        });
+        let response = await AuthService.register(
+            elements[0].value,
+            elements[1].value,
+            elements[2].value,
+            elements[3].value,
+            elements[4].value,
+            "placeholder.jpg",
+            type
+        );
         setShow(true);
         if(response.status == 200){
             setIntent("success");
-            setContent("Success", response.data.message);
-            setTimeout(()=>{
-                history.push("/");
-            },2000);
+            setContent("Success", response.data.message + " You will be redirected to login page.");
+            history.push("/login");
         }else{
             setIntent("failure");
             setContent("Login failed", response.data.message);

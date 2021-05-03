@@ -4,7 +4,7 @@ const userRouter = require("./user");
 const courseRouter = require("./course");
 
 router.use("/user", userRouter);
-router.use("/course", courseRouter);
+router.use("/course", courseRouter); // /api/course/create
 
 
 module.exports = router;

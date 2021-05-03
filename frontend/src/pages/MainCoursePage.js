@@ -18,7 +18,7 @@ import {useParams} from 'react-router-dom';
 import axios from 'axios';
 
 import {useHistory} from 'react-router-dom';
-import { LecturesComp, QuizzesComp } from "../components/course_comps";
+import { LecturesComp, QandAComp, QuizzesComp, RatingsComp, AnnouncementsComp } from "../components/course_comps";
 
 export default function MainCoursePage() {
     const params = useParams();
@@ -53,7 +53,7 @@ export default function MainCoursePage() {
                 </Col>
             </Row>
             <Tabs
-            style={{"width":"100%"}}
+            style={{"width":"75vw"}}
       id="controlled-tab-example"
       activeKey={key}
       onSelect={(k) => setKey(k)}
@@ -65,13 +65,13 @@ export default function MainCoursePage() {
       <QuizzesComp/>
       </Tab>
       <Tab eventKey="qanda" title="Q/A">
-      123123
+      <QandAComp/>
       </Tab>
       <Tab eventKey="ratings" title="Ratings">
-      123123
+        <RatingsComp/>
       </Tab>
       <Tab eventKey="announcements" title="Announcements">
-      123123
+       <AnnouncementsComp/>
       </Tab>
       <Tab eventKey="about" title="About">
       123123

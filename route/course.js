@@ -32,4 +32,14 @@ router.get("/retrieve/:cid", async (req, res)=>{
     }
 });
 
+router.post("/filter", async (req, res)=>{
+    console.log(JSON.stringify(req.body));
+    let response = await db.filterCourses(req.body.minimum,req.body.maximum,req.body.order,req.body.orderDirection,req.body.search,req.body.categories, req.body.pageNumber);
+    if(response){
+        res.status(200).send(response);
+    }else{
+        res.status(200).send([]);
+    }
+});
+
 module.exports = router;

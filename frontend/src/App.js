@@ -13,6 +13,7 @@ import {AuthContext} from "./services/AuthContext";
 import CustomNavbar from "./Navbar";
 import PrivateRoute from "./PrivateRoute";
 import ProfilePage from "./pages/ProfilePage";
+import Homepage from "./pages/Homepage";
 
 let timer = null;
 
@@ -79,7 +80,7 @@ function App() {
                       </Toast>
                       <CustomNavbar/>
                       <Switch>
-                          <Route exact path='/' component={Home}/>
+                          <Route exact path='/' component={Homepage}/>
                           <Route path='/courses' component={Api}/>
                           <Route path='/my-courses' component={MyCoursesPage}/>
                           <Route path='/course/:cid' component={MainCoursePage}/>
@@ -94,20 +95,6 @@ function App() {
           </AuthContext.Provider>
       </NotificationContext.Provider>
   );
-}
-
-function Home(){
-    return (
-        <div className="App">
-            <h1>Project Home</h1>
-            {/* Link to List.js */}
-            <Link to={'./list'}>
-                <Button>
-                    Selam
-                </Button>
-            </Link>
-        </div>
-    );
 }
 
 function Api(){

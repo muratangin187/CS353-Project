@@ -102,6 +102,38 @@ class Db{
         });
     }
 
+    filterCourses(minimum,maximum,order,orderDirection,search,categories, pageNumber){
+        let offset = (pageNumber-1) * 10;
+        let categoryString = "";
+        categories.forEach(c=>categoryString+="'"+c+"',");
+        categoryString = categoryString.substr(0, categoryString.length-1);
+        let searchString = "%" + search + "%";
+        console.log(categoryString);
+        let sql = "";
+        if(orderDirection == "ASC") orderDirection = "";
+        if(order == "Price"){
+            sql = `SELECT * FROM Course WHERE (category IN (${categoryString})) AND (price BETWEEN ${minimum} AND ${maximum}) AND (description LIKE '${searchString}' OR title LIKE '${searchString}' OR category LIKE '${searchString}') ORDER BY price ${orderDirection} LIMIT ${offset}, 10;`;
+        }else if(order == "Rating"){
+            sql = `SELECT * FROM Course WHERE (category IN (${categoryString})) AND (price BETWEEN ${minimum} AND ${maximum}) AND (description LIKE '${searchString}' OR title LIKE '${searchString}' OR category LIKE '${searchString}') ORDER BY averageRating ${orderDirection} LIMIT ${offset}, 10;`;
+        }else{
+            // TODO add it when discount added
+            sql = `SELECT * FROM Course WHERE (category IN (${categoryString})) AND (price BETWEEN ${minimum} AND ${maximum}) AND (description LIKE '${searchString}' OR title LIKE '${searchString}' OR category LIKE '${searchString}') ORDER BY price ${orderDirection} LIMIT ${offset}, 10;`;
+        }
+        return new Promise(resolve=>{
+            this._db.query(sql, (error, results, fields) => {
+                    if (error){
+                        console.log(error);
+                        resolve(null);
+                    }else{
+                        console.log(sql);
+                        console.log(results);
+                        resolve(results);
+                    }
+                }
+            );
+        });
+    }
+
     insertUser(id){
         return new Promise(resolve=> {
             this._db.query(

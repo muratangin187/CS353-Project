@@ -38,13 +38,14 @@ class Db{
     getCourse(cid){
         return new Promise(resolve=>{
             this._db.query(
-                'SELECT * FROM Course WHERE id = ? LIMIT 1',
+                'SELECT * FROM Course WHERE ID = ? LIMIT 1',
                 [cid],
                 (error, results, fields)=>{
                     if(error){
                         console.log(error);
                         resolve(null);
                     }else{
+                        console.log(results);
                         resolve(results[0]);
                     }
                 });

@@ -1,5 +1,5 @@
 import {Button, Card, Row, Col, Container, Tab, Tabs, Form, Image, Toast, Dropdown, DropdownButton} from "react-bootstrap";
-import {useState} from "react";
+import {useState, useEffect} from "react";
 import {useParams} from 'react-router-dom';
 import axios from 'axios';
 
@@ -9,17 +9,21 @@ import { LecturesComp, QuizzesComp } from "../components/course_comps";
 export default function MainCoursePage() {
     const params = useParams();
     const [key, setKey] = useState("lectures");
+    const [courseData, setCourseData] = useState([]);
 
-    axios({
-        url:"/api/course/retrieve",
-        method: "GET",
-        data: {
-            cid: params.cid
-        }
-    }).then(
-        function (response) {
-            console.log(response);
-        });
+    useEffect(() => {
+        axios({
+            url:"/api/course/retrieve",
+            method: "GET",
+            data: {
+                cid: params.cid
+            }
+        }).then(
+            function (response) {
+                console.log("Response:" + response);
+                setCourseData(response.data);
+            });
+    });
 
     return (
         <Container className="mt-5 ml-auto mr-auto">

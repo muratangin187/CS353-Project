@@ -25,10 +25,10 @@ router.get("/retrieve", async (req, res)=>{
         req.body.cid,
     );
     if(result == null){
-        res.status(400).send({"message": "There is an error occured in the db write stage of course creation."});
+        res.status(400).send({"message": "There is an error occured in the db retrieve stage of course creation."});
     }else{
         console.log(result);
-        res.status(200).send({"message": "Successfully course created."});
+        res.status(200).send(result);
     }
 });
 

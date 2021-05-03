@@ -1,44 +1,51 @@
 import {Button, Card, Col, Container, Form, Image, Jumbotron, Row, Toast} from "react-bootstrap";
-import {useState} from "react";
+import {useContext, useRef, useState} from "react";
+import {useHistory} from "react-router-dom";
+import axios from "axios";
+import {NotificationContext} from "../services/NotificationContext";
+import AuthService from "../services/AuthService";
 
 export default function RegisterPage() {
-    const [result, setResult] = useState(null);
-    const [toastStyle, setToastStyle] = useState({});
-
+    const [type, setType] = useState(false);
+    const {setShow, setContent, setIntent} = useContext(NotificationContext);
+    const formRef = useRef(null);
+    let history = useHistory();
 
     const handleSubmit = async (event) => {
-        setToastStyle({});
-        setResult({status: 0, message: "Please wait"});
+        setIntent("normal");
+        setContent("Processing", "Please wait");
+        setShow(true);
+        const elements = formRef.current;
 
-        const form = event.currentTarget;
-        console.log(form);
-        
         event.preventDefault();
-        let response = await fetch("/api/user/login", {
-            method: "POST",
-            body: {username: "Murat"}
-        });
-        let body = await response.json();
-
-        setResult({status: response.status, message: body.api});
-        setToastStyle({backgroundColor: response.status == 200 ? "rgb(200,255,200)" : "rgb(255,200,200)"});
+        let response = await AuthService.register(
+            elements[0].value,
+            elements[1].value,
+            elements[2].value,
+            elements[3].value,
+            elements[4].value,
+            "placeholder.jpg",
+            type
+        );
+        setShow(true);
+        if(response.status == 200){
+            setIntent("success");
+            setContent("Success", response.data.message + " You will be redirected to login page.");
+            history.push("/login");
+        }else{
+            setIntent("failure");
+            setContent("Login failed", response.data.message);
+        }
     }
 
     return (
         <Container style={{marginTop: 20}}>
             <Card>
                 <Card.Header>Sign up</Card.Header>
-                <Toast show={result!=null} onClose={()=>setResult(null)} className="fixed-bottom ml-auto mr-5 mb-5">
-                    <Toast.Header style={toastStyle}>
-                        <strong className="mr-auto">Processing...</strong>
-                        <small>time: {new Date().toLocaleTimeString("tr")}</small>
-                    </Toast.Header>
-                    <Toast.Body>{result?.message}</Toast.Body>
-                </Toast>
                 <Card.Body>
                 <Row>
                     <Col >
-                        <Form onSubmit={handleSubmit}>
+                        <Form onSubmit={handleSubmit} ref={formRef}>
                             <Form.Group controlId="formGridUsername">
                                 <Form.Label>Username</Form.Label>
                                 <Form.Control type="text" placeholder="Enter username" required/>
@@ -73,10 +80,10 @@ export default function RegisterPage() {
                             </Form.Row>
 
                             <Form.Row>
-                                <Button className="ml-auto mr-2" variant="primary" type="submit">
+                                <Button className="ml-auto mr-2" variant="primary" type="submit" onClick={()=>setType(true)}>
                                     Register as creator
                                 </Button>
-                                <Button className="mr-auto ml-2" variant="success" type="submit">
+                                <Button className="mr-auto ml-2" variant="success" type="submit" onClick={()=>setType(false)}>
                                     Register as user
                                 </Button>
                             </Form.Row>

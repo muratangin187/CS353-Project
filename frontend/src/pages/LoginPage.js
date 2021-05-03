@@ -1,30 +1,36 @@
 import {Button, Card, Col, Container, Form, Image, Jumbotron, Row, Toast} from "react-bootstrap";
-import {useState, useRef} from "react";
-import {Link} from 'react-router-dom';
+import {useState, useRef, useContext} from "react";
+import {Link, useHistory} from 'react-router-dom';
+import axios from "axios";
+import AuthService from "../services/AuthService";
+import {NotificationContext} from "../services/NotificationContext";
+import {AuthContext} from "../services/AuthContext";
 
 export default function LoginPage() {
-    const [result, setResult] = useState(null);
     const [signedIn, setSignedIn] = useState(false);
-    const [toastStyle, setToastStyle] = useState({});
+    const {setShow, setContent, setIntent} = useContext(NotificationContext);
     const formRef = useRef(null);
+    const history = useHistory();
 
 
     const handleSubmit = async (event) => {
-        setToastStyle({});
-        setResult({status: 0, message: "Please wait"});
-        var elements = formRef.current;
-        console.log(elements[0].value);
-
+        setIntent("normal");
+        setContent("Processing", "Please wait");
+        setShow(true);
+        const elements = formRef.current;
         event.preventDefault();
 
-        let response = await fetch("/api/user/login", {
-            method: "GET",
-            body: {username: "Murat"}
-        });
-        let body = await response.json();
+        let response = await AuthService.login(elements[0].value, elements[1].value);
+        setShow(true);
 
-        setResult({status: response.status, message: body.api});
-        setToastStyle({backgroundColor: response.status == 200 ? "rgb(200,255,200)" : "rgb(255,200,200)"});
+        if(response.status == 200){
+            setIntent("success");
+            setContent("Success", response.data.message);
+            window.location = window.location.origin;
+        }else{
+            setIntent("failure");
+            setContent("Login failed", response.data.message);
+        }
     }
 
     const handleCheckBoxChange = (event) => {
@@ -38,13 +44,6 @@ export default function LoginPage() {
                 <Card.Header>
                     Login
                 </Card.Header>
-                <Toast show={result!=null} onClose={()=>setResult(null)} className="fixed-bottom ml-auto mr-5 mb-5">
-                    <Toast.Header style={toastStyle}>
-                        <strong className="mr-auto">Processing...</strong>
-                        <small>time: {new Date().toLocaleTimeString("tr")}</small>
-                    </Toast.Header>
-                    <Toast.Body>{result?.message}</Toast.Body>
-                </Toast>
                 <Card.Body>
                 <Row>
                     <Col>

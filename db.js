@@ -150,6 +150,23 @@ class Db{
         });
     }
 
+    getCourseCreator(id){
+        return new Promise(resolve => {
+           this._db.query(
+               'SELECT * FROM Person NATURAL JOIN Creator WHERE ID = ?',
+               [id],
+               (error, results, fields)=>{
+                   if(error){
+                       console.log(error);
+                       resolve(null);
+                   }else{
+                       resolve(results);
+                   }
+               }
+           );
+        });
+    }
+
     getUserById(userId){
         return new Promise(resolve => {
             this._db.query(

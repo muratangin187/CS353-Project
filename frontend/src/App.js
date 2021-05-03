@@ -13,6 +13,7 @@ import {AuthContext} from "./services/AuthContext";
 import CustomNavbar from "./Navbar";
 import PrivateRoute from "./PrivateRoute";
 import ProfilePage from "./pages/ProfilePage";
+import CreatorProfilePage from "./pages/CreatorProfilePage";
 import Homepage from "./pages/Homepage";
 
 let timer = null;
@@ -89,6 +90,7 @@ function App() {
                           <Route path='/login' component={LoginPage}/>
                           <PrivateRoute path='/profile' component={ProfilePage}/>
                           <Route path='/register' component={RegisterPage}/>
+                          <Route path='/creator-profile/:creatorId' component={CreatorProfilePage}/>
                       </Switch>
                   </div>
               </BrowserRouter>

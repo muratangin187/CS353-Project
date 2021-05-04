@@ -79,7 +79,13 @@ async function main (){
 
     console.log("DB tables created.");
 
-
+    await db.query(`INSERT INTO Person (username, email, name, surname, password, photo) VALUES ('test_user', 'test_user@gmail.com', 'Mehmet', 'Testoglu', '123', 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg');`);
+    await db.query(`INSERT INTO Person (username, email, name, surname, password, photo) VALUES ('test_creator', 'test_creator@gmail.com', 'David', 'Testoglu', '123', 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg');`);
+    await db.query(`INSERT INTO Person (username, email, name, surname, password, photo) VALUES ('test_admin', 'test_admin@gmail.com', 'Atalar', 'Testoglu', '123', 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg');`);
+    await db.query(`INSERT INTO User (id,hideCourses,balance) VALUES (0, false, 0);`);
+    await db.query(`INSERT INTO Creator (id,about, website, linkedin, youtube) VALUES (1, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus nibh arcu, facilisis nec posuere eget, molestie ac felis. Aenean aliquam, nibh scelerisque pharetra pharetra, mi nunc hendrerit urna, in iaculis sapien est sit amet ex. Quisque sit amet ante eros. In hac habitasse platea dictumst. Cras convallis augue eget libero egestas, luctus malesuada diam pretium.', 'www.google.com', 'www.linkedin.com', 'www.youtube.com');`);
+    await db.query(`INSERT INTO Admin (id) VALUES (2);`);
+    await db.query(`INSERT INTO Course(id,title,price,description,thumbnail,category,creator_id,averageRating,ratingCount) VALUES (0, 'Python egitimi', 120, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus nibh arcu, facilisis nec posuere eget, molestie ac felis. Aenean aliquam, nibh scelerisque pharetra pharetra, mi nunc hendrerit urna.', 'https://i1.wp.com/stickker.net/wp-content/uploads/2015/09/python.png?fit=600,600&ssl=1', 'Technology', 1, 4.5, 1)`);
 
     console.log("Initialization finished");
 }

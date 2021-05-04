@@ -31,7 +31,6 @@ export default function CreatorProfilePage(){
                             <Col>
                                 <div className="creator_name">
                                     <h1>{courseCreator.name} {courseCreator.surname}</h1>
-                                    <h6 style={{fontSize: "0.65rem"}}>Job of Creator</h6>
                                 </div>
                             </Col>
                             <Col style={{justifyContent: "flex-end", display: "flex"}}>

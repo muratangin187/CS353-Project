@@ -14,6 +14,7 @@ import CustomNavbar from "./Navbar";
 import PrivateRoute from "./PrivateRoute";
 import ProfilePage from "./pages/ProfilePage";
 import CreatorProfilePage from "./pages/CreatorProfilePage";
+import MyCartPage from "./pages/MyCartPage";
 
 let timer = null;
 
@@ -90,6 +91,7 @@ function App() {
                           <PrivateRoute path='/profile' component={ProfilePage}/>
                           <Route path='/register' component={RegisterPage}/>
                           <Route path='/creator-profile/:creatorId' component={CreatorProfilePage}/>
+                          <Route path='/my-cart/:userId' component={MyCartPage}/>
                       </Switch>
                   </div>
               </BrowserRouter>

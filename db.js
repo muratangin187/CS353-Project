@@ -170,13 +170,16 @@ class Db{
     getMaxLectureIndex(cid){
         return new Promise( resolve => {
             this._db.query(
-                'SELECT MAX(lecture_index) AS max_index FROM Lecture WHERE course_id = 1',
+                `SELECT MAX(lecture_index) AS max_index FROM Lecture WHERE course_id = ${cid}`,
                 (error, results, fields) => {
                     if(error){
                         console.log(error);
                         resolve(null);
                     } else {
-                        resolve(results);
+                        if(results[0])
+                            resolve(results[0]);
+                        else
+                            resolve({max_index:0});
                     }
                 }
             );

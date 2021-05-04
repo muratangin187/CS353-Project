@@ -12,7 +12,6 @@ export default function CreateLecturePage(){
     let history = useHistory();
     const {getCurrentUser} = useContext(AuthContext);
     const [user, setUser] = useState(null);
-    const [maxLectureIndex, setMaxLectureIndex] = useState(0);
 
     useEffect( async() => {
         let response = await getCurrentUser;
@@ -42,8 +41,9 @@ export default function CreateLecturePage(){
             url:"/api/course/maxIndex/" + cid,
             method: "GET"
         });
-        setMaxLectureIndex(maxIdxResponse.data);
-        console.log("Max Index Response Data: " + maxIdxResponse.data);
+        console.log("Max Index Response Data: " + maxIdxResponse.data.max_index);
+        let maxIndex = maxIdxResponse.data.max_index??0;
+        console.log("Max Index Response Data: " + maxIndex);
 
         // Convert current JS Date to MySQL date
         const date = new Date();
@@ -60,11 +60,11 @@ export default function CreateLecturePage(){
                 title: elements[1].value,
                 video: elements[2].value,
                 duration: mysqlDuration,
-                additionalMaterial: elements[54].value,
-                isVisible: elements[5].value,
+                additionalMaterial: elements[4].value,
+                isVisible: elements[5].checked ? 1 : 0,
                 date: mysqlDate,
                 course_id: cid,
-                lecture_index: maxLectureIndex.max_index + 1
+                lecture_index: maxIndex + 1
             }
         });
         setResult({status: submitResponse.status, message: submitResponse.data.message});

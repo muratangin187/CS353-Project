@@ -67,12 +67,7 @@ router.get("/maxIndex/:cid", async (req, res)=>{
     let result = await db.getMaxLectureIndex(
         req.params.cid,
     );
-    if(result == null){
-        res.status(400).send({"message": "There is an error occurred in the db retrieve stage of course creation."});
-    }else{
-        console.log(result);
-        res.status(200).send(result);
-    }
+    res.status(200).send(result);
 });
 
 module.exports = router;

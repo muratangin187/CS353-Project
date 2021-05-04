@@ -12,11 +12,12 @@ async function main (){
     await db.connect();
     console.log("DB connection initialized.");
 
-    await db.query('DROP TABLE IF EXISTS `course`;');
-    await db.query('DROP TABLE IF EXISTS `user`;');
-    await db.query('DROP TABLE IF EXISTS `creator`;');
-    await db.query('DROP TABLE IF EXISTS `admin`;');
-    await db.query('DROP TABLE IF EXISTS `person`;');
+    await db.query('DROP TABLE IF EXISTS `Lecture`;');
+    await db.query('DROP TABLE IF EXISTS `Course`;');
+    await db.query('DROP TABLE IF EXISTS `User`;');
+    await db.query('DROP TABLE IF EXISTS `Creator`;');
+    await db.query('DROP TABLE IF EXISTS `Admin`;');
+    await db.query('DROP TABLE IF EXISTS `Person`;');
     console.log("DB tables removed.");
 
     await db.query('CREATE TABLE Person(\n' +

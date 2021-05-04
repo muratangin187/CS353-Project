@@ -167,6 +167,39 @@ class Db{
         });
     }
 
+    getMaxLectureIndex(cid){
+        return new Promise( resolve => {
+            this._db.query(
+                'SELECT MAX(lecture_index) AS max_index FROM Lecture WHERE course_id = 1',
+                (error, results, fields) => {
+                    if(error){
+                        console.log(error);
+                        resolve(null);
+                    } else {
+                        resolve(results);
+                    }
+                }
+            );
+        })
+    }
+
+    addLecture( chapterName, title, duration, date, isVisible, additionalMaterial, video, course_id, lecture_index){
+        return new Promise( resolve => {
+            this._db.query(
+                'INSERT INTO Lecture (chapterName, title, duration, date, isVisible, additionalMaterial, video, course_id, lecture_index) VALUES ?',
+                [[[chapterName, title, duration, date, isVisible, additionalMaterial, video, course_id, lecture_index]]],
+                (error, results, fields) => {
+                    if (error) {
+                        console.log(error);
+                        resolve(null);
+                    } else {
+                        resolve(results.insertId);
+                    }
+                }
+            )
+        });
+    }
+
     getUserById(userId){
         return new Promise(resolve => {
             this._db.query(
@@ -249,5 +282,6 @@ class Db{
             );
         });
     }
+
 }
 module.exports = new Db();

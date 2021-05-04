@@ -65,6 +65,27 @@ async function main (){
         'FOREIGN KEY (creator_id) REFERENCES Creator(id)' +
         ');');
 
+    /**
+     *  getdate() default olmuyor elle girecez
+     */
+    await db.query(
+        'CREATE TABLE Lecture( id INT AUTO_INCREMENT, ' +
+        'chapterName VARCHAR(64) NOT NULL, ' +
+        'title VARCHAR(64) NOT NULL, ' +
+        'duration TIME(6) NOT NULL, ' +
+        'date DATE NOT NULL, ' +
+        'isVisible TINYINT(1) NOT NULL DEFAULT 1, ' +
+        'additionalMaterial VARCHAR(255), ' +
+        'video VARCHAR(512), ' +
+        'course_id INT NOT NULL, ' +
+        'lecture_index INT NOT NULL, ' +
+        'PRIMARY KEY (id), ' +
+        'UNIQUE( course_id, lecture_index), ' +
+        'FOREIGN KEY (course_id) REFERENCES Course(id)' +
+        ');'
+);
+
+
     console.log("DB tables created.");
     console.log("Initialization finished");
 }

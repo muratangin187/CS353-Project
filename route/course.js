@@ -19,6 +19,26 @@ router.post("/create", async (req, res)=>{
     }
 });
 
+router.post("/addLecture", async (req, res)=>{
+    console.log(JSON.stringify(req.body));
+    let result = await db.addLecture(
+        req.body.chapterName,
+        req.body.title,
+        req.body.duration,
+        req.body.date,
+        req.body.isVisible,
+        req.body.additionalMaterial,
+        req.body.video,
+        req.body.course_id,
+        req.body.lecture_index,
+    );
+    if(result == null){
+        res.status(400).send({"message": "There is an error occurred in the db write stage of lecture creation."});
+    }else{
+        res.status(200).send({"message": "Successfully lecture created."});
+    }
+});
+
 router.get("/retrieve/:cid", async (req, res)=>{
     console.log(JSON.stringify(req.params.cid));
     let result = await db.getCourse(
@@ -39,6 +59,19 @@ router.post("/filter", async (req, res)=>{
         res.status(200).send(response);
     }else{
         res.status(200).send([]);
+    }
+});
+
+router.get("/maxIndex/:cid", async (req, res)=>{
+    console.log(JSON.stringify(req.params.cid));
+    let result = await db.getMaxLectureIndex(
+        req.params.cid,
+    );
+    if(result == null){
+        res.status(400).send({"message": "There is an error occurred in the db retrieve stage of course creation."});
+    }else{
+        console.log(result);
+        res.status(200).send(result);
     }
 });
 

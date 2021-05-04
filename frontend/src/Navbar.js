@@ -9,23 +9,9 @@ function CustomNavbar(){
 
     useEffect(async ()=>{
         let response = await getCurrentUser;
+        console.log(response?.data);
         setUser(response?.data);
     }, []);
-
-    const loginOrProfile = async()=>{
-        if(user){
-            return (
-                <Link to="/profile"><Button style={{marginRight: 20}} variant="outline-dark">Profile of {user.name}</Button></Link>
-            );
-        }else{
-            return (
-                <>
-                    <Link to="/login"><Button className="ml-auto" style={{marginRight: 20}} variant="outline-dark">Login</Button></Link>
-                    <Link to="/register"><Button className="ml-auto" variant="outline-dark">Register</Button></Link>
-                </>
-            );
-        }
-    }
 
     return (
         <Navbar bg="light" variant="light">
@@ -35,9 +21,11 @@ function CustomNavbar(){
                 <Nav.Link href="/my-courses">My Courses</Nav.Link>
                 <Nav.Link href="/about">About</Nav.Link>
             </Nav>
-            {user ? (
-                <Link to="/profile"><Button style={{marginRight: 20}} variant="outline-dark">Profile of {user.name}</Button></Link>
+            {user ? (user.isAdmin ? (
+                <Link to="/admin"><Button style={{marginRight: 20}} variant="outline-dark">Admin Panel</Button></Link>
             ) : (
+                <Link to="/profile"><Button style={{marginRight: 20}} variant="outline-dark">Profile of {user.name}</Button></Link>
+            )) : (
                 <>
                     <Link to="/login"><Button className="ml-auto" style={{marginRight: 20}} variant="outline-dark">Login</Button></Link>
                     <Link to="/register"><Button className="ml-auto" variant="outline-dark">Register</Button></Link>

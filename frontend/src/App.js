@@ -15,6 +15,7 @@ import PrivateRoute from "./PrivateRoute";
 import ProfilePage from "./pages/ProfilePage";
 import CreatorProfilePage from "./pages/CreatorProfilePage";
 import Homepage from "./pages/Homepage";
+import AdminPage from "./pages/AdminPage";
 
 let timer = null;
 
@@ -88,7 +89,8 @@ function App() {
                           <Route path='/create-course' component={CreateCoursePage}/>
                           <Route path='/about' component={Api}/>
                           <Route path='/login' component={LoginPage}/>
-                          <PrivateRoute path='/profile' component={ProfilePage}/>
+                          <PrivateRoute path='/profile' component={ProfilePage} role={0}/>
+                          <PrivateRoute path='/admin' component={AdminPage} role={2}/>
                           <Route path='/register' component={RegisterPage}/>
                           <Route path='/creator-profile/:creatorId' component={CreatorProfilePage}/>
                       </Switch>

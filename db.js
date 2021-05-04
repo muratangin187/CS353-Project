@@ -102,6 +102,38 @@ class Db{
         });
     }
 
+    createDiscount(courseId, startDate, endDate, percentage){
+        return new Promise(resolve => {
+            this._db.query(
+                `INSERT INTO Discount(id) VALUES (${id})`,
+                (error, results, fields) => {
+                    if (error){
+                        console.log(error);
+                        resolve(null);
+                    }else{
+                        resolve(true);
+                    }
+                }
+            );
+        });
+    }
+
+    getAllCourses(){
+        return new Promise(resolve=>{
+            this._db.query(
+                'SELECT * FROM Course',
+                (error, results, fields)=>{
+                    if(error){
+                        console.log(error);
+                        resolve(null);
+                    }else{
+                        console.log(results);
+                        resolve(results);
+                    }
+                });
+        });
+    }
+
     filterCourses(minimum,maximum,order,orderDirection,search,categories, pageNumber){
         let offset = (pageNumber-1) * 10;
         let categoryString = "";
@@ -171,12 +203,16 @@ class Db{
         return new Promise(resolve => {
             this._db.query(
                 `SELECT * FROM Person WHERE id = \'${userId}\';`,
-                (error, results, fields) => {
+                async (error, results, fields) => {
                     if (error){
                         console.log(error);
                         resolve(null);
                     }else{
                         if(results.length > 0) {
+                            let isAdmin = await this.isAdmin(userId);
+                            let isCreator = await this.isCreator(userId);
+                            results[0].isAdmin = isAdmin;
+                            results[0].isCreator = isCreator;
                             resolve(results[0]);
                         }else{
                             resolve(null);

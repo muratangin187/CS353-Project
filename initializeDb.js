@@ -12,13 +12,13 @@ async function main (){
     await db.connect();
     console.log("DB connection initialized.");
 
-    await db.query('DROP TABLE IF EXISTS `course`;');
-    await db.query('DROP TABLE IF EXISTS `user`;');
-    await db.query('DROP TABLE IF EXISTS `creator`;');
-    await db.query('DROP TABLE IF EXISTS `admin`;');
-    await db.query('DROP TABLE IF EXISTS `person`;');
+    await db.query('DROP TABLE IF EXISTS `Discount`;');
+    await db.query('DROP TABLE IF EXISTS `Course`;');
+    await db.query('DROP TABLE IF EXISTS `User`;');
+    await db.query('DROP TABLE IF EXISTS `Creator`;');
+    await db.query('DROP TABLE IF EXISTS `Admin`;');
+    await db.query('DROP TABLE IF EXISTS `Person`;');
     console.log("DB tables removed.");
-
     await db.query('CREATE TABLE Person(\n' +
         'id INT AUTO_INCREMENT,\n' +
         'email VARCHAR(64) NOT NULL,\n' +
@@ -65,7 +65,22 @@ async function main (){
         'FOREIGN KEY (creator_id) REFERENCES Creator(id)' +
         ');');
 
+    await db.query(
+           `CREATE TABLE Discount( id INT AUTO_INCREMENT,
+            percentage NUMERIC (5,2) NOT NULL,
+            startDate DATETIME NOT NULL,
+            endDate DATETIME NOT NULL,
+            course_id INT NOT NULL,
+            admin_id INT NOT NULL,
+            PRIMARY KEY (id),
+            FOREIGN KEY (course_id) REFERENCES Course(id),
+            FOREIGN KEY (admin_id) REFERENCES Admin(id));`
+    );
+
     console.log("DB tables created.");
+
+
+
     console.log("Initialization finished");
 }
 

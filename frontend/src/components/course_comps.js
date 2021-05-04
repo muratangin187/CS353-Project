@@ -1,6 +1,21 @@
-import {Col, Card, Container, ListGroup, Image, Button, Row, Badge, Form, ButtonGroup, ToggleButton} from "react-bootstrap";
-import React, { Component } from 'react';
-import {useState, useRef, useContext, useEffect} from "react";
+import {
+    Col,
+    Card,
+    Container,
+    ListGroup,
+    Image,
+    Button,
+    Row,
+    Badge,
+    Form,
+    ButtonGroup,
+    ToggleButton,
+} from "react-bootstrap";
+import React from 'react';
+import {useState, useRef, useEffect} from "react";
+import axios from "axios";
+import {CgWebsite} from "react-icons/cg";
+import {AiFillLinkedin, AiFillYoutube} from "react-icons/ai";
 
 
 class LecturesComp extends React.Component {
@@ -100,14 +115,14 @@ class QandAComp extends React.Component {
 }
 
 function RatingsComp() {
-    const[radioValue, setRadioValue] = useState(5);
+    const[radioValue, setRadioValue] = useState('5');
     const formRef = useRef(null);
     const radios = [
-        {name: "1 star", value: 1},
-        {name: "2 stars", value: 2},
-        {name: "3 stars", value: 3},
-        {name: "4 stars", value: 4},
-        {name: "5 stars", value: 5}
+        {name: "1 star", value: '1'},
+        {name: "2 stars", value: '2'},
+        {name: "3 stars", value: '3'},
+        {name: "4 stars", value: '4'},
+        {name: "5 stars", value: '5'}
     ]
 
     const handleRatingSubmit = () => {}
@@ -164,7 +179,7 @@ function RatingsComp() {
                     </ButtonGroup>
                     <Form.Control as="textarea" rows={5} required/>
                     <Form.Row className="ml-1 mt-3">
-                        <div class="text-center" style={{"display": "flex"}}>
+                        <div className="text-center" style={{"display": "flex"}}>
                             <Button variant="success" type="submit">
                                 Rate
                             </Button>
@@ -197,4 +212,59 @@ function AnnouncementsComp() {
     );
 }
 
-export {LecturesComp, QuizzesComp, QandAComp, RatingsComp, AnnouncementsComp}
+function AboutComp(props) {
+    const [courseCreator, setCourseCreator] = useState({}); // course creator JSON object
+
+    useEffect(() => {
+        // /creator-profile/:creatorId - frontend
+        // /api/creator/:creatorId - backend
+        axios.get('/api/creator/' + props.courseData.creator_id)
+            .then(response => {
+                setCourseCreator(response.data);
+            })
+            .catch(error => {
+                console.log(error);
+            });
+        console.log(props.courseData);
+    }, []);
+
+    return (
+        <Container style={{width:"75vw"}}>
+            <Row style={{width:"75vw"}}>
+                <Col className="mt-3">
+                    <h4> <strong> About Course</strong> </h4>
+                    <p className="mt-2">{props.courseData.description}</p>
+                </Col>
+                    <Card
+                        bg="light"
+                        text='dark'
+                        style={{ width: '18rem' }}
+                        className="mb-2 mt-3"
+                    >
+                        <Card.Img variant="top" src={(courseCreator.photo != "placeholder.jpg") ? courseCreator.photo : "profile.png"} style={{width: 150}} />
+                        <Card.Body style={{alignItems: "center"}}>
+                            <Card.Title style={{textAlign: "center"}}> {courseCreator.name} {courseCreator.surname} </Card.Title>
+                            <Card.Text style={{textAlign: "center"}}>
+                                Job Of Creator
+                            </Card.Text>
+                        </Card.Body>
+                        <Card.Body>
+                            <div id="links">
+                                <Button className="link_item" variant="outline-dark" href={courseCreator.website}>
+                                    <CgWebsite />
+                                </Button>
+                                <Button className="link_item" variant="outline-dark" href={courseCreator.linkedin}>
+                                    <AiFillLinkedin />
+                                </Button>
+                                <Button className="link_item" variant="outline-dark" href={courseCreator.youtube}>
+                                    <AiFillYoutube />
+                                </Button>
+                            </div>
+                        </Card.Body>
+                    </Card>
+            </Row>
+        </Container>
+    );
+}
+
+export {LecturesComp, QuizzesComp, QandAComp, RatingsComp, AnnouncementsComp, AboutComp}

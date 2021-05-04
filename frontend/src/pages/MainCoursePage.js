@@ -1,24 +1,24 @@
 import {
-    Button,
-    Card,
     Row,
     Col,
     Container,
     Tab,
     Tabs,
-    Form,
     Image,
-    Toast,
-    Dropdown,
-    DropdownButton,
     Spinner
 } from "react-bootstrap";
 import {useState, useEffect} from "react";
 import {useParams} from 'react-router-dom';
 import axios from 'axios';
 
-import {useHistory} from 'react-router-dom';
-import { LecturesComp, QandAComp, QuizzesComp, RatingsComp, AnnouncementsComp } from "../components/course_comps";
+import {
+    LecturesComp,
+    QandAComp,
+    QuizzesComp,
+    RatingsComp,
+    AnnouncementsComp,
+    AboutComp
+} from "../components/course_comps";
 
 export default function MainCoursePage() {
     const params = useParams();
@@ -30,7 +30,7 @@ export default function MainCoursePage() {
             url:"/api/course/retrieve/" + params.cid,
             method: "GET",
         });
-        console.log(response.status + "-Response:" + JSON.stringify(response.data,null,2));
+        // console.log(response.status + "-Response:" + JSON.stringify(response.data,null,2));
         setCourseData(response.data);
     }, []);
 
@@ -44,12 +44,12 @@ export default function MainCoursePage() {
         <Container className="mt-5 ml-auto mr-auto">
             <Row>
                 <Col>
-                    <h5>Technology</h5>
-                    <h1 className="mb-5">AWS Technology Stack</h1>
-                    <p> Ace your AWS certified Cloud partitioner exam! Includes AWS certified cloud practitioner practice exams </p>
+                    <h5>{courseData.category}</h5>
+                    <h1 className="mb-5">{courseData.title}</h1>
+                    <p> {courseData.description} </p>
                 </Col>
                 <Col xs={3}>
-                    <Image src="../login.png" thumbnail />
+                    <Image style={{width:"300px"}} src={courseData.thumbnail}/>
                 </Col>
             </Row>
             <Tabs
@@ -74,7 +74,7 @@ export default function MainCoursePage() {
        <AnnouncementsComp/>
       </Tab>
       <Tab eventKey="about" title="About">
-      123123
+       <AboutComp courseData={courseData}/>
       </Tab>
     </Tabs>
         </Container>

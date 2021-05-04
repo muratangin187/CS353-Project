@@ -9,43 +9,64 @@ import {
     Badge,
     Form,
     ButtonGroup,
-    ToggleButton,
+    ToggleButton, Spinner,
 } from "react-bootstrap";
 import React from 'react';
 import {useState, useRef, useEffect} from "react";
 import axios from "axios";
 import {CgWebsite} from "react-icons/cg";
 import {AiFillLinkedin, AiFillYoutube} from "react-icons/ai";
+import {Link} from "react-router-dom";
 
 
-class LecturesComp extends React.Component {
-    constructor(props) {
-        super(props);
-        this.isWatched = false;
-    }
-    render() {
-      return (
-          <Container >
-            <ListGroup style={{width:"75vw"}}>
-                <ListGroup.Item> 
+function LecturesComp(props) {
+      const cid = props.cid;
+      const [lectureData, setLectureData] = useState(null);
+
+    const LectureItem = (lecture, index) => {
+        const lectureLink = "/course/" + cid + "/lecture/" + lecture.lecture_index;
+        return (
+                <ListGroup.Item>
                     <Row>
-                        <Col>1.</Col>
+                        <Col>{index + 1}.</Col>
                         <Col xs={8} className="mr-5">
-                            <h4>Introduction</h4>
-                            <p>What is AWS, how to use it</p>
+                            <h4>{lecture.chapterName}</h4>
+                            <p>{lecture.title}</p>
                         </Col>
                         <Col xs={1} className="ml-5">
-                        <Button className="ml-auto mr-2" variant="primary" type="submit">
-                                    {this.isWatched ? "Completed" : "Watch"}
-                        </Button>
+                            <Link to={lectureLink}>Watch</Link>
                         </Col>
                     </Row>
                 </ListGroup.Item>
+            );
+    }
+
+      useEffect( async () => {
+          let response = await axios({
+              url:"/api/course/getVisibleLectures/" + cid,
+              method: "GET",
+          });
+          setLectureData(response.data);
+      }, []);
+
+    if(!lectureData){
+        return (<Container className="mt-5">
+            <Spinner className="mt-5" style={{width:"20vw", height:"20vw"}} animation="border" variant="dark"/>
+        </Container>);
+    }
+    /**
+     * /course/{cid}/lecture/{lid}
+     */
+    return (
+          <Container >
+            <ListGroup style={{width:"75vw"}}>
+                {lectureData.map((lecture, index) => LectureItem(lecture, index))}
             </ListGroup>
           </Container>
       );
-    }
 }
+
+
 
 class QuizzesComp extends React.Component {
     constructor(props) {

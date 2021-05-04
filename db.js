@@ -167,6 +167,39 @@ class Db{
         });
     }
 
+    getVisibleLectures(cid){
+        return new Promise(resolve => {
+            this._db.query(
+                `SELECT * FROM Lecture WHERE course_id = ${cid} AND isVisible = 1`,
+                (error, results, fields) => {
+                    if(error){
+                        console.log(error);
+                        resolve(null);
+                    } else {
+                        resolve(results);
+                    }
+                }
+            )
+        })
+    }
+
+    getLecture(cid, lid){
+        return new Promise( resolve => {
+            this._db.query(
+                `SELECT * FROM Lecture WHERE course_id = ${cid} AND isVisible = 1 AND lecture_index = ${lid}`,
+                (error, results, fields) => {
+                    if (error) {
+                        console.log(error);
+                        resolve(null);
+                    } else {
+                        console.log("Get lecture: " + results[0]);
+                        resolve(results[0]);
+                    }
+                }
+            );
+        })
+    }
+
     getMaxLectureIndex(cid){
         return new Promise( resolve => {
             this._db.query(

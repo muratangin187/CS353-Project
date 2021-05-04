@@ -46,8 +46,12 @@ export default function CreateLecturePage(){
         console.log("Max Index Response Data: " + maxIndex);
 
         // Convert current JS Date to MySQL date
-        const date = new Date();
-        const mysqlDate = date.toISOString().split("T")[0];
+        var today = new Date();
+        var dd = String(today.getDate()).padStart(2, '0');
+        var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+        var yyyy = today.getFullYear();
+
+        const mysqlDate = yyyy + '-' + mm + '-' + dd;
         console.log("MySQL date: " + mysqlDate);
 
         const mysqlDuration = durationToTime(elements[3].value);

@@ -104,7 +104,6 @@ export default function MyWishlistPage(){
                         <Row>
                             <Col md={{span: 6, offset: 3}} style={{display: "flex", flexDirection: "column"}}>
                                 <Button variant="outline-dark" style={{margin: 8}}>Buy courses in my Wishlist</Button>
-                                <Button variant="outline-dark" style={{margin: 8}}>Back to homepage</Button>
                             </Col>
                         </Row>
                     </Container>

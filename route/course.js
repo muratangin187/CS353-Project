@@ -25,7 +25,6 @@ router.post("/addLecture", async (req, res)=>{
         req.body.chapterName,
         req.body.title,
         req.body.duration,
-        req.body.date,
         req.body.isVisible,
         req.body.additionalMaterial,
         req.body.video,
@@ -36,6 +35,33 @@ router.post("/addLecture", async (req, res)=>{
         res.status(400).send({"message": "There is an error occurred in the db write stage of lecture creation."});
     }else{
         res.status(200).send({"message": "Successfully lecture created."});
+    }
+});
+
+router.post("/addNote", async (req, res)=>{
+    let result = await db.addNote(
+        req.body.title,
+        req.body.content,
+        req.body.user_id,
+        req.body.lecture_id
+    );
+    if(result == null){
+        res.status(400).send({"message": "There is an error occurred in the db write stage of note creation."});
+    }else{
+        res.status(200).send({"message": "Successfully note created."});
+    }
+});
+
+router.post("/addBookmark", async (req, res)=>{
+    let result = await db.addBookmark(
+        req.body.timestamp,
+        req.body.user_id,
+        req.body.lecture_id
+    );
+    if(result == null){
+        res.status(400).send({"message": "There is an error occurred in the db write stage of bookmark creation."});
+    }else{
+        res.status(200).send({"message": "Successfully bookmark created."});
     }
 });
 

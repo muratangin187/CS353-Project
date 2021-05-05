@@ -46,13 +46,13 @@ export default function CreateLecturePage(){
         console.log("Max Index Response Data: " + maxIndex);
 
         // Convert current JS Date to MySQL date
-        var today = new Date();
+        /*var today = new Date();
         var dd = String(today.getDate()).padStart(2, '0');
         var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
         var yyyy = today.getFullYear();
 
         const mysqlDate = yyyy + '-' + mm + '-' + dd;
-        console.log("MySQL date: " + mysqlDate);
+        console.log("MySQL date: " + mysqlDate);*/
 
         const mysqlDuration = durationToTime(elements[3].value);
 
@@ -66,7 +66,6 @@ export default function CreateLecturePage(){
                 duration: mysqlDuration,
                 additionalMaterial: elements[4].value,
                 isVisible: elements[5].checked ? 1 : 0,
-                date: mysqlDate,
                 course_id: cid,
                 lecture_index: maxIndex + 1
             }

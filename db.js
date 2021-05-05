@@ -216,14 +216,48 @@ class Db{
                     }
                 }
             );
-        })
+        });
     }
 
-    addLecture( chapterName, title, duration, date, isVisible, additionalMaterial, video, course_id, lecture_index){
+    addBookmark(videoTimestamp, user_id, lecture_id) {
+        return new Promise(resolve => {
+            this._db.query(
+                'INSERT INTO Bookmark (videoTimestamp, user_id, lecture_id) VALUES ?',
+                [[[videoTimestamp, user_id, lecture_id]]],
+                (error, results, fields) => {
+                    if(error) {
+                        console.log(error);
+                        resolve(null);
+                    } else {
+                        resolve(results.insertId);
+                    }
+                }
+            );
+        });
+    }
+
+    addNote( title, content, user_id, lecture_id) {
         return new Promise( resolve => {
             this._db.query(
-                'INSERT INTO Lecture (chapterName, title, duration, date, isVisible, additionalMaterial, video, course_id, lecture_index) VALUES ?',
-                [[[chapterName, title, duration, date, isVisible, additionalMaterial, video, course_id, lecture_index]]],
+                'INSERT INTO Note (title, content, user_id, lecture_id) VALUES ?',
+                [[[title, content, user_id, lecture_id]]],
+                (error, results, fields) => {
+                    if(error){
+                        console.log(error);
+                        resolve(null);
+                    } else {
+                        resolve(results.insertId);
+                    }
+                }
+            );
+        });
+    }
+
+    addLecture( chapterName, title, duration, isVisible, additionalMaterial, video, course_id, lecture_index){
+        return new Promise( resolve => {
+            this._db.query(
+                'INSERT INTO Lecture (chapterName, title, duration, isVisible, additionalMaterial, video, course_id, lecture_index) VALUES ?',
+                [[[chapterName, title, duration, isVisible, additionalMaterial, video, course_id, lecture_index]]],
                 (error, results, fields) => {
                     if (error) {
                         console.log(error);

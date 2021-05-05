@@ -74,7 +74,7 @@ async function main (){
         'chapterName VARCHAR(64) NOT NULL, ' +
         'title VARCHAR(64) NOT NULL, ' +
         'duration TIME(6) NOT NULL, ' +
-        'date DATE NOT NULL, ' +
+        'date DATE NOT NULL DEFAULT CURRENT_TIMESTAMP, ' +
         'isVisible TINYINT(1) NOT NULL DEFAULT 1, ' +
         'additionalMaterial VARCHAR(255), ' +
         'video VARCHAR(512), ' +
@@ -86,6 +86,26 @@ async function main (){
         ');'
 );
 
+    await db.query(
+        'CREATE TABLE Note( ID INT AUTO_INCREMENT,' +
+        'title VARCHAR(64) NOT NULL,' +
+        'content VARCHAR(512),' +
+        'date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,' +
+        'PRIMARY KEY (ID),' +
+        'FOREIGN KEY (user_id) REFERENCES User(ID),' +
+        'FOREIGN KEY (lecture_id) REFERENCES Lecture(ID)' +
+        ');'
+);
+
+    await db.query(
+        'CREATE TABLE Bookmark( ID INT AUTO_INCREMENT,' +
+        'timestamp TIME(6) NOT NULL,' +
+        'date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,' +
+        'PRIMARY KEY (ID),' +
+        'FOREIGN KEY (user_id) REFERENCES User(ID),' +
+        'FOREIGN KEY (lecture_id) REFERENCES Lecture(ID)' +
+        ');'
+);
 
     console.log("DB tables created.");
     console.log("Initialization finished");

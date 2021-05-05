@@ -232,6 +232,38 @@ class Db{
         })
     }
 
+    getBookmarks(uid, lid){
+        return new Promise( resolve => {
+            this._db.query(
+                `SELECT * FROM Bookmark WHERE user_id=${uid} AND lecture_id=${lid}`,
+                (error, results, fields) => {
+                    if (error) {
+                        console.log(error);
+                        resolve(null);
+                    } else {
+                        resolve(results);
+                    }
+                }
+            );
+        });
+    }
+
+    getNotes(uid, lid){
+        return new Promise( resolve => {
+            this._db.query(
+                `SELECT * FROM Note WHERE user_id=${uid} AND lecture_id=${lid}`,
+                (error, results, fields) => {
+                    if (error) {
+                        console.log(error);
+                        resolve(null);
+                    } else {
+                        resolve(results);
+                    }
+                }
+            );
+        });
+    }
+
     getMaxLectureIndex(cid){
         return new Promise( resolve => {
             this._db.query(

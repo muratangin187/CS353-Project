@@ -5,6 +5,7 @@ import {
     Tab,
     Tabs,
     Image,
+    ListGroup,
     Spinner, Form, Button, Card
 } from "react-bootstrap";
 import React, {useState, useEffect, useRef, useContext} from "react";
@@ -18,6 +19,8 @@ export default function LecturePage(){
     const {setShow, setContent, setIntent} = useContext(NotificationContext);
     const [courseData, setCourseData] = useState(null);
     const [lectureData, setLectureData] = useState(null);
+    const [notesData, setNotesData] = useState(null);
+    const [bookmarksData, setBookmarksData] = useState(null);
     const {getCurrentUser} = useContext(AuthContext);
     const [userData, setUserData] = useState(null);
     const noteFormRef = useRef(null);
@@ -40,7 +43,22 @@ export default function LecturePage(){
             method: "GET",
         });
         setLectureData(lectureResponse.data);
-        console.log(lectureResponse.data);
+
+        const lecturePrimaryID = lectureResponse.data.id;
+        const uid = userResponse?.data.id;
+        let notesResponse = await axios({
+            url:"/api/course/" + lecturePrimaryID + "/allNotes/" + uid,
+            method: "GET",
+        });
+        console.log(notesResponse.data);
+        setNotesData(notesResponse.data);
+
+        let bookmarksResponse = await axios({
+            url:"/api/course/" + lecturePrimaryID + "/allBookmarks/" + uid,
+            method: "GET",
+        });
+        console.log(bookmarksResponse.data);
+        setBookmarksData(bookmarksResponse.data);
     }, []);
 
     const durationToTime = (duration) => {
@@ -56,7 +74,7 @@ export default function LecturePage(){
         }
     }
 
-    if(!courseData || !lectureData || !userData){
+    if(!courseData || !lectureData || !userData || !notesData || !bookmarksData){
         return (<Container className="mt-5">
             <Spinner className="mt-5" style={{width:"35vw", height:"35vw"}} animation="border" variant="dark"/>
         </Container>);
@@ -103,10 +121,9 @@ export default function LecturePage(){
         event.preventDefault();
         const timestamp = durationToTime(elements[0].value);
 
-
         setShow(true);
-        if (timestamp > courseData.duration || !durationRegex(timestamp)){
-            setIntent("failure");
+        console.log(`Timestamp: ${timestamp}, Course Duration: ${lectureData.duration}`);
+        if (timestamp.localeCompare(lectureData.duration) === 1 || !durationRegex(timestamp)){
             setContent("Bookmark cannot be added", "Check your timestamp");
             return;
         }
@@ -124,11 +141,9 @@ export default function LecturePage(){
         setShow(true);
 
         if(response.status == 200){
-            setIntent("success");
             setContent("Success", response.data.message);
             window.location = window.location.origin;
         }else{
-            setIntent("failure");
             setContent("Bookmark cannot be added", response.data.message);
         }
     }
@@ -143,6 +158,28 @@ export default function LecturePage(){
 
     const onCompleteLecture = () => {
         //todo
+    }
+
+    const noteItem = (note) => {
+        return (
+            <Card style={{width: "75vw"}}>
+                <Card.Body>
+                    <Card.Title><strong>{note.title}</strong></Card.Title>
+                    <Card.Subtitle style={{fontSize: "12px"}}>{new Date(note.date).toLocaleDateString("tr-TR")}</Card.Subtitle>
+                    <Card.Text className="mt-1">{note.content}</Card.Text>
+                </Card.Body>
+            </Card>
+        )
+    }
+
+    const bookmarkItem = (bookmark) => {
+        return (
+            <Card style={{width: "75vw"}}>
+                <Card.Body>
+                    <Card.Title><strong>{bookmark.videoTimestamp.split(".")[0]} <span style={{fontSize: "10px"}}> {" / " + new Date(bookmark.date).toLocaleDateString("tr-TR")}</span> </strong></Card.Title>
+                </Card.Body>
+            </Card>
+        )
     }
 
     return (
@@ -187,7 +224,7 @@ export default function LecturePage(){
                                 <Form onSubmit={handleBookmarkSubmit} ref={bookmarkFormRef} style={{textAlign: "center"}} className="ml-5 mt-3">
                                     <Form.Group as={Row} controlId="formGridPrice" style={{width: "20vw"}}>
                                         <Form.Label>Add Bookmark</Form.Label>
-                                        <Form.Control type="text" placeholder="ex. 12:35" required/>
+                                        <Form.Control type="text" placeholder="ex. 12:35 (Press Enter)" required/>
                                     </Form.Group>
                                 </Form>
                             </div>
@@ -216,6 +253,18 @@ export default function LecturePage(){
                         </Form>
                     </Col>
                 </Row>
+            </Row>
+            <Row className="mt-4" style={{width: "75vw"}}>
+                <h3><strong>Notes</strong></h3>
+                <ListGroup>
+                    {notesData.map((note) => noteItem(note))}
+                </ListGroup>
+            </Row>
+            <Row className="mt-4" style={{width: "75vw"}}>
+                <h3><strong>Bookmarks</strong></h3>
+                <ListGroup>
+                    {bookmarksData.map((bookmark) => bookmarkItem(bookmark))}
+                </ListGroup>
             </Row>
         </Container>
     );

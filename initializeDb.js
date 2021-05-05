@@ -12,13 +12,16 @@ async function main (){
     await db.connect();
     console.log("DB connection initialized.");
 
+    await db.query('DROP TABLE IF EXISTS `Note`;');
+    await db.query('DROP TABLE IF EXISTS `Bookmark`;');
     await db.query('DROP TABLE IF EXISTS `Lecture`;');
+    await db.query('DROP TABLE IF EXISTS `Discount`;');
     await db.query('DROP TABLE IF EXISTS `Course`;');
     await db.query('DROP TABLE IF EXISTS `User`;');
     await db.query('DROP TABLE IF EXISTS `Creator`;');
     await db.query('DROP TABLE IF EXISTS `Admin`;');
     await db.query('DROP TABLE IF EXISTS `Person`;');
-    await db.query('DROP TABLE IF EXISTS `Discount`;');
+
     console.log("DB tables removed.");
     await db.query('CREATE TABLE Person(\n' +
         'id INT AUTO_INCREMENT,\n' +
@@ -91,6 +94,8 @@ async function main (){
         'title VARCHAR(64) NOT NULL,' +
         'content VARCHAR(512),' +
         'date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,' +
+        'user_id INT NOT NULL,' +
+        'lecture_id INT NOT NULL,' +
         'PRIMARY KEY (ID),' +
         'FOREIGN KEY (user_id) REFERENCES User(ID),' +
         'FOREIGN KEY (lecture_id) REFERENCES Lecture(ID)' +
@@ -99,8 +104,10 @@ async function main (){
 
     await db.query(
         'CREATE TABLE Bookmark( ID INT AUTO_INCREMENT,' +
-        'timestamp TIME(6) NOT NULL,' +
+        'videoTimestamp TIME(6) NOT NULL,' +
         'date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,' +
+        'user_id INT NOT NULL,' +
+        'lecture_id INT NOT NULL,' +
         'PRIMARY KEY (ID),' +
         'FOREIGN KEY (user_id) REFERENCES User(ID),' +
         'FOREIGN KEY (lecture_id) REFERENCES Lecture(ID)' +

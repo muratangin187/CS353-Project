@@ -77,6 +77,34 @@ router.get("/retrieve/:cid", async (req, res)=>{
     }
 });
 
+router.get("/:lid/allNotes/:uid", async (req, res) => {
+    console.log(JSON.stringify(req.params.lid));
+    let result = await db.getNotes(
+        req.params.uid,
+        req.params.lid
+    );
+    if(result == null){
+        res.status(400).send([]);
+    }else{
+        console.log(result);
+        res.status(200).send(result);
+    }
+})
+
+router.get("/:lid/allBookmarks/:uid", async (req, res) => {
+    console.log(JSON.stringify(req.params.lid));
+    let result = await db.getBookmarks(
+        req.params.uid,
+        req.params.lid
+    );
+    if(result == null){
+        res.status(400).send([]);
+    }else{
+        console.log(result);
+        res.status(200).send(result);
+    }
+})
+
 router.get("/:cid/getLecture/:lid", async (req, res)=>{
     console.log(JSON.stringify(req.params.cid));
     let result = await db.getLecture(

@@ -15,6 +15,7 @@ import PrivateRoute from "./PrivateRoute";
 import ProfilePage from "./pages/ProfilePage";
 import CreatorProfilePage from "./pages/CreatorProfilePage";
 import MyCartPage from "./pages/MyCartPage";
+import MyWishlistPage from "./pages/MyWishlistPage";
 
 let timer = null;
 
@@ -92,6 +93,8 @@ function App() {
                           <Route path='/register' component={RegisterPage}/>
                           <Route path='/creator-profile/:creatorId' component={CreatorProfilePage}/>
                           <Route path='/my-cart/:userId' component={MyCartPage}/>
+                          <Route path='/my-wishlist/:userId' component={MyWishlistPage}/>
+
                       </Switch>
                   </div>
               </BrowserRouter>

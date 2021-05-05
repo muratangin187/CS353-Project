@@ -17,6 +17,7 @@ import CreatorProfilePage from "./pages/CreatorProfilePage";
 import Homepage from "./pages/Homepage";
 import CreateLecturePage from "./pages/CreateLecturePage";
 import LecturePage from "./pages/LecturePage";
+import AdminPage from "./pages/AdminPage";
 
 let timer = null;
 
@@ -91,7 +92,8 @@ function App() {
                           <Route path='/create-course' component={CreateCoursePage}/>
                           <Route path='/about' component={Api}/>
                           <Route path='/login' component={LoginPage}/>
-                          <PrivateRoute path='/profile' component={ProfilePage}/>
+                          <PrivateRoute path='/profile' component={ProfilePage} role={0}/>
+                          <PrivateRoute path='/admin' component={AdminPage} role={2}/>
                           <Route path='/register' component={RegisterPage}/>
                           <Route path='/create-lecture/:cid' component={CreateLecturePage}/>
                           <Route path='/creator-profile/:creatorId' component={CreatorProfilePage}/>

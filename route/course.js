@@ -3,7 +3,6 @@ const express = require('express');
 const router = express.Router();
 
 router.post("/create", async (req, res)=>{
-    console.log(JSON.stringify(req.body));
     let result = await db.insertCourse(
         req.body.title,
         req.body.price,
@@ -99,6 +98,29 @@ router.post("/filter", async (req, res)=>{
         res.status(200).send(response);
     }else{
         res.status(200).send([]);
+    }
+});
+
+router.get("/all-courses", async (req, res)=>{
+    let response = await db.getAllCourses();
+    if(response){
+        res.status(200).send(response);
+    }else{
+        res.status(200).send([]);
+    }
+});
+
+router.post("/create-discount", async (req, res)=>{
+    let result = await db.createDiscount(
+        req.body.courseId,
+        req.body.startDate,
+        req.body.endDate,
+        req.body.percentage
+    );
+    if(result == null){
+        res.status(400).send({"message": "There is an error occured in the db write stage of course creation."});
+    }else{
+        res.status(200).send({"message": "Successfully course created."});
     }
 });
 

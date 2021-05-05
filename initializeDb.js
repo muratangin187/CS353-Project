@@ -18,8 +18,8 @@ async function main (){
     await db.query('DROP TABLE IF EXISTS `Creator`;');
     await db.query('DROP TABLE IF EXISTS `Admin`;');
     await db.query('DROP TABLE IF EXISTS `Person`;');
+    await db.query('DROP TABLE IF EXISTS `Discount`;');
     console.log("DB tables removed.");
-
     await db.query('CREATE TABLE Person(\n' +
         'id INT AUTO_INCREMENT,\n' +
         'email VARCHAR(64) NOT NULL,\n' +
@@ -107,7 +107,28 @@ async function main (){
         ');'
 );
 
+    await db.query(
+           `CREATE TABLE Discount( id INT AUTO_INCREMENT,
+            percentage NUMERIC (5,2) NOT NULL,
+            startDate DATETIME NOT NULL,
+            endDate DATETIME NOT NULL,
+            course_id INT NOT NULL,
+            admin_id INT NOT NULL,
+            PRIMARY KEY (id),
+            FOREIGN KEY (course_id) REFERENCES Course(id),
+            FOREIGN KEY (admin_id) REFERENCES Admin(id));`
+    );
+
     console.log("DB tables created.");
+
+    await db.query(`INSERT INTO Person (username, email, name, surname, password, photo) VALUES ('test_user', 'test_user@gmail.com', 'Mehmet', 'Testoglu', '123', 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg');`);
+    await db.query(`INSERT INTO Person (username, email, name, surname, password, photo) VALUES ('test_creator', 'test_creator@gmail.com', 'David', 'Testoglu', '123', 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg');`);
+    await db.query(`INSERT INTO Person (username, email, name, surname, password, photo) VALUES ('test_admin', 'test_admin@gmail.com', 'Atalar', 'Testoglu', '123', 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg');`);
+    await db.query(`INSERT INTO User (id,hideCourses,balance) VALUES (0, false, 0);`);
+    await db.query(`INSERT INTO Creator (id,about, website, linkedin, youtube) VALUES (1, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus nibh arcu, facilisis nec posuere eget, molestie ac felis. Aenean aliquam, nibh scelerisque pharetra pharetra, mi nunc hendrerit urna, in iaculis sapien est sit amet ex. Quisque sit amet ante eros. In hac habitasse platea dictumst. Cras convallis augue eget libero egestas, luctus malesuada diam pretium.', 'www.google.com', 'www.linkedin.com', 'www.youtube.com');`);
+    await db.query(`INSERT INTO Admin (id) VALUES (2);`);
+    await db.query(`INSERT INTO Course(id,title,price,description,thumbnail,category,creator_id,averageRating,ratingCount) VALUES (0, 'Python egitimi', 120, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus nibh arcu, facilisis nec posuere eget, molestie ac felis. Aenean aliquam, nibh scelerisque pharetra pharetra, mi nunc hendrerit urna.', 'https://i1.wp.com/stickker.net/wp-content/uploads/2015/09/python.png?fit=600,600&ssl=1', 'Technology', 1, 4.5, 1)`);
+
     console.log("Initialization finished");
 }
 

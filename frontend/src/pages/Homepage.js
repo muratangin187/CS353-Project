@@ -41,7 +41,7 @@ export default function Homepage(){
                 minimum,maximum,order,orderDirection, search,categories, pageNumber: 1
             }
         });
-        // setCourses(response.data);
+        setCourses(response.data);
     },[]);
 
     const handleCategory = (category)=>{

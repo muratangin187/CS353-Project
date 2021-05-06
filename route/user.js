@@ -101,6 +101,15 @@ router.post("/register", async(req, res) => {
     }
 });
 
+router.post("/change-balance", async (req, res) => {
+    let response = await db.changeBalance(req.body.userId, req.body.amount);
+    if(!response){
+        res.status(400).send({"message": "There is an error occured in the db write stage of balance."});
+    }else {
+        res.status(200).send({"message": "Successfully updated user balance."});
+    }
+});
+
 router.get("/logout", (req, res) => {
     res.json({"api": "logout"});
 });

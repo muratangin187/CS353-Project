@@ -86,6 +86,22 @@ class Db{
         });
     }
 
+    changeBalance(userId, amount){
+        return new Promise(resolve => {
+            this._db.query(
+                `UPDATE User SET balance = balance + ${amount} WHERE id=${userId}`,
+                (error, results, fields) => {
+                    if (error){
+                        console.log(error);
+                        resolve(false);
+                    }else{
+                        resolve(true);
+                    }
+                }
+            );
+        });
+    }
+
     insertCreator(id){
         return new Promise(resolve=> {
             this._db.query(
@@ -365,7 +381,41 @@ class Db{
                             let isCreator = await this.isCreator(userId);
                             results[0].isAdmin = isAdmin;
                             results[0].isCreator = isCreator;
-                            resolve(results[0]);
+                            if(isCreator){
+                                this._db.query(
+                                    `SELECT * FROM Creator WHERE id = \'${userId}\';`,
+                                    (error, results2, fields) => {
+                                        if (error){
+                                            console.log(error);
+                                            resolve(false);
+                                        }else{
+                                            if(results2.length > 0) {
+                                                results[0] = {...results[0], ...results2[0]};
+                                                resolve(results[0]);
+                                            }else{
+                                                resolve(null);
+                                            }
+                                        }
+                                    }
+                                );
+                            }else{
+                                this._db.query(
+                                    `SELECT * FROM User WHERE id = \'${userId}\';`,
+                                    (error, results2, fields) => {
+                                        if (error){
+                                            console.log(error);
+                                            resolve(false);
+                                        }else{
+                                            if(results2.length > 0) {
+                                                results[0] = {...results[0], ...results2[0]};
+                                                resolve(results[0]);
+                                            }else{
+                                                resolve(null);
+                                            }
+                                        }
+                                    }
+                                );
+                            }
                         }else{
                             resolve(null);
                         }

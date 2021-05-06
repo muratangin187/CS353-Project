@@ -83,9 +83,22 @@ export default function CourseDescPage() {
 
         setShowToast(true);
         if(response.status == 200){
-            setIntent("success");
-            setContent("Success", response.data.message);
-            window.location = window.location.origin;
+            let response2 = await axios({
+                url: "/api/user/change-balance",
+                method: "POST",
+                data: {
+                    userId: userData.id,
+                    amount: -courseData.price
+                }
+            });
+            if(response2.status == 200){
+                setIntent("success");
+                setContent("Success", response.data.message);
+                window.location = window.location.origin;
+            }else{
+                setIntent("failure");
+                setContent("Transaction cannot be processed(balance error)", response.data.message);
+            }
         } else {
             setIntent("failure");
             setContent("Transaction cannot be processed", response.data.message);
@@ -112,10 +125,10 @@ export default function CourseDescPage() {
                     Are you sure you want to buy this course?
                 </Modal.Body>
                 <Modal.Body>
-                    <strong>Current Balance:</strong> {userData.balance ?? 0} TL
+                    <strong>Current Balance:</strong> {userData?.balance ?? 0} TL
                 </Modal.Body>
                 <Modal.Body>
-                    <strong>After Transaction:</strong> {(userData.balance ?? 0) - courseData.price} TL
+                    <strong>After Transaction:</strong> {(userData?.balance ?? 0) - courseData.price} TL
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={handleClose}>

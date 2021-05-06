@@ -182,6 +182,22 @@ class Db{
         });
     }
 
+    buyCourse(uid, cid){
+        return new Promise(resolve => {
+            this._db.query(
+                `INSERT INTO Buy(user_id, course_id) VALUES (${uid}, ${cid});`,
+                (error, results, fields) => {
+                    if(error){
+                        console.log(error);
+                        resolve(null);
+                    } else {
+                        resolve(results.insertId);
+                    }
+                }
+            );
+        });
+    }
+
     getCourseCreator(id){
         return new Promise(resolve => {
            this._db.query(
@@ -196,6 +212,142 @@ class Db{
                    }
                }
            );
+        });
+    }
+
+    getVisibleLectures(cid){
+        return new Promise(resolve => {
+            this._db.query(
+                `SELECT * FROM Lecture WHERE course_id = ${cid} AND isVisible = 1`,
+                (error, results, fields) => {
+                    if(error){
+                        console.log(error);
+                        resolve(null);
+                    } else {
+                        resolve(results);
+                    }
+                }
+            )
+        })
+    }
+
+    getLecture(cid, lid){
+        return new Promise( resolve => {
+            this._db.query(
+                `SELECT * FROM Lecture WHERE course_id = ${cid} AND isVisible = 1 AND lecture_index = ${lid}`,
+                (error, results, fields) => {
+                    if (error) {
+                        console.log(error);
+                        resolve(null);
+                    } else {
+                        console.log("Get lecture: " + results[0]);
+                        resolve(results[0]);
+                    }
+                }
+            );
+        })
+    }
+
+    getBookmarks(uid, lid){
+        return new Promise( resolve => {
+            this._db.query(
+                `SELECT * FROM Bookmark WHERE user_id=${uid} AND lecture_id=${lid}`,
+                (error, results, fields) => {
+                    if (error) {
+                        console.log(error);
+                        resolve(null);
+                    } else {
+                        resolve(results);
+                    }
+                }
+            );
+        });
+    }
+
+
+    getNotes(uid, lid){
+        return new Promise( resolve => {
+            this._db.query(
+                `SELECT * FROM Note WHERE user_id=${uid} AND lecture_id=${lid}`,
+                (error, results, fields) => {
+                    if (error) {
+                        console.log(error);
+                        resolve(null);
+                    } else {
+                        resolve(results);
+                    }
+                }
+            );
+        });
+    }
+
+    getMaxLectureIndex(cid){
+        return new Promise( resolve => {
+            this._db.query(
+                `SELECT MAX(lecture_index) AS max_index FROM Lecture WHERE course_id = ${cid}`,
+                (error, results, fields) => {
+                    if(error){
+                        console.log(error);
+                        resolve(null);
+                    } else {
+                        if(results[0])
+                            resolve(results[0]);
+                        else
+                            resolve({max_index:0});
+                    }
+                }
+            );
+        });
+    }
+
+    addBookmark(videoTimestamp, user_id, lecture_id) {
+        return new Promise(resolve => {
+            this._db.query(
+                'INSERT INTO Bookmark (videoTimestamp, user_id, lecture_id) VALUES ?',
+                [[[videoTimestamp, user_id, lecture_id]]],
+                (error, results, fields) => {
+                    if(error) {
+                        console.log(error);
+                        resolve(null);
+                    } else {
+                        resolve(results.insertId);
+                    }
+                }
+            );
+        });
+    }
+
+    addNote( title, content, user_id, lecture_id) {
+        return new Promise( resolve => {
+            this._db.query(
+                'INSERT INTO Note (title, content, user_id, lecture_id) VALUES ?',
+                [[[title, content, user_id, lecture_id]]],
+                (error, results, fields) => {
+                    if(error){
+                        console.log(error);
+                        resolve(null);
+                    } else {
+                        resolve(results.insertId);
+                    }
+                }
+            );
+        });
+    }
+
+    addLecture( chapterName, title, duration, isVisible, additionalMaterial, video, course_id, lecture_index){
+        return new Promise( resolve => {
+            this._db.query(
+                'INSERT INTO Lecture (chapterName, title, duration, isVisible, additionalMaterial, video, course_id, lecture_index) VALUES ?',
+                [[[chapterName, title, duration, isVisible, additionalMaterial, video, course_id, lecture_index]]],
+                (error, results, fields) => {
+                    if (error) {
+                        console.log(error);
+                        resolve(null);
+                    } else {
+                        resolve(results.insertId);
+                    }
+                }
+            )
         });
     }
 
@@ -290,5 +442,6 @@ class Db{
             );
         });
     }
+
 }
 module.exports = new Db();

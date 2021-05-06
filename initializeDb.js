@@ -12,12 +12,17 @@ async function main (){
     await db.connect();
     console.log("DB connection initialized.");
 
+    await db.query('DROP TABLE IF EXISTS `Buy`;');
+    await db.query('DROP TABLE IF EXISTS `Note`;');
+    await db.query('DROP TABLE IF EXISTS `Bookmark`;');
+    await db.query('DROP TABLE IF EXISTS `Lecture`;');
     await db.query('DROP TABLE IF EXISTS `Discount`;');
     await db.query('DROP TABLE IF EXISTS `Course`;');
     await db.query('DROP TABLE IF EXISTS `User`;');
     await db.query('DROP TABLE IF EXISTS `Creator`;');
     await db.query('DROP TABLE IF EXISTS `Admin`;');
     await db.query('DROP TABLE IF EXISTS `Person`;');
+
     console.log("DB tables removed.");
     await db.query('CREATE TABLE Person(\n' +
         'id INT AUTO_INCREMENT,\n' +
@@ -65,6 +70,51 @@ async function main (){
         'FOREIGN KEY (creator_id) REFERENCES Creator(id)' +
         ');');
 
+    /**
+     *  getdate() default olmuyor elle girecez
+     */
+    await db.query(
+        'CREATE TABLE Lecture( id INT AUTO_INCREMENT, ' +
+        'chapterName VARCHAR(64) NOT NULL, ' +
+        'title VARCHAR(64) NOT NULL, ' +
+        'duration TIME(6) NOT NULL, ' +
+        'date DATE NOT NULL DEFAULT CURRENT_TIMESTAMP, ' +
+        'isVisible TINYINT(1) NOT NULL DEFAULT 1, ' +
+        'additionalMaterial VARCHAR(255), ' +
+        'video VARCHAR(512), ' +
+        'course_id INT NOT NULL, ' +
+        'lecture_index INT NOT NULL, ' +
+        'PRIMARY KEY (id), ' +
+        'UNIQUE( course_id, lecture_index), ' +
+        'FOREIGN KEY (course_id) REFERENCES Course(id)' +
+        ');'
+);
+
+    await db.query(
+        'CREATE TABLE Note( ID INT AUTO_INCREMENT,' +
+        'title VARCHAR(64) NOT NULL,' +
+        'content VARCHAR(512),' +
+        'date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,' +
+        'user_id INT NOT NULL,' +
+        'lecture_id INT NOT NULL,' +
+        'PRIMARY KEY (ID),' +
+        'FOREIGN KEY (user_id) REFERENCES User(ID),' +
+        'FOREIGN KEY (lecture_id) REFERENCES Lecture(ID)' +
+        ');'
+);
+
+    await db.query(
+        'CREATE TABLE Bookmark( ID INT AUTO_INCREMENT,' +
+        'videoTimestamp TIME(6) NOT NULL,' +
+        'date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,' +
+        'user_id INT NOT NULL,' +
+        'lecture_id INT NOT NULL,' +
+        'PRIMARY KEY (ID),' +
+        'FOREIGN KEY (user_id) REFERENCES User(ID),' +
+        'FOREIGN KEY (lecture_id) REFERENCES Lecture(ID)' +
+        ');'
+);
+
     await db.query(
            `CREATE TABLE Discount( id INT AUTO_INCREMENT,
             percentage NUMERIC (5,2) NOT NULL,
@@ -75,6 +125,14 @@ async function main (){
             PRIMARY KEY (id),
             FOREIGN KEY (course_id) REFERENCES Course(id),
             FOREIGN KEY (admin_id) REFERENCES Admin(id));`
+    );
+
+    await db.query(
+        `CREATE TABLE Buy( user_id INT,
+        course_id INT,
+        PRIMARY KEY (user_id, course_id),
+        FOREIGN KEY user_id REFERENCES User(ID),
+        FOREIGN KEY course_id REFERENCES Buy(ID));`
     );
 
     await db.query(

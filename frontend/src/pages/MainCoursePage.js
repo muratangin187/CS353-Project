@@ -7,7 +7,7 @@ import {
     Image,
     Spinner
 } from "react-bootstrap";
-import {useState, useEffect} from "react";
+import React, {useState, useEffect} from "react";
 import {useParams} from 'react-router-dom';
 import axios from 'axios';
 
@@ -41,7 +41,7 @@ export default function MainCoursePage() {
     }
 
     return (
-        <Container className="mt-5 ml-auto mr-auto">
+        <Container className="mt-5" style={{width: "75vw"}}>
             <Row>
                 <Col>
                     <h5>{courseData.category}</h5>
@@ -59,7 +59,7 @@ export default function MainCoursePage() {
       onSelect={(k) => setKey(k)}
     >
       <Tab eventKey="lectures" title="Lectures">
-        <LecturesComp/>
+        <LecturesComp cid={params.cid}/>
       </Tab>
       <Tab eventKey="quizzes" title="Quizzes">
       <QuizzesComp/>

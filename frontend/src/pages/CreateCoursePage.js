@@ -80,9 +80,9 @@ export default function CreateCoursePage() {
                                     <Form.Label>Thumbnail link</Form.Label>
                                     <Form.Control type="text" placeholder="Enter in http:// form" required/>
                             </Form.Group>
-                            <div class="centered-div">Category</div>
-                            <div class="centered-div">
-                            <DropdownButton className="ml-auto mr-2" id="dropdown-basic-button" title={curCategory} onSelect={(event) => {setCurCategory(event)}}>
+                            <div style={{textAlign: "center"}}>Category</div>
+                            <div style={{textAlign: "center"}} className="mt-1">
+                            <DropdownButton id="dropdown-basic-button" title={curCategory} onSelect={(event) => {setCurCategory(event)}}>
                                 <>
                                     {Categories.map(
                                         (category) => (
@@ -92,15 +92,12 @@ export default function CreateCoursePage() {
                                 </>
                             </DropdownButton>
                             </div>
-                            
 
-                            <Form.Row>
-                                <div class="text-center" style={{"display": "flex"}}>
-                                <Button className="ml-auto mr-2" variant="success" type="submit">
+                            <div className="mt-4" style={{textAlign: "center"}}>
+                                <Button variant="success" type="submit" >
                                     Create Course
                                 </Button>
-                                </div>
-                            </Form.Row>
+                            </div>
                         </Form>
                     </Col>
                 </Card.Body>

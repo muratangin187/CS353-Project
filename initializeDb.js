@@ -91,27 +91,27 @@ async function main (){
 );
 
     await db.query(
-        'CREATE TABLE Note( ID INT AUTO_INCREMENT,' +
+        'CREATE TABLE Note( id INT AUTO_INCREMENT,' +
         'title VARCHAR(64) NOT NULL,' +
         'content VARCHAR(512),' +
         'date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,' +
         'user_id INT NOT NULL,' +
         'lecture_id INT NOT NULL,' +
-        'PRIMARY KEY (ID),' +
-        'FOREIGN KEY (user_id) REFERENCES User(ID),' +
-        'FOREIGN KEY (lecture_id) REFERENCES Lecture(ID)' +
+        'PRIMARY KEY (id),' +
+        'FOREIGN KEY (user_id) REFERENCES User(id),' +
+        'FOREIGN KEY (lecture_id) REFERENCES Lecture(id)' +
         ');'
 );
 
     await db.query(
-        'CREATE TABLE Bookmark( ID INT AUTO_INCREMENT,' +
+        'CREATE TABLE Bookmark( id INT AUTO_INCREMENT,' +
         'videoTimestamp TIME(6) NOT NULL,' +
         'date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,' +
         'user_id INT NOT NULL,' +
         'lecture_id INT NOT NULL,' +
-        'PRIMARY KEY (ID),' +
-        'FOREIGN KEY (user_id) REFERENCES User(ID),' +
-        'FOREIGN KEY (lecture_id) REFERENCES Lecture(ID)' +
+        'PRIMARY KEY (id),' +
+        'FOREIGN KEY (user_id) REFERENCES User(id),' +
+        'FOREIGN KEY (lecture_id) REFERENCES Lecture(id)' +
         ');'
 );
 
@@ -131,8 +131,8 @@ async function main (){
         `CREATE TABLE Buy( user_id INT,
         course_id INT,
         PRIMARY KEY (user_id, course_id),
-        FOREIGN KEY user_id REFERENCES User(ID),
-        FOREIGN KEY course_id REFERENCES Buy(ID));`
+        FOREIGN KEY user_id REFERENCES User(id),
+        FOREIGN KEY course_id REFERENCES Buy(id));`
     );
 
     console.log("DB tables created.");

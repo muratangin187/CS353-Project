@@ -4,10 +4,11 @@ import {
     Container,
     ListGroup,
     Button,
+    Modal,
     Image,
     Spinner, Card
 } from "react-bootstrap";
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, useContext} from "react";
 import {useParams} from 'react-router-dom';
 import axios from 'axios';
 
@@ -16,18 +17,44 @@ import {
 } from "../components/course_comps";
 import {CgWebsite} from "react-icons/cg";
 import {AiFillLinkedin, AiFillYoutube} from "react-icons/ai";
+import {NotificationContext} from "../services/NotificationContext";
+import {AuthContext} from "../services/AuthContext";
 
 export default function CourseDescPage() {
     const params = useParams();
+    const context = useContext(NotificationContext);
+    const [setShowToast, setContent, setIntent] = [context.setShow, context.setContent, context.setIntent];
+    const {getCurrentUser} = useContext(AuthContext);
     const [courseData, setCourseData] = useState(null);
     const [courseCreator, setCourseCreator] = useState({}); // course creator JSON object
+    const [show, setShow] = useState(false);
+    const [userData, setUserData] = useState(null);
+
+    const handleClose = () => setShow(false);
+    const handleShow = () => {
+        if(userData == null){
+            setShowToast(true);
+            setIntent("failure");
+            setContent("Transaction cannot be processes", "Please login or register");
+            return;
+        } else if( userData.balance < courseData.price){
+            setShowToast(true);
+            setIntent("failure");
+            setContent("Transaction cannot be processes", "Insufficient funds");
+            return;
+        }
+        console.log(`User balance: ${userData.balance}, Course price: ${courseData.price}`);
+        setShow(true);
+    };
 
     useEffect(async () => {
+        let userResponse = await getCurrentUser;
+        setUserData(userResponse?.data);
+
         let response = await axios({
             url:"/api/course/retrieve/" + params.cid,
             method: "GET",
         });
-        // console.log(response.status + "-Response:" + JSON.stringify(response.data,null,2));
         setCourseData(response.data);
         axios.get('/api/creator/' + response.data.creator_id)
             .then(result => {
@@ -40,8 +67,29 @@ export default function CourseDescPage() {
 
     if(!courseData ||!courseCreator){
         return (<Container className="mt-5">
-            <Spinner className="mt-5" style={{width:"35vw", height:"35vw"}} animation="border" variant="dark"/>
+            <Spinner cselassName="mt-5" style={{width:"35vw", height:"35vw"}} animation="border" variant="dark"/>
         </Container>);
+    }
+
+    const handleBuySubmit = async (event) => {
+        let response = await axios({
+            url: "/api/course/buyCourse",
+            method: "POST",
+            data: {
+                uid: userData.id,
+                cid: courseData.id
+            }
+        });
+
+        setShowToast(true);
+        if(response.status == 200){
+            setIntent("success");
+            setContent("Success", response.data.message);
+            window.location = window.location.origin;
+        } else {
+            setIntent("failure");
+            setContent("Transaction cannot be processed", response.data.message);
+        }
     }
 
     return (
@@ -56,6 +104,28 @@ export default function CourseDescPage() {
                     <Image style={{width:"300px"}} src={courseData.thumbnail}/>
                 </Col>
             </Row>
+            <Modal show={show} onHide={handleClose}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Buy Course</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    Are you sure you want to buy this course?
+                </Modal.Body>
+                <Modal.Body>
+                    <strong>Current Balance:</strong> {userData.balance ?? 0} TL
+                </Modal.Body>
+                <Modal.Body>
+                    <strong>After Transaction:</strong> {(userData.balance ?? 0) - courseData.price} TL
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleClose}>
+                        Close
+                    </Button>
+                    <Button variant="primary" onClick={handleBuySubmit}>
+                        Buy
+                    </Button>
+                </Modal.Footer>
+            </Modal>
             <Row className="mt-3" style={{width: "75vw"}}>
                 <Col xs={8}> <ListRatingsComp/> </Col>
                 <Col xs={4}>
@@ -65,7 +135,7 @@ export default function CourseDescPage() {
                         <ListGroup.Item><Row><Col>Current Price</Col><Col>{(courseData.price - 5) + " TL"}</Col></Row></ListGroup.Item>
                     </ListGroup>
                     <Col>
-                    <Button block>Buy Course</Button>
+                    <Button block onClick={handleShow}>Buy Course</Button>
                         <Button block>Add to Cart</Button>
                         <Button block>Add to Wishlist</Button>
                     </Col>

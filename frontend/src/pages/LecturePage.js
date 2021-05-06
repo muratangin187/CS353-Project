@@ -141,9 +141,11 @@ export default function LecturePage(){
         setShow(true);
 
         if(response.status == 200){
+            setIntent("success");
             setContent("Success", response.data.message);
             window.location = window.location.origin;
-        }else{
+        } else{
+            setIntent("failure");
             setContent("Bookmark cannot be added", response.data.message);
         }
     }

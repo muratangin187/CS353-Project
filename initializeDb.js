@@ -12,6 +12,7 @@ async function main (){
     await db.connect();
     console.log("DB connection initialized.");
 
+    await db.query('DROP TABLE IF EXISTS `Refund`;');
     await db.query('DROP TABLE IF EXISTS `Buy`;');
     await db.query('DROP TABLE IF EXISTS `Note`;');
     await db.query('DROP TABLE IF EXISTS `Bookmark`;');
@@ -78,7 +79,7 @@ async function main (){
         'chapterName VARCHAR(64) NOT NULL, ' +
         'title VARCHAR(64) NOT NULL, ' +
         'duration TIME(6) NOT NULL, ' +
-        'date DATE NOT NULL DEFAULT CURRENT_TIMESTAMP, ' +
+        'date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, ' +
         'isVisible TINYINT(1) NOT NULL DEFAULT 1, ' +
         'additionalMaterial VARCHAR(255), ' +
         'video VARCHAR(512), ' +
@@ -91,27 +92,27 @@ async function main (){
 );
 
     await db.query(
-        'CREATE TABLE Note( ID INT AUTO_INCREMENT,' +
+        'CREATE TABLE Note( id INT AUTO_INCREMENT,' +
         'title VARCHAR(64) NOT NULL,' +
         'content VARCHAR(512),' +
         'date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,' +
         'user_id INT NOT NULL,' +
         'lecture_id INT NOT NULL,' +
-        'PRIMARY KEY (ID),' +
-        'FOREIGN KEY (user_id) REFERENCES User(ID),' +
-        'FOREIGN KEY (lecture_id) REFERENCES Lecture(ID)' +
+        'PRIMARY KEY (id),' +
+        'FOREIGN KEY (user_id) REFERENCES User(id),' +
+        'FOREIGN KEY (lecture_id) REFERENCES Lecture(id)' +
         ');'
 );
 
     await db.query(
-        'CREATE TABLE Bookmark( ID INT AUTO_INCREMENT,' +
+        'CREATE TABLE Bookmark( id INT AUTO_INCREMENT,' +
         'videoTimestamp TIME(6) NOT NULL,' +
         'date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,' +
         'user_id INT NOT NULL,' +
         'lecture_id INT NOT NULL,' +
-        'PRIMARY KEY (ID),' +
-        'FOREIGN KEY (user_id) REFERENCES User(ID),' +
-        'FOREIGN KEY (lecture_id) REFERENCES Lecture(ID)' +
+        'PRIMARY KEY (id),' +
+        'FOREIGN KEY (user_id) REFERENCES User(id),' +
+        'FOREIGN KEY (lecture_id) REFERENCES Lecture(id)' +
         ');'
 );
 
@@ -131,8 +132,8 @@ async function main (){
         `CREATE TABLE Buy( user_id INT,
         course_id INT,
         PRIMARY KEY (user_id, course_id),
-        FOREIGN KEY user_id REFERENCES User(ID),
-        FOREIGN KEY course_id REFERENCES Buy(ID));`
+        FOREIGN KEY (user_id) REFERENCES User(id),
+        FOREIGN KEY (course_id) REFERENCES Course(id));`
     );
 
     await db.query(

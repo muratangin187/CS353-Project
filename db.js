@@ -182,6 +182,22 @@ class Db{
         });
     }
 
+    buyCourse(uid, cid){
+        return new Promise(resolve => {
+            this._db.query(
+                `INSERT INTO Buy(user_id, course_id) VALUES (${uid}, ${cid});`,
+                (error, results, fields) => {
+                    if(error){
+                        console.log(error);
+                        resolve(null);
+                    } else {
+                        resolve(results.insertId);
+                    }
+                }
+            );
+        });
+    }
+
     getCourseCreator(id){
         return new Promise(resolve => {
            this._db.query(
@@ -247,6 +263,7 @@ class Db{
             );
         });
     }
+
 
     getNotes(uid, lid){
         return new Promise( resolve => {

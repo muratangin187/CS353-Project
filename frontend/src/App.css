@@ -18,3 +18,10 @@ textarea {
     align-items: center;
     margin: 1% auto;
 }
+
+.creator-img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    max-height: 250px;
+}

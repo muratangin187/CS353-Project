@@ -64,13 +64,25 @@ router.post("/addBookmark", async (req, res)=>{
     }
 });
 
+router.post("/buyCourse", async (req, res) => {
+    let result = await db.buyCourse(
+        req.body.uid,
+        req.body.cid
+    );
+    if (result == null) {
+        res.status(400).send({"message": "There is an error occurred in the db write stage of buying a course"});
+    } else {
+        res.status(200).send({"message": "Successfully course bought"});
+    }
+});
+
 router.get("/retrieve/:cid", async (req, res)=>{
     console.log(JSON.stringify(req.params.cid));
     let result = await db.getCourse(
         req.params.cid,
     );
     if(result == null){
-        res.status(400).send({"message": "There is an error occured in the db retrieve stage of course creation."});
+        res.status(400).send({"message": "There is an error occurred in the db retrieve stage of course creation."});
     }else{
         console.log(result);
         res.status(200).send(result);

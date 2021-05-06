@@ -41,7 +41,7 @@ export default function MainCoursePage() {
     }
 
     return (
-        <Container className="mt-5" style={{width: "50vw"}}>
+        <Container className="mt-5" style={{width: "75vw"}}>
             <Row>
                 <Col>
                     <h5>{courseData.category}</h5>

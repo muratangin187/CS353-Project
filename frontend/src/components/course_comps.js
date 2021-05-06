@@ -151,36 +151,7 @@ function RatingsComp() {
       return (
           <Container style={{width:"75vw"}}>
           <Row style={{width:"75vw"}}>
-          <Col className="mt-3">
-            <h4 className="text-left"><strong>Ratings</strong></h4>
-            <Row className="mb-5">
-            <Image style={{width:"16px", height:"16px"}} src="../star.png" className="mt-1 mr-2 ml-3"/>
-            <strong>4.3/5</strong>
-            </Row>
-            <ListGroup.Item> 
-                    <Row>
-                        <Col xs={10}>
-                            <h4>Mehmet A.</h4>
-                            <p>It is a really impressive course, you need to buy it</p>
-                        </Col>
-                        <Col xs={1} className="mt-3">
-                            <Badge className="pl-3" variant="info"> <strong style={{fontSize: "14px"}}>4.8</strong> <Image style={{width:"14px", height:"14px"}} src="../star.png" rounded className="mb-1 mr-1 ml-1"/></Badge>
-                        </Col>
-                    </Row>
-            </ListGroup.Item>
-            
-            <ListGroup.Item> 
-                    <Row>
-                        <Col xs={10}>
-                            <h4>Mehmet A.</h4>
-                            <p>It is a really impressive course, you need to buy it</p>
-                        </Col>
-                        <Col xs={1} className="mt-3">
-                            <Badge className="pl-3" variant="info"> <strong style={{fontSize: "14px"}}>4.8</strong> <Image style={{width:"14px", height:"14px"}} src="../star.png" rounded className="mb-1 mr-1 ml-1"/></Badge>
-                        </Col>
-                    </Row>
-            </ListGroup.Item>
-            </Col>
+          <ListRatingsComp/>
             <Col className="mt-3">
                 <h4><strong>Rate the course</strong></h4>
                 <Form onSubmit={handleRatingSubmit} ref={formRef}>
@@ -211,6 +182,40 @@ function RatingsComp() {
           </Row>
           </Container>
       );
+}
+
+function ListRatingsComp(){
+    return (
+                <Col className="mt-3">
+                    <h4 className="text-left"><strong>Ratings</strong></h4>
+                    <Row className="mb-5">
+                        <Image style={{width:"16px", height:"16px"}} src="../star.png" className="mt-1 mr-2 ml-3"/>
+                        <strong>4.3/5</strong>
+                    </Row>
+                    <ListGroup.Item>
+                        <Row>
+                            <Col xs={10}>
+                                <h4>Mehmet A.</h4>
+                                <p>It is a really impressive course, you need to buy it</p>
+                            </Col>
+                            <Col xs={1} className="mt-3">
+                                <Badge className="pl-3" variant="info"> <strong style={{fontSize: "14px"}}>4.8</strong> <Image style={{width:"14px", height:"14px"}} src="../star.png" rounded className="mb-1 mr-1 ml-1"/></Badge>
+                            </Col>
+                        </Row>
+                    </ListGroup.Item>
+                    <ListGroup.Item>
+                        <Row>
+                            <Col xs={10}>
+                                <h4>Mehmet A.</h4>
+                                <p>It is a really impressive course, you need to buy it</p>
+                            </Col>
+                            <Col xs={1} className="mt-3">
+                                <Badge className="pl-3" variant="info"> <strong style={{fontSize: "14px"}}>4.8</strong> <Image style={{width:"14px", height:"14px"}} src="../star.png" rounded className="mb-1 mr-1 ml-1"/></Badge>
+                            </Col>
+                        </Row>
+                    </ListGroup.Item>
+                </Col>
+    );
 }
 
 function AnnouncementsComp() {
@@ -262,7 +267,7 @@ function AboutComp(props) {
                         style={{ width: '18rem' }}
                         className="mb-2 mt-3"
                     >
-                        <Card.Img variant="top" src={(courseCreator.photo != "placeholder.jpg") ? courseCreator.photo : "profile.png"} style={{width: 150}} />
+                        <Card.Img variant="top" src={(courseCreator.photo != "placeholder.jpg") ? courseCreator.photo : "profile.png"} className="creator-img" />
                         <Card.Body style={{alignItems: "center"}}>
                             <Card.Title style={{textAlign: "center"}}> {courseCreator.name} {courseCreator.surname} </Card.Title>
                             <Card.Text style={{textAlign: "center"}}>
@@ -288,4 +293,4 @@ function AboutComp(props) {
     );
 }
 
-export {LecturesComp, QuizzesComp, QandAComp, RatingsComp, AnnouncementsComp, AboutComp}
+export {LecturesComp, QuizzesComp, QandAComp, RatingsComp, AnnouncementsComp, AboutComp, ListRatingsComp}

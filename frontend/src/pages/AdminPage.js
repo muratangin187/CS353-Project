@@ -8,6 +8,7 @@ import {AuthContext} from "../services/AuthContext";
 import DatePicker from 'react-date-picker'
 
 export default function AdminPage() {
+    const {getCurrentUser} = useContext(AuthContext);
     const {setShow, setContent, setIntent} = useContext(NotificationContext);
     const [startDate, setStartDate] = useState(new Date());
     const [endDate, setEndDate] = useState(new Date());
@@ -28,14 +29,16 @@ export default function AdminPage() {
         setIntent("normal");
         setContent("Processing", "Please wait");
         setShow(true);
+        let admin = (await getCurrentUser).data;
         let response = await axios({
             url: "/api/course/create-discount",
             method: "POST",
             data: {
                 courseId: selectedCourse,
-                startDate: startDate,
-                endDate: endDate,
-                percentage: percentage
+                startDate: startDate.toISOString().slice(0, 19).replace('T', ' '),
+                endDate: endDate.toISOString().slice(0, 19).replace('T', ' '),
+                percentage: percentage,
+                adminId: admin.id
             }
         });
         setShow(true);
@@ -82,7 +85,7 @@ export default function AdminPage() {
                     </Row>
                     <Row>
                         <Form.Group>
-                            <Form.Control type="text" placeholder="Search text" onChange={e=>{
+                            <Form.Control type="text" placeholder="Percentage(10 for %10 discount)" onChange={e=>{
                                 setPercentage(parseInt(e.target.value));
                             }}/>
                         </Form.Group>

@@ -22,6 +22,8 @@ router.post("/login", async (req, res) => {
     if(result == null){
         res.status(400).send({message:"There is no user exists with given username and password"});
     }else{
+        console.log("result:");
+        console.log(result);
         const token = jwt.sign({ id: result.id }, SECRET, {
             expiresIn: 86400
         });

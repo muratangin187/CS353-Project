@@ -102,10 +102,10 @@ class Db{
         });
     }
 
-    createDiscount(courseId, startDate, endDate, percentage){
+    createDiscount(courseId, startDate, endDate, percentage, adminId){
         return new Promise(resolve => {
             this._db.query(
-                `INSERT INTO Discount(id) VALUES (${id})`,
+                `INSERT INTO Discount(percentage, startDate, endDate, course_id, admin_id) VALUES ('${percentage}', '${startDate}', '${endDate}', '${courseId}', '${adminId}')`,
                 (error, results, fields) => {
                     if (error){
                         console.log(error);
@@ -235,7 +235,12 @@ class Db{
                         if(results.length > 0) {
                             let isCreator = this.isCreator(results[0].id);
                             let isAdmin = this.isAdmin(results[0].id);
-                            let role = isCreator ? "creator" : (isAdmin ? "admin" : "user");
+                            let role = "user";
+                            if(isCreator){
+                                role = "creator";
+                            }else if(isAdmin){
+                                role = "admin";
+                            }
                             resolve({id:results[0].id, role: role});
                         }else{
                             resolve(null);

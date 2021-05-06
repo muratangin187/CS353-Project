@@ -214,6 +214,54 @@ class Db{
         });
     }
 
+    isLectureCompleted(uid, cid, lid){
+        return new Promise( resolve => {
+            this._db.query(
+                `SELECT * FROM CompleteLecture WHERE lecture_id = ${lid} AND user_id = ${uid} AND course_id = ${cid};`,
+                (error, results, fields) => {
+                    if(error) {
+                        console.log(error);
+                        resolve(false);
+                    } else {
+                        resolve(!!results.length);
+                    }
+                }
+            );
+        });
+    }
+
+    getLectureIndices(cid){
+        return new Promise( resolve => {
+           this._db.query(
+               `SELECT lecture_index, id FROM Lecture WHERE course_id = ${cid}`,
+               (error, results, fields) => {
+                   if(error) {
+                       console.log(error);
+                       resolve([]);
+                   } else {
+                       resolve(results);
+                   }
+               }
+           )
+        });
+    }
+
+    completeLecture(uid, cid, lid){
+        return new Promise( resolve => {
+           this._db.query(
+               `INSERT INTO CompleteLecture(lecture_id, user_id, course_id) VALUES (${lid}, ${uid}, ${cid});`,
+               (error, results, fields) => {
+                   if(error) {
+                       console.log(error);
+                       resolve(null);
+                   } else {
+                       resolve(results.insertId);
+                   }
+               }
+           );
+        });
+    }
+
     getCourseCreator(id){
         return new Promise(resolve => {
            this._db.query(

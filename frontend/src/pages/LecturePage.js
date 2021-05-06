@@ -9,18 +9,20 @@ import {
     Spinner, Form, Button, Card
 } from "react-bootstrap";
 import React, {useState, useEffect, useRef, useContext} from "react";
-import {Link, useParams} from 'react-router-dom';
+import {Link, useHistory, useParams} from 'react-router-dom';
 import axios from 'axios';
 import {AuthContext} from "../services/AuthContext";
 import {NotificationContext} from "../services/NotificationContext";
 
 export default function LecturePage(){
     const params = useParams();
+    let history = useHistory();
     const {setShow, setContent, setIntent} = useContext(NotificationContext);
     const [courseData, setCourseData] = useState(null);
     const [lectureData, setLectureData] = useState(null);
     const [notesData, setNotesData] = useState(null);
     const [bookmarksData, setBookmarksData] = useState(null);
+    const [lectureCompletedData, setLectureCompletedData] = useState(null);
     const {getCurrentUser} = useContext(AuthContext);
     const [userData, setUserData] = useState(null);
     const noteFormRef = useRef(null);
@@ -53,6 +55,13 @@ export default function LecturePage(){
         console.log(notesResponse.data);
         setNotesData(notesResponse.data);
 
+        let completeLectureResponse = await axios({
+            url: `/api/course/isLectureCompleted/${params.cid}/${lecturePrimaryID}/${uid}`,
+            method: "GET",
+        });
+        console.log("CompleteLectureResponse.data: " + completeLectureResponse.data);
+        setLectureCompletedData(completeLectureResponse.data);
+
         let bookmarksResponse = await axios({
             url:"/api/course/" + lecturePrimaryID + "/allBookmarks/" + uid,
             method: "GET",
@@ -74,7 +83,7 @@ export default function LecturePage(){
         }
     }
 
-    if(!courseData || !lectureData || !userData || !notesData || !bookmarksData){
+    if(!courseData || !lectureData || !userData || !notesData || !bookmarksData || lectureCompletedData == null){
         return (<Container className="mt-5">
             <Spinner className="mt-5" style={{width:"35vw", height:"35vw"}} animation="border" variant="dark"/>
         </Container>);
@@ -150,16 +159,66 @@ export default function LecturePage(){
         }
     }
 
-    const goToPreviousLecture = () => {
-        //todo
+    const goToPreviousLecture = async () => {
+        let response = await axios({
+            url:"/api/course/getLectureIndices/" + params.cid,
+            method: "GET",
+        });
+        const indices = response.data;
+        const curLectureIndex = lectureData.lecture_index;
+        let prevIndex = -1;
+        let prevId = -1;
+
+
+        indices.forEach(e => {
+            let element = e.lecture_index;
+            if(element < curLectureIndex && element > prevIndex){
+                prevIndex = element;
+                prevId = e.id;
+            }
+        });
+
+        setShow(true);
+        console.log(indices);
+        console.log(`curlectureindex: ${curLectureIndex}, prevIndex: ${prevIndex}`);
+
+        if(prevIndex != -1){
+            setIntent("success");
+            setContent("Success", "You are being redirected");
+            window.location = window.location.origin;
+            setTimeout(()=>{
+                history.push(`/course/${cid}/lecture/${prevId}`);
+            },3000);
+        } else{
+            setIntent("failure");
+            setContent("Error", "There is no previous lecture");
+        }
     }
 
-    const goToNextLecture = () => {
-        //todo
+    const goToNextLecture = async () => {
+
     }
 
-    const onCompleteLecture = () => {
-        //todo
+    const onCompleteLecture = async () => {
+        let response = await axios({
+            url: "/api/course/completeLecture",
+            method: "POST",
+            data: {
+                uid: userData.id,
+                cid: courseData.id,
+                lid: lectureData.id,
+            }
+        });
+
+        setShow(true);
+        if( response.status == 200){
+            setIntent("success");
+            setContent("Success", response.data.message);
+            window.location = window.location.origin;
+        } else {
+            setIntent("failure");
+            setContent("Transaction cannot be processed", response.data.message);
+        }
     }
 
     const noteItem = (note) => {
@@ -199,11 +258,11 @@ export default function LecturePage(){
                         </Col>
                         <Col>
                             <h4><strong>Duration</strong></h4>
-                            <h5>{lectureData.duration}</h5>
+                            <h5>{lectureData.duration.split(".")[0]}</h5>
                         </Col>
                         <Col>
                             <h4><strong>Added Date</strong></h4>
-                            <h5>{new Date(lectureData.date).toISOString().split('T')[0] }</h5>
+                            <h5>{new Date(lectureData.date).toLocaleDateString("tr-TR")}</h5>
                         </Col>
                     </Row>
                 </Col>
@@ -219,7 +278,7 @@ export default function LecturePage(){
                         </div>
                         <Row className="ml-5 mt-2">
                             <Col><Button onClick={goToPreviousLecture}>Previous Lecture</Button></Col>
-                            <Col><Button onClick={onCompleteLecture}>Complete Lecture</Button></Col>
+                            <Col><Button onClick={onCompleteLecture} disabled={lectureCompletedData}>Complete Lecture</Button></Col>
                             <Col><Button onClick={goToNextLecture}>Next Lecture</Button></Col>
                         </Row>
                             <div className="ml-5">
@@ -249,7 +308,7 @@ export default function LecturePage(){
                             <Card>
                                 <Card.Header>Additional Material</Card.Header>
                                 <Card.Body>
-                                    <Link to={lectureData.additionalMaterial}>Additional Material Link</Link>
+                                    <Link to={"/" + lectureData.additionalMaterial}>Additional Material Link</Link>
                                 </Card.Body>
                             </Card>
                         </Form>

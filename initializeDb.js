@@ -12,7 +12,8 @@ async function main (){
     await db.connect();
     console.log("DB connection initialized.");
 
-    await db.query('DROP TABLE IF EXISTS `Refund`;');
+    await db.query('DROP TABLE IF EXISTS `Refund`;')
+    await db.query('DROP TABLE IF EXISTS `CompleteLecture`;');
     await db.query('DROP TABLE IF EXISTS `Buy`;');
     await db.query('DROP TABLE IF EXISTS `Note`;');
     await db.query('DROP TABLE IF EXISTS `Bookmark`;');
@@ -146,6 +147,15 @@ async function main (){
             PRIMARY KEY (id),
             FOREIGN KEY (user_id, course_id) REFERENCES Buy(user_id, course_id), FOREIGN KEY (admin_id) REFERENCES Admin(id)
             );`
+    );
+
+    await db.query(
+        `CREATE TABLE CompleteLecture( lecture_id INT NOT NULL,
+        user_id INT NOT NULL,
+        course_id INT NOT NULL,
+        PRIMARY KEY (lecture_id, user_id, course_id),
+        FOREIGN KEY (lecture_id) REFERENCES Lecture(id),
+        FOREIGN KEY (user_id, course_id) REFERENCES Buy(user_id, course_id));`
     );
 
     console.log("DB tables created.");

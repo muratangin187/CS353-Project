@@ -35,12 +35,12 @@ export default function CourseDescPage() {
         if(userData == null){
             setShowToast(true);
             setIntent("failure");
-            setContent("Transaction cannot be processes", "Please login or register");
+            setContent("Transaction cannot be processed", "Please login or register");
             return;
         } else if( userData.balance < courseData.price){
             setShowToast(true);
             setIntent("failure");
-            setContent("Transaction cannot be processes", "Insufficient funds");
+            setContent("Transaction cannot be processed", "Insufficient funds");
             return;
         }
         console.log(`User balance: ${userData.balance}, Course price: ${courseData.price}`);

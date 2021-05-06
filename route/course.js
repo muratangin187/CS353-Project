@@ -76,6 +76,19 @@ router.post("/buyCourse", async (req, res) => {
     }
 });
 
+router.post("/completeLecture", async(req, res) => {
+    let result = await db.completeLecture(
+        req.body.uid,
+        req.body.cid,
+        req.body.lid
+    );
+    if (result == null) {
+        res.status(400).send({"message": "There is an error occurred in the db write stage of completing a lecture"});
+    } else {
+        res.status(200).send({"message": "Successfully lecture completed"});
+    }
+});
+
 router.get("/retrieve/:cid", async (req, res)=>{
     console.log(JSON.stringify(req.params.cid));
     let result = await db.getCourse(
@@ -177,6 +190,24 @@ router.get("/getVisibleLectures/:cid", async (req, res)=>{
     console.log(JSON.stringify(req.params.cid));
     let result = await db.getVisibleLectures(
         req.params.cid,
+    );
+    res.status(200).send(result);
+});
+
+router.get("/getLectureIndices/:cid", async (req, res)=>{
+    console.log(JSON.stringify(req.params.cid));
+    let result = await db.getLectureIndices(
+        req.params.cid,
+    );
+    res.status(200).send(result);
+});
+
+router.get("/isLectureCompleted/:cid/:lid/:uid", async (req, res) => {
+    console.log(JSON.stringify(req.params.cid));
+    let result = await db.isLectureCompleted(
+        req.params.uid,
+        req.params.cid,
+        req.params.lid,
     );
     res.status(200).send(result);
 });

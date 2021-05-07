@@ -1,0 +1,15 @@
+#shopping_icon {
+    width: 40px;
+    height: 40px;
+    margin-right: 8px;
+}
+
+.list_col_s {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+
+p {
+    margin: 0;
+}

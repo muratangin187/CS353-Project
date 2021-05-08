@@ -6,7 +6,7 @@ const {verifyToken} = require("../authMiddle");
 const router = express.Router()
 
 router.get("/:id", async (req, res) => {
-    let result = await db.getUserById(req.params.id);
+    let result = await db.getUserById(parseInt(req.params.id));
     res.status(200).send(result);
 });
 

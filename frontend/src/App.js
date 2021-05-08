@@ -25,6 +25,7 @@ import CreateLecturePage from "./pages/CreateLecturePage";
 import LecturePage from "./pages/LecturePage";
 import AdminPage from "./pages/AdminPage";
 import CourseDescPage from "./pages/CourseDescPage";
+import CreateQuizPage from "./pages/CreateQuizPage";
 
 let timer = null;
 
@@ -110,7 +111,7 @@ function App() {
                           <Route path='/create-announcement/:creatorId' component={CreateAnnouncementPage}/>
                           <Route path='/answer-question-page/:questionId' component={AnswerQuestionPage}/>                          <Route path='/answer-question-page/:questionId' component={AnswerQuestionPage}/>
                           <Route path='/create-discount-page' component={CreateDiscountPage}/>
-
+                          <Route path='/:creatorId/courses/:courseId/create-quiz' component={CreateQuizPage}/>
                       </Switch>
                   </div>
               </BrowserRouter>

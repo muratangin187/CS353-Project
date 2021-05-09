@@ -522,6 +522,24 @@ class Db{
         });
     }
 
+    makeRefund(courseId, title, reason, userId){
+        return new Promise(resolve=>{
+            this._db.query(
+                'INSERT INTO Refund (title, reason, user_id, course_id) VALUES ?',
+                [[[title, reason, userId, courseId]]],
+                (error, results, fields) => {
+                    if (error) {
+                        console.log(error);
+                        resolve(false);
+                    } else {
+                        console.log(results);
+                        resolve(true);
+                    }
+                }
+            );
+        });
+    }
+
     getUserById(userId){
         return new Promise(resolve => {
             this._db.query(
@@ -538,7 +556,7 @@ class Db{
                             results[0].isCreator = isCreator;
                             if(isCreator){
                                 this._db.query(
-                                    `SELECT * FROM Creator WHERE id = \'${userId}\';`,
+                                    `SELECT * FROM Creator WHERE id = ${userId};`,
                                     (error, results2, fields) => {
                                         if (error){
                                             console.log(error);
@@ -555,7 +573,7 @@ class Db{
                                 );
                             }else{
                                 this._db.query(
-                                    `SELECT * FROM User WHERE id = \'${userId}\';`,
+                                    `SELECT * FROM User WHERE id = ${userId};`,
                                     (error, results2, fields) => {
                                         if (error){
                                             console.log(error);
@@ -565,7 +583,7 @@ class Db{
                                                 results[0] = {...results[0], ...results2[0]};
                                                 resolve(results[0]);
                                             }else{
-                                                resolve(null);
+                                                resolve(results[0]);
                                             }
                                         }
                                     }
@@ -584,14 +602,14 @@ class Db{
         return new Promise(resolve => {
             this._db.query(
                 `SELECT id FROM Person WHERE username = \'${username}\' AND password = \'${password}\';`,
-                (error, results, fields) => {
+                async (error, results, fields) => {
                     if (error){
                         console.log(error);
                         resolve(null);
                     }else{
                         if(results.length > 0) {
-                            let isCreator = this.isCreator(results[0].id);
-                            let isAdmin = this.isAdmin(results[0].id);
+                            let isCreator = await this.isCreator(results[0].id);
+                            let isAdmin = await this.isAdmin(results[0].id);
                             let role = "user";
                             if(isCreator){
                                 role = "creator";
@@ -611,7 +629,7 @@ class Db{
     isCreator(userId){
         return new Promise(resolve => {
             this._db.query(
-                `SELECT id FROM Creator WHERE id = \'${userId}\';`,
+                `SELECT id FROM Creator WHERE id = ${userId};`,
                 (error, results, fields) => {
                     if (error){
                         console.log(error);
@@ -631,7 +649,7 @@ class Db{
     isAdmin(userId){
         return new Promise(resolve => {
             this._db.query(
-                `SELECT id FROM Admin WHERE id = \'${userId}\';`,
+                `SELECT id FROM Admin WHERE id = ${userId};`,
                 (error, results, fields) => {
                     if (error){
                         console.log(error);
@@ -645,6 +663,22 @@ class Db{
                     }
                 }
             );
+        });
+    }
+
+    getUserCourses(userId){
+        return new Promise(resolve => {
+            this._db.query(
+                `SELECT * FROM Course, Buy WHERE course_id = id AND user_id = ${userId}`,
+                (error, results, fields)=>{
+                    if(error){
+                        console.log(error);
+                        resolve(null);
+                    }else{
+                        console.log(results);
+                        resolve(results);
+                    }
+                });
         });
     }
 

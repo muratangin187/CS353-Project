@@ -6,7 +6,7 @@ const {verifyToken} = require("../authMiddle");
 const router = express.Router()
 
 router.get("/:id", async (req, res) => {
-    let result = await db.getUserById(req.params.id);
+    let result = await db.getUserById(parseInt(req.params.id));
     res.status(200).send(result);
 });
 
@@ -112,6 +112,15 @@ router.post("/change-balance", async (req, res) => {
 
 router.get("/logout", (req, res) => {
     res.json({"api": "logout"});
+});
+
+router.get("/all-courses", async(req, res)=>{
+    let response = await db.getUserCourses(req.body.userId);
+    if(!response){
+        res.status(400).send({"message": "There is an error occured."});
+    }else {
+        res.status(200).send(response);
+    }
 });
 
 module.exports = router;

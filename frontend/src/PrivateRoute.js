@@ -25,7 +25,7 @@ const PrivateRoute = ({component: Component, role, ...rest}) => {
         // Show the component only when the user is logged in
         // Otherwise, redirect the user to /signin page
         <Route {...rest} render={props => (
-             true ?
+             user ?
                 <Component {...props} />
                 : <Container fluid>
                      <Row className="justify-content-md-center mt-2">

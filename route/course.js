@@ -279,4 +279,18 @@ router.get("/isCourseRated/:cid/:uid", async (req, res) => {
     res.status(200).send(result);
 });
 
+router.post("/refund", async(req, res)=>{
+    let result = await db.makeRefund(
+        req.body.courseId,
+        req.body.title,
+        req.body.reason,
+        req.body.userId,
+    );
+
+    if(result)
+        res.status(200).send({message: "Refund request successfully sent."});
+    else
+        res.status(400).send({message: "There is an error occured on the refund process."});
+});
+
 module.exports = router;

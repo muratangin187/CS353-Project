@@ -230,6 +230,61 @@ class Db{
         });
     }
 
+    isCourseRated(cid, uid){
+        return new Promise( resolve => {
+           this._db.query(
+               `SELECT * FROM Rating WHERE user_id = ${uid} AND course_id = ${cid}`,
+               (error, results, fields) => {
+                   if(error) {
+                       console.log(error);
+                       resolve(false);
+                   } else {
+                       resolve(!!results.length);
+                   }
+               }
+           );
+        });
+    }
+
+    isCourseCompleted(cid, uid){
+        return new Promise(resolve => {
+            this._db.query(
+                `WITH
+                    Lids as (SELECT id as lecture_id, course_id FROM Lecture WHERE course_id = ${cid}),
+                    CompLids as (SELECT lecture_id FROM CompleteLecture WHERE course_id = ${cid} AND user_id = ${uid})
+                 SELECT DISTINCT(lecture_id)
+                 FROM Lids, Buy
+                 WHERE lecture_id NOT IN (
+                    SELECT lecture_id
+                    From CompLids
+                 );`,
+                (error, results, fields) => {
+                    if(error) {
+                        console.log(error);
+                        resolve(false);
+                    } else {
+                        this._db.query(
+                            `SELECT COUNT(*) as cnt FROM Buy WHERE course_id=${cid} AND user_id=${uid};`,
+                            (err, res, fie) => {
+                                if(err){
+                                    console.log(error);
+                                    resolve(false);
+                                } else {
+                                    if( res[0].cnt != 1){
+                                        resolve(false);
+                                    } else {
+                                        console.log();
+                                        resolve(!(!!results.length));
+                                    }
+                                }
+                            }
+                        )
+                    }
+                }
+            );
+        })
+    }
+
     getLectureIndices(cid){
         return new Promise( resolve => {
            this._db.query(
@@ -243,6 +298,23 @@ class Db{
                    }
                }
            )
+        });
+    }
+
+    getCourseRatings(cid){
+        return new Promise( resolve => {
+            this._db.query(
+                `SELECT * FROM Rating WHERE course_id = ${cid};`,
+                (error, results, fields) => {
+                    if(error) {
+                        console.log(error);
+                        resolve([]);
+                    } else {
+                        console.log(results);
+                        resolve(results);
+                    }
+                }
+            );
         });
     }
 
@@ -328,7 +400,6 @@ class Db{
         });
     }
 
-
     getNotes(uid, lid){
         return new Promise( resolve => {
             this._db.query(
@@ -375,6 +446,42 @@ class Db{
                         resolve(null);
                     } else {
                         resolve(results.insertId);
+                    }
+                }
+            );
+        });
+    }
+
+
+    addRating(ratingScore, content, user_id, course_id){
+        return new Promise( resolve => {
+           this._db.query(
+               `INSERT INTO Rating (ratingScore, content, user_id, course_id) VALUES ?`,
+               [[[ratingScore, content, user_id, course_id]]],
+               (error, results, fields) => {
+                   if(error) {
+                       console.log(error);
+                       resolve(null);
+                   } else {
+                       resolve(true);
+                   }
+               }
+           );
+        });
+    }
+
+    updateRating(ratingScore, content, user_id, course_id) {
+        return new Promise( resolve => {
+            this._db.query(
+                `UPDATE Rating
+                 SET ratingScore = ${ratingScore}, content = '${content}'
+                 WHERE user_id = ${user_id} AND course_id = ${course_id};`,
+                (error, results, fields) => {
+                    if(error) {
+                        console.log(error);
+                        resolve(null);
+                    } else {
+                        resolve(true);
                     }
                 }
             );

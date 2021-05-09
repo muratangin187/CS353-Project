@@ -68,7 +68,7 @@ export default function MainCoursePage() {
       <QandAComp/>
       </Tab>
       <Tab eventKey="ratings" title="Ratings">
-        <RatingsComp/>
+        <RatingsComp cid={params.cid}/>
       </Tab>
       <Tab eventKey="announcements" title="Announcements">
        <AnnouncementsComp/>

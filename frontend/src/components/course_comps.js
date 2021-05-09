@@ -6,17 +6,21 @@ import {
     Image,
     Button,
     Row,
+    Tooltip,
+    OverlayTrigger,
     Badge,
     Form,
     ButtonGroup,
     ToggleButton, Spinner,
 } from "react-bootstrap";
-import React from 'react';
+import React, {useContext} from 'react';
 import {useState, useRef, useEffect} from "react";
 import axios from "axios";
 import {CgWebsite} from "react-icons/cg";
 import {AiFillLinkedin, AiFillYoutube} from "react-icons/ai";
 import {Link} from "react-router-dom";
+import {NotificationContext} from "../services/NotificationContext";
+import {AuthContext} from "../services/AuthContext";
 
 
 function LecturesComp(props) {
@@ -135,9 +139,65 @@ class QandAComp extends React.Component {
     }
 }
 
-function RatingsComp() {
+function RatingsComp(props) {
     const[radioValue, setRadioValue] = useState('5');
+    const cid = props.cid;
+    const context = useContext(NotificationContext);
+    const [setShow, setContent, setIntent] = [context.setShow, context.setContent, context.setIntent];
+    const {getCurrentUser} = useContext(AuthContext);
     const formRef = useRef(null);
+    const [userData, setUserData] = useState(null);
+    const [courseData, setCourseData] = useState(null);
+    const [completedData, setCompletedData] = useState(null);
+    const [ratingsData, setRatingsData] = useState(null);
+    const [isRatedData, setIsRatedData] = useState(null);
+
+    useEffect(async () => {
+        let userResponse = await getCurrentUser;
+        setUserData(userResponse?.data);
+
+        let response = await axios({
+            url:"/api/course/retrieve/" + cid,
+            method: "GET",
+        });
+        setCourseData(response.data);
+
+        let completedResponse = await axios({
+            url: "/api/course/isCourseCompleted/" + cid + "/" + userResponse.data.id,
+            method: "GET",
+        });
+        console.log(completedResponse.data);
+        setCompletedData(completedResponse.data);
+
+        let ratingsResponse = await axios({
+            url: "/api/course/getCourseRatings/" + cid,
+            method: "GET",
+        });
+        console.log("Ratings response data: " + ratingsResponse.data);
+        setRatingsData(ratingsResponse.data);
+
+        let isRatedResponse = await axios({
+            url: "/api/course/isCourseRated/" + cid + "/" + userResponse.data.id,
+            method: "GET",
+        });
+        setIsRatedData(isRatedResponse.data);
+    }, []);
+
+    if(!courseData || !userData || completedData == null || !ratingsData || isRatedData == null){
+        if(!courseData){
+            console.log("c");
+        } if (!userData ) {
+            console.log("u");
+        } if (!completedData ) {
+            console.log("comp");
+        } if (!ratingsData ) {
+            console.log("r");
+        }
+        return (<Container className="mt-5">
+            <Spinner className="mt-5" style={{width:"35vw", height:"35vw"}} animation="border" variant="dark"/>
+        </Container>);
+    }
+
     const radios = [
         {name: "1 star", value: '1'},
         {name: "2 stars", value: '2'},
@@ -146,8 +206,75 @@ function RatingsComp() {
         {name: "5 stars", value: '5'}
     ]
 
-    const handleRatingSubmit = () => {}
-    
+    const handleRatingSubmit = async (event) => {
+        setIntent("normal");
+        setContent("Processing", "Please wait");
+        setShow(true);
+
+        const elements = formRef.current;
+        event.preventDefault();
+
+        [...elements].forEach(element => console.log(element.value));
+
+        if( completedData) {
+            if (isRatedData) {
+                let response = await axios({
+                    url: "/api/course/updateRating",
+                    method: "POST",
+                    data: {
+                        ratingScore: parseInt(radioValue),
+                        content: elements[5].value,
+                        user_id: userData.id,
+                        course_id: cid
+                    }
+                });
+
+                if(response.status == 200){
+                    setIntent("success");
+                    setContent("Success", response.data.message);
+                    window.location = window.location.origin;
+                } else{
+                    setIntent("failure");
+                    setContent("Rating cannot be updated", response.data.message);
+                }
+            } else {
+                let response = await axios({
+                    url: "/api/course/addRating",
+                    method: "POST",
+                    data: {
+                        ratingScore: parseInt(radioValue),
+                        content: elements[5].value,
+                        user_id: userData.id,
+                        course_id: cid
+                    }
+                });
+
+                setShow(true);
+
+                if(response.status == 200){
+                    setIntent("success");
+                    setContent("Success", response.data.message);
+                    window.location = window.location.origin;
+                } else{
+                    setIntent("failure");
+                    setContent("Rating cannot be added", response.data.message);
+                }
+            }
+        }
+    }
+
+    let tooltips = "";
+    if(completedData){
+        if( isRatedData){
+            tooltips = "Update your rating!";
+        } else {
+            tooltips = "Rate the course!";
+        }
+    } else {
+        tooltips = "Complete your course to rate!";
+    }
+
+
       return (
           <Container style={{width:"75vw"}}>
           <Row style={{width:"75vw"}}>
@@ -169,11 +296,17 @@ function RatingsComp() {
                             </ToggleButton>
                         ))}
                     </ButtonGroup>
-                    <Form.Control as="textarea" rows={5} required/>
+                    <Form.Group controlId="formGridDescription">
+                        <Form.Label>Your content</Form.Label>
+                        <Form.Control as="textarea" rows={5} required/>
+                    </Form.Group>
                     <Form.Row className="ml-1 mt-3">
-                        <div className="text-center" style={{"display": "flex"}}>
-                            <Button variant="success" type="submit">
-                                Rate
+                        <h6 className="ml-3">
+                            <Badge variant="info">{tooltips}</Badge>
+                        </h6>
+                        <div style={{textAlign: "center"}}>
+                            <Button variant="success" type="submit" disabled={!completedData}>
+                                {isRatedData ? "Update" : "Rate"}
                             </Button>
                         </div>
                     </Form.Row>
@@ -185,6 +318,7 @@ function RatingsComp() {
 }
 
 function ListRatingsComp(){
+
     return (
                 <Col className="mt-3">
                     <h4 className="text-left"><strong>Ratings</strong></h4>
@@ -192,28 +326,7 @@ function ListRatingsComp(){
                         <Image style={{width:"16px", height:"16px"}} src="../star.png" className="mt-1 mr-2 ml-3"/>
                         <strong>4.3/5</strong>
                     </Row>
-                    <ListGroup.Item>
-                        <Row>
-                            <Col xs={10}>
-                                <h4>Mehmet A.</h4>
-                                <p>It is a really impressive course, you need to buy it</p>
-                            </Col>
-                            <Col xs={1} className="mt-3">
-                                <Badge className="pl-3" variant="info"> <strong style={{fontSize: "14px"}}>4.8</strong> <Image style={{width:"14px", height:"14px"}} src="../star.png" rounded className="mb-1 mr-1 ml-1"/></Badge>
-                            </Col>
-                        </Row>
-                    </ListGroup.Item>
-                    <ListGroup.Item>
-                        <Row>
-                            <Col xs={10}>
-                                <h4>Mehmet A.</h4>
-                                <p>It is a really impressive course, you need to buy it</p>
-                            </Col>
-                            <Col xs={1} className="mt-3">
-                                <Badge className="pl-3" variant="info"> <strong style={{fontSize: "14px"}}>4.8</strong> <Image style={{width:"14px", height:"14px"}} src="../star.png" rounded className="mb-1 mr-1 ml-1"/></Badge>
-                            </Col>
-                        </Row>
-                    </ListGroup.Item>
+
                 </Col>
     );
 }

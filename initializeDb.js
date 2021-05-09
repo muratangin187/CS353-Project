@@ -12,6 +12,7 @@ async function main (){
     await db.connect();
     console.log("DB connection initialized.");
 
+    await db.query('DROP TABLE IF EXISTS `Rating`');
     await db.query('DROP TABLE IF EXISTS `Refund`;')
     await db.query('DROP TABLE IF EXISTS `CompleteLecture`;');
     await db.query('DROP TABLE IF EXISTS `Buy`;');
@@ -67,6 +68,7 @@ async function main (){
         'category VARCHAR(64) NOT NULL,' +
         'creator_id INT NOT NULL,' +
         'averageRating FLOAT NOT NULL DEFAULT 0,' +
+        'ratingSum INT NOT NULL DEFAULT 0,'   +
         'ratingCount INT NOT NULL DEFAULT 0,'   +
         'PRIMARY KEY (id),' +
         'FOREIGN KEY (creator_id) REFERENCES Creator(id)' +
@@ -158,7 +160,45 @@ async function main (){
         FOREIGN KEY (user_id, course_id) REFERENCES Buy(user_id, course_id));`
     );
 
+    await db.query(
+        `CREATE TABLE Rating(
+        id INT NOT NULL AUTO_INCREMENT,
+        ratingScore INT NOT NULL CHECK (ratingScore IN (1, 2, 3, 4, 5)),
+        content VARCHAR(512),
+        date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        user_id INT NOT NULL,
+        course_id INT NOT NULL,
+        PRIMARY KEY(id),
+        UNIQUE( user_id, course_id),
+        FOREIGN KEY (user_id, course_id) REFERENCES Buy(user_id, course_id)
+        );`
+    );
+
     console.log("DB tables created.");
+
+    await db.query(
+        `CREATE TRIGGER rating_update
+         AFTER UPDATE ON Rating
+         FOR EACH ROW 
+         BEGIN
+            UPDATE Course
+            SET ratingSum = (ratingSum - OLD.ratingScore) + NEW.ratingScore, averageRating = CAST(ratingSum as FLOAT) / CAST(ratingCount AS FLOAT)
+            WHERE Course.id = NEW.course_id;
+         END;`
+    );
+
+    await db.query(
+        `CREATE TRIGGER rating_insert
+         AFTER INSERT ON Rating
+         FOR EACH ROW 
+         BEGIN
+            UPDATE Course
+            SET ratingSum = ratingSum + NEW.ratingScore, ratingCount = ratingCount + 1, averageRating = CAST(ratingSum AS FLOAT) / CAST(ratingCount AS FLOAT)
+            WHERE Course.id = NEW.course_id;
+         END;`
+    );
+
+    console.log("Triggers have been created.");
 
     await db.query(`INSERT INTO Person (username, email, name, surname, password, photo) VALUES ('test_user', 'test_user@gmail.com', 'Mehmet', 'Testoglu', '123', 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg');`);
     await db.query(`INSERT INTO Person (username, email, name, surname, password, photo) VALUES ('test_creator', 'test_creator@gmail.com', 'David', 'Testoglu', '123', 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg');`);
@@ -166,7 +206,7 @@ async function main (){
     await db.query(`INSERT INTO User (id,hideCourses,balance) VALUES (0, false, 10000);`);
     await db.query(`INSERT INTO Creator (id,about, website, linkedin, youtube) VALUES (2, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus nibh arcu, facilisis nec posuere eget, molestie ac felis. Aenean aliquam, nibh scelerisque pharetra pharetra, mi nunc hendrerit urna, in iaculis sapien est sit amet ex. Quisque sit amet ante eros. In hac habitasse platea dictumst. Cras convallis augue eget libero egestas, luctus malesuada diam pretium.', 'www.google.com', 'www.linkedin.com', 'www.youtube.com');`);
     await db.query(`INSERT INTO Admin (id) VALUES (3);`);
-    await db.query(`INSERT INTO Course(id,title,price,description,thumbnail,category,creator_id,averageRating,ratingCount) VALUES (0, 'Python egitimi', 120, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus nibh arcu, facilisis nec posuere eget, molestie ac felis. Aenean aliquam, nibh scelerisque pharetra pharetra, mi nunc hendrerit urna.', 'https://i1.wp.com/stickker.net/wp-content/uploads/2015/09/python.png?fit=600,600&ssl=1', 'Technology', 2, 4.5, 1)`);
+    await db.query(`INSERT INTO Course(id,title,price,description,thumbnail,category, creator_id, averageRating, ratingSum, ratingCount) VALUES (0, 'Python egitimi', 120, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus nibh arcu, facilisis nec posuere eget, molestie ac felis. Aenean aliquam, nibh scelerisque pharetra pharetra, mi nunc hendrerit urna.', 'https://i1.wp.com/stickker.net/wp-content/uploads/2015/09/python.png?fit=600,600&ssl=1', 'Technology', 2, 4.5, 9, 1)`);
 
     console.log("Initialization finished");
 }

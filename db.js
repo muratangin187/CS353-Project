@@ -400,6 +400,22 @@ class Db{
         });
     }
 
+    getCourseNamesOfCreator(uid){
+        return new Promise( resolve => {
+            this._db.query(
+                `SELECT id, title FROM Course WHERE creator_id=${uid}`,
+                (error, results, fields) => {
+                    if (error) {
+                        console.log(error);
+                        resolve(null);
+                    } else {
+                        resolve(results);
+                    }
+                }
+            );
+        });
+    }
+
     getNotes(uid, lid){
         return new Promise( resolve => {
             this._db.query(
@@ -440,6 +456,23 @@ class Db{
             this._db.query(
                 'INSERT INTO Bookmark (videoTimestamp, user_id, lecture_id) VALUES ?',
                 [[[videoTimestamp, user_id, lecture_id]]],
+                (error, results, fields) => {
+                    if(error) {
+                        console.log(error);
+                        resolve(null);
+                    } else {
+                        resolve(results.insertId);
+                    }
+                }
+            );
+        });
+    }
+
+    addAnnouncement(title, content, creator_id, course_id) {
+        return new Promise(resolve => {
+            this._db.query(
+                'INSERT INTO Announcement (title, content, creator_id, course_id) VALUES ?',
+                [[[title, content, creator_id, course_id]]],
                 (error, results, fields) => {
                     if(error) {
                         console.log(error);

@@ -173,6 +173,20 @@ async function main (){
         );`
     );
 
+    await db.query(
+        `CREATE TABLE Announcement(
+        id INT NOT NULL AUTO_INCREMENT,
+        title VARCHAR(100),
+        content VARCHAR(512),
+        date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        creator_id INT NOT NULL,
+        course_id INT NOT NULL,
+        PRIMARY KEY(id),
+        FOREIGN KEY (creator_id) REFERENCES Creator(id),
+        FOREIGN KEY (course_id) REFERENCES Course(id)
+);`
+    );
+
     console.log("DB tables created.");
 
     await db.query(

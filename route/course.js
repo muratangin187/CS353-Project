@@ -64,6 +64,20 @@ router.post("/addBookmark", async (req, res)=>{
     }
 });
 
+router.post("/addAnnouncement", async (req, res)=>{
+    let result = await db.addAnnouncement(
+        req.body.title,
+        req.body.content,
+        req.body.creator_id,
+        req.body.course_id
+    );
+    if(result == null){
+        res.status(400).send({"message": "There is an error occurred in the db write stage of announcement creation."});
+    }else{
+        res.status(200).send({"message": "Successfully announcement created."});
+    }
+});
+
 router.post("/addRating", async (req, res)=>{
     let result = await db.addRating(
         req.body.ratingScore,
@@ -225,6 +239,14 @@ router.get("/getLectureIndices/:cid", async (req, res)=>{
     console.log(JSON.stringify(req.params.cid));
     let result = await db.getLectureIndices(
         req.params.cid,
+    );
+    res.status(200).send(result);
+});
+
+router.get("/getCourseNamesOfCreator/:uid", async (req, res)=>{
+    console.log(JSON.stringify(req.params.uid));
+    let result = await db.getCourseNamesOfCreator(
+        req.params.uid,
     );
     res.status(200).send(result);
 });

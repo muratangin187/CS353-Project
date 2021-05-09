@@ -68,7 +68,7 @@ export default function LecturePage(){
         });
         console.log(bookmarksResponse.data);
         setBookmarksData(bookmarksResponse.data);
-    }, []);
+    }, [params.lid]);
 
     const durationToTime = (duration) => {
         switch (duration.length) {
@@ -110,7 +110,6 @@ export default function LecturePage(){
         if(response.status == 200){
             setIntent("success");
             setContent("Success", response.data.message);
-            window.location = window.location.origin;
         }else{
             setIntent("failure");
             setContent("Note cannot be added", response.data.message);
@@ -152,7 +151,6 @@ export default function LecturePage(){
         if(response.status == 200){
             setIntent("success");
             setContent("Success", response.data.message);
-            window.location = window.location.origin;
         } else{
             setIntent("failure");
             setContent("Bookmark cannot be added", response.data.message);
@@ -185,10 +183,9 @@ export default function LecturePage(){
         if(prevIndex != -1){
             setIntent("success");
             setContent("Success", "You are being redirected");
-            window.location = window.location.origin;
             setTimeout(()=>{
                 history.push(`/course/${cid}/lecture/${prevId}`);
-            },3000);
+            },1000);
         } else{
             setIntent("failure");
             setContent("Error", "There is no previous lecture");
@@ -196,7 +193,37 @@ export default function LecturePage(){
     }
 
     const goToNextLecture = async () => {
+        let response = await axios({
+            url:"/api/course/getLectureIndices/" + params.cid,
+            method: "GET",
+        });
+        const indices = response.data;
+        const curLectureIndex = lectureData.lecture_index;
+        let nextIndex = Number.MAX_SAFE_INTEGER;
+        let nextId = -1;
 
+        indices.forEach(e => {
+            let element = e.lecture_index;
+            if(element > curLectureIndex && element < nextIndex){
+                nextIndex = element;
+                nextId = e.id;
+            }
+        });
+
+        setShow(true);
+        console.log(indices);
+        console.log(`curlectureindex: ${curLectureIndex}, nextIndex: ${nextIndex}`);
+
+        if(nextIndex != -1){
+            setIntent("success");
+            setContent("Success", "You are being redirected");
+            setTimeout(()=>{
+                history.push(`/course/${cid}/lecture/${nextId}`);
+            },1000);
+        } else{
+            setIntent("failure");
+            setContent("Error", "There is no next lecture");
+        }
     }
 
     const onCompleteLecture = async () => {
@@ -214,7 +241,6 @@ export default function LecturePage(){
         if( response.status == 200){
             setIntent("success");
             setContent("Success", response.data.message);
-            window.location = window.location.origin;
         } else {
             setIntent("failure");
             setContent("Transaction cannot be processed", response.data.message);

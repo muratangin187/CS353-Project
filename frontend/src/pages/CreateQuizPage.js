@@ -8,7 +8,6 @@ export default function CreateQuizPage() {
         questions: [
             {
                 type: true, // true->TF, false->M
-                answers: ["", "", "", ""],
                 question: ""
             },
         ]
@@ -17,13 +16,12 @@ export default function CreateQuizPage() {
 
     const handleInputChange = (event) => {
         const target = event.target;
-
         if (target.type === "text" && target.name !== "questions"){
             setQuiz(prevState => ({
                 ...prevState,
                 [target.name]: target.value
             }));
-        } else if (target.name === "questions") {
+        } else if (target.type === "text" && target.name === "questions") {
             setQuiz(prevState => {
                 let splitArr = target.id.split(".");
                 let copiedQuestions = [...(prevState.questions)];
@@ -41,15 +39,52 @@ export default function CreateQuizPage() {
         }
     };
 
+    const handleRadioOnChange = (event) => {
+        let target = event.target;
+        setQuiz(prevState => {
+            let splitArr = target.id.split(".");
+            let copiedQuestions = [...(prevState.questions)];
+            let questionObj = copiedQuestions[parseInt(splitArr[1], 10)];
+            questionObj.answers = target.value === "true";
+            return ({
+                ...prevState,
+                questions: copiedQuestions
+            });
+        });
+    };
+
+    const handleSelectBoxOnChange = (event) => {
+        let target = event.target;
+
+        setQuiz(prevState => {
+            let splitArr = target.id.split(".");
+            let copiedQuestions = [...(prevState.questions)];
+            let questionObj = copiedQuestions[parseInt(splitArr[1], 10)];
+            questionObj.selectedAnswer = parseInt(target.value, 10);
+            return ({
+                ...prevState,
+                questions: copiedQuestions
+            });
+        });
+    };
+
     const handleClick = (id) => {
         let splitArr = id.split(".");
         let index = parseInt(splitArr[1]);
         let copiedQuestions = [...quiz.questions];
-        let questionObj = {
-            type: !copiedQuestions[index].type,
-            answers: ["", "", "", ""],
-            question: ""
-        };
+        let questionObj;
+        if (copiedQuestions[index].type){
+            questionObj = {
+                type: !copiedQuestions[index].type,
+                answers: ["", "", "", ""],
+                question: ""
+            };
+        } else {
+            questionObj = {
+                type: !copiedQuestions[index].type,
+                question: ""
+            };
+        }
 
         copiedQuestions.splice(index, 1, questionObj);
 
@@ -63,7 +98,6 @@ export default function CreateQuizPage() {
         let copiedQuestions = [...quiz.questions];
         let questionObj = {
             type: true,
-            answers: ["", "", "", ""],
             question: ""
         };
 
@@ -91,7 +125,6 @@ export default function CreateQuizPage() {
         alert(JSON.stringify(quiz));
     };
 
-    // TODO layout
     return (
         <Card style={{margin: 20}}>
             <Container style={{marginTop: 10, marginBottom: 10}} fluid>
@@ -137,13 +170,25 @@ export default function CreateQuizPage() {
                                                 placeholder='Question'/>
                                         </FormGroup>
                                         <Form.Row>
-                                            <FormGroup as={Col} md={9} controlId={"answers." + index.toString(10) + ".0"} className='answer_group'>
+                                            <FormGroup as={Col} md={4} controlId={"answers." + index.toString(10)} className='answer_group' style={{display: "flex", flexDirection: "column"}}>
+                                                <Form.Label><p style={{textAlign: "center"}}>True</p></Form.Label>
                                                 <Form.Control
-                                                    name="questions"
-                                                    type="text"
-                                                    value={quiz.questions[index].answers[0]}
-                                                    onChange={handleInputChange}
-                                                    placeholder='Answer'/>
+                                                    name={"radio." + index.toString(10)}
+                                                    type="radio"
+                                                    value={true}
+                                                    checked={quiz.questions[index].answers === true}
+                                                    onChange={handleRadioOnChange}
+                                                />
+                                            </FormGroup>
+                                            <FormGroup as={Col} md={5} controlId={"answers." + index.toString(10)} className='answer_group' style={{display: "flex", flexDirection: "column"}}>
+                                                <Form.Label><p style={{textAlign: "center"}}>False</p></Form.Label>
+                                                <Form.Control
+                                                    name={"radio." + index.toString(10)}
+                                                    type="radio"
+                                                    value={false}
+                                                    checked={quiz.questions[index].answers === false}
+                                                    onChange={handleRadioOnChange}
+                                                />
                                             </FormGroup>
                                             <Col md={2}>
                                                 <Button id={"button." + index.toString(10)} style={{width: "inherit"}} onClick={e => handleClick(e.target.id)}>
@@ -189,7 +234,7 @@ export default function CreateQuizPage() {
                                             </FormGroup>
                                         </Form.Row>
                                         <Form.Row>
-                                            <FormGroup as={Col} md={6} controlId={"answers." + index.toString(10) + ".2"} id='answer'>
+                                            <FormGroup as={Col} md={4} controlId={"answers." + index.toString(10) + ".2"} id='answer'>
                                                 <Form.Control
                                                     name="questions"
                                                     type="text"
@@ -204,6 +249,18 @@ export default function CreateQuizPage() {
                                                     value={quiz.questions[index].answers[3]}
                                                     onChange={handleInputChange}
                                                     placeholder='Fourth Answer'/>
+                                            </FormGroup>
+                                            <FormGroup as={Col} md={2} controlId={"selected_answers." + index.toString(10)} id='answer'>
+                                                <Form.Control
+                                                    name={"selected_answers." + index.toString(10)}
+                                                    as="select"
+                                                    value={quiz.questions[index].selectedAnswer}
+                                                    onChange={handleSelectBoxOnChange}>
+                                                    <option value={1}>1. Question</option>
+                                                    <option value={2}>2. Question</option>
+                                                    <option value={3}>3. Question</option>
+                                                    <option value={4}>4. Question</option>
+                                                </Form.Control>
                                             </FormGroup>
                                             <Col md={1}>
                                                 <Button style={{width: "inherit"}} id={"button." + index.toString(10)} onClick={e => handleClick(e.target.id)}>

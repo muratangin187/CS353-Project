@@ -149,7 +149,6 @@ function RatingsComp(props) {
     const [userData, setUserData] = useState(null);
     const [courseData, setCourseData] = useState(null);
     const [completedData, setCompletedData] = useState(null);
-    const [ratingsData, setRatingsData] = useState(null);
     const [isRatedData, setIsRatedData] = useState(null);
 
     useEffect(async () => {
@@ -169,13 +168,6 @@ function RatingsComp(props) {
         console.log(completedResponse.data);
         setCompletedData(completedResponse.data);
 
-        let ratingsResponse = await axios({
-            url: "/api/course/getCourseRatings/" + cid,
-            method: "GET",
-        });
-        console.log("Ratings response data: " + ratingsResponse.data);
-        setRatingsData(ratingsResponse.data);
-
         let isRatedResponse = await axios({
             url: "/api/course/isCourseRated/" + cid + "/" + userResponse.data.id,
             method: "GET",
@@ -183,15 +175,13 @@ function RatingsComp(props) {
         setIsRatedData(isRatedResponse.data);
     }, []);
 
-    if(!courseData || !userData || completedData == null || !ratingsData || isRatedData == null){
+    if(!courseData || !userData || completedData == null || isRatedData == null){
         if(!courseData){
             console.log("c");
         } if (!userData ) {
             console.log("u");
         } if (!completedData ) {
             console.log("comp");
-        } if (!ratingsData ) {
-            console.log("r");
         }
         return (<Container className="mt-5">
             <Spinner className="mt-5" style={{width:"35vw", height:"35vw"}} animation="border" variant="dark"/>
@@ -278,7 +268,7 @@ function RatingsComp(props) {
       return (
           <Container style={{width:"75vw"}}>
           <Row style={{width:"75vw"}}>
-          <ListRatingsComp/>
+          <ListRatingsComp cid={cid}/>
             <Col className="mt-3">
                 <h4><strong>Rate the course</strong></h4>
                 <Form onSubmit={handleRatingSubmit} ref={formRef}>
@@ -317,14 +307,32 @@ function RatingsComp(props) {
       );
 }
 
-function ListRatingsComp(){
+function ListRatingsComp(props){
+    const cid = props.cid;
+    const [ratingsData, setRatingsData] = useState(null);
+    const [courseData, setCourseData] = useState(null);
+
+    useEffect(async () => {
+        let response = await axios({
+            url:"/api/course/retrieve/" + cid,
+            method: "GET",
+        });
+        setCourseData(response.data);
+
+        let ratingsResponse = await axios({
+            url: "/api/course/getCourseRatings/" + cid,
+            method: "GET",
+        });
+        console.log("Ratings response data: " + ratingsResponse.data);
+        setRatingsData(ratingsResponse.data);
+    }, []);
 
     return (
                 <Col className="mt-3">
                     <h4 className="text-left"><strong>Ratings</strong></h4>
                     <Row className="mb-5">
                         <Image style={{width:"16px", height:"16px"}} src="../star.png" className="mt-1 mr-2 ml-3"/>
-                        <strong>4.3/5</strong>
+                        <strong>{courseData.averageRating}/5</strong>
                     </Row>
 
                 </Col>

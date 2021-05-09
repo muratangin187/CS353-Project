@@ -1,5 +1,5 @@
-import {Button, Card, Col, Container, Form, Image, Jumbotron, Row, Toast} from "react-bootstrap";
-import {useState, useRef, useContext, useEffect} from "react";
+import {Button, Card, Col, Container, Form, Image, Jumbotron, ListGroup, Row, Toast} from "react-bootstrap";
+import React, {useState, useRef, useContext, useEffect} from "react";
 import {Link, useHistory} from 'react-router-dom';
 import axios from "axios";
 import AuthService from "../services/AuthService";
@@ -13,6 +13,25 @@ export default function AdminPage() {
     const [startDate, setStartDate] = useState(new Date());
     const [endDate, setEndDate] = useState(new Date());
     const [courses, setCourses] = useState([]);
+    const [refunds, setRefunds] = useState([{
+        id:1,
+        title:"Parami iade edin",
+        state: 'PENDING',
+        seen: 0,
+        reason:"cok dandik kurs",
+        user_id:"1",
+        course_id:"1",
+        admin_id:null
+    },{
+        id:1,
+        title:"Parami iade edin",
+        state: 'REJECTED',
+        seen: 0,
+        reason:"cok dandik kurs",
+        user_id:"1",
+        course_id:"1",
+        admin_id:null
+    }]);
     const [selectedCourse, setSelectedCourse] = useState(null);
     const [percentage, setPercentage] = useState(10);
 
@@ -59,6 +78,48 @@ export default function AdminPage() {
         window.location = window.location.origin;
     }
 
+    const refundBox = (refund) => {
+        return (
+                <ListGroup className="m-3" style={{width:"65vw"}}>
+                    <ListGroup.Item>
+                        <Row>
+                            <Col>1.</Col>
+                            <Col xs={8} className="mr-5">
+                                <h4>{refund.title}</h4>
+                                <p>{refund.reason}</p>
+                            </Col>
+                            {refund.state == "PENDING" ? (
+                                <Row className="ml-5 mr-1">
+                                    <Button className="ml-auto mr-2" variant="success" type="submit">
+                                        Accept
+                                    </Button>
+                                    <Button className="ml-auto mr-2" variant="danger" type="submit">
+                                        Reject
+                                    </Button>
+                                </Row>
+                            ) : (
+                                <Col className="ml-5 mr-4">
+                                    <Button className="ml-auto mr-2" variant="secondary" disabled type="submit">
+                                        {refund.state}
+                                    </Button>
+                                </Col>
+                            )}
+                        </Row>
+                        <Row className="mt-3">
+                            {/*{refund.user_id}*/}
+                            {/*{courses.find(c=>c.id == refund.course_id)?.name}*/}
+                            <Col>
+                                Course: Python
+                            </Col>
+                            <Col>
+                                User: Murat ANGIN
+                            </Col>
+                        </Row>
+                    </ListGroup.Item>
+                </ListGroup>
+        );
+    }
+
     return (
         <Container className="mt-3 ml-5 mr-5" fluid>
             <Row className="justify-content-md-center mt-2">
@@ -76,7 +137,7 @@ export default function AdminPage() {
                                 setStartDate(d);
                         }}/>
                     </Row>
-                    <Row className="mt-2">
+                    <Row className="mt-2 mb-2">
                         End Date:&nbsp;&nbsp;
                         <DatePicker className="ml-3" value={endDate} onChange={(d)=>{
                             if(d > startDate)
@@ -85,6 +146,7 @@ export default function AdminPage() {
                     </Row>
                     <Row>
                         <Form.Group>
+                            <Form.Label>Discount Percentage</Form.Label>
                             <Form.Control type="text" placeholder="Percentage(10 for %10 discount)" onChange={e=>{
                                 setPercentage(parseInt(e.target.value));
                             }}/>
@@ -107,7 +169,14 @@ export default function AdminPage() {
                     </Row>
                 </Col>
                 <Col>
-                    Refund
+                    <Row>
+                        <h3>
+                            Refunds
+                        </h3>
+                    </Row>
+                    <Row>
+                        {refunds.map(refund=> refundBox(refund))}
+                    </Row>
                 </Col>
             </Row>
             <Row>

@@ -25,6 +25,7 @@ import CreateLecturePage from "./pages/CreateLecturePage";
 import LecturePage from "./pages/LecturePage";
 import AdminPage from "./pages/AdminPage";
 import CourseDescPage from "./pages/CourseDescPage";
+import MyRefundsPage from "./pages/MyRefundsPage";
 
 let timer = null;
 
@@ -107,6 +108,7 @@ function App() {
                           <Route path='/creator-profile/:creatorId' component={CreatorProfilePage}/>
                           <Route path='/my-cart/:userId' component={MyCartPage}/>
                           <Route path='/my-wishlist/:userId' component={MyWishlistPage}/>
+                          <Route path='/my-refunds' component={MyRefundsPage}/>
                           <Route path='/create-announcement/:creatorId' component={CreateAnnouncementPage}/>
                           <Route path='/answer-question-page/:questionId' component={AnswerQuestionPage}/>                          <Route path='/answer-question-page/:questionId' component={AnswerQuestionPage}/>
                           <Route path='/create-discount-page' component={CreateDiscountPage}/>

@@ -415,6 +415,24 @@ class Db{
         });
     }
 
+    makeRefund(courseId, title, reason, userId){
+        return new Promise(resolve=>{
+            this._db.query(
+                'INSERT INTO Refund (title, reason, user_id, course_id) VALUES ?',
+                [[[title, reason, userId, courseId]]],
+                (error, results, fields) => {
+                    if (error) {
+                        console.log(error);
+                        resolve(false);
+                    } else {
+                        console.log(results);
+                        resolve(true);
+                    }
+                }
+            );
+        });
+    }
+
     getUserById(userId){
         return new Promise(resolve => {
             this._db.query(
@@ -538,6 +556,22 @@ class Db{
                     }
                 }
             );
+        });
+    }
+
+    getUserCourses(userId){
+        return new Promise(resolve => {
+            this._db.query(
+                `SELECT * FROM Course, Buy WHERE course_id = id AND user_id = ${userId}`,
+                (error, results, fields)=>{
+                    if(error){
+                        console.log(error);
+                        resolve(null);
+                    }else{
+                        console.log(results);
+                        resolve(results);
+                    }
+                });
         });
     }
 

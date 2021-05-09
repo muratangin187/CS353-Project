@@ -309,7 +309,8 @@ function RatingsComp(props) {
 
 function ListRatingsComp(props){
     const cid = props.cid;
-    const [ratingsData, setRatingsData] = useState(null);
+    const [ratingsData, setRatingsData] = useState([]);
+    const [usersData, setUsersData] = useState(null);
     const [courseData, setCourseData] = useState(null);
 
     useEffect(async () => {
@@ -323,9 +324,23 @@ function ListRatingsComp(props){
             url: "/api/course/getCourseRatings/" + cid,
             method: "GET",
         });
-        console.log("Ratings response data: " + ratingsResponse.data);
+        console.log("Ratings response data: " + JSON.stringify(ratingsResponse.data));
+
+        for (const rating of ratingsResponse.data) {
+            let response = await axios({
+                url: "/api/user/" + rating.user_id,
+                method: "GET",
+            });
+            rating.user = response.data;
+        }
         setRatingsData(ratingsResponse.data);
     }, []);
+
+    if(!courseData || !ratingsData){
+        return (<Container className="mt-5">
+            <Spinner className="mt-5" style={{width:"15vw", height:"15vw"}} animation="border" variant="dark"/>
+        </Container>);
+    }
 
     return (
                 <Col className="mt-3">
@@ -334,9 +349,30 @@ function ListRatingsComp(props){
                         <Image style={{width:"16px", height:"16px"}} src="../star.png" className="mt-1 mr-2 ml-3"/>
                         <strong>{courseData.averageRating}/5</strong>
                     </Row>
-
+                    <ListGroup>
+                        {
+                            ratingsData.map((rating) => {
+                                console.log(JSON.stringify(rating));
+                                return RatingItem(rating);
+                            })
+                        }
+                    </ListGroup>
                 </Col>
     );
+}
+
+function RatingItem(rating){
+    return (<ListGroup.Item>
+        <Row>
+            <Col xs={10}>
+                <h4>{rating.user.name + ' ' + rating.user.surname}</h4>
+                <p>{rating.content}</p>
+            </Col>
+            <Col xs={1} className="mt-3">
+                <Badge className="pl-3" variant="info"> <strong style={{fontSize: "14px"}}>{rating.ratingScore}</strong> <Image style={{width:"14px", height:"14px"}} src="../star.png" rounded className="mb-1 mr-1 ml-1"/></Badge>
+            </Col>
+        </Row>
+    </ListGroup.Item>);
 }
 
 function AnnouncementsComp() {

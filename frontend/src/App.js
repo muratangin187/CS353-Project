@@ -27,6 +27,7 @@ import AdminPage from "./pages/AdminPage";
 import CourseDescPage from "./pages/CourseDescPage";
 import CreateQuizPage from "./pages/CreateQuizPage";
 import MyRefundsPage from "./pages/MyRefundsPage";
+import AboutUs from "./pages/AboutUsPage";
 
 let timer = null;
 
@@ -101,7 +102,7 @@ function App() {
                           <Route path='/course/:cid' component={MainCoursePage}/>
                           <Route path='/create-course' component={CreateCoursePage}/>
                           <Route path='/course-desc/:cid' component={CourseDescPage}/>
-                          <Route path='/about' component={Api}/>
+                          <Route path='/about' component={AboutUs}/>
                           <Route path='/login' component={LoginPage}/>
                           <PrivateRoute path='/profile' component={ProfilePage} role={0}/>
                           <PrivateRoute path='/admin' component={AdminPage} role={2}/>

@@ -17,9 +17,8 @@ function CustomNavbar(){
         <Navbar bg="light" variant="light">
             <Navbar.Brand href="/">Ucollage</Navbar.Brand>
             <Nav className="m-auto">
-                <Nav.Link href="/courses">Courses</Nav.Link>
                 <Nav.Link href="/my-courses">My Courses</Nav.Link>
-                <Nav.Link href="/about">About</Nav.Link>
+                <Nav.Link href="/about">About Us</Nav.Link>
             </Nav>
             {user ? (user.isAdmin ? (
                 <Link to="/admin"><Button style={{marginRight: 20}} variant="outline-dark">Admin Panel</Button></Link>

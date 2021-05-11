@@ -97,18 +97,21 @@ function QuizzesComp(props) {
                 {
                     quizList.map((quiz, index) => {
                         return(
-                            <Row>
-                                <Col>{index + 1}.</Col>
-                                <Col xs={8} className="mr-5">
-                                    <h4>{quiz.name}</h4>
-                                    <p>Duration: {quiz.duration}</p>
-                                </Col>
-                                <Col xs={1} className="ml-5">
-                                    <Button className="ml-auto mr-2" variant="primary">
-                                        {(!quiz.isComplete) ? (quiz.score.toString(10) + "/10") : "Take"}
-                                    </Button>
-                                </Col>
-                            </Row>
+                            <>
+                                <Row style={{marginBottom: 10}}>
+                                    <Col style={{display: "flex", justifyContent: "center", alignItems: "center"}} md={1}>{index + 1}.</Col>
+                                    <Col md={9}>
+                                        <h4>{quiz.name}</h4>
+                                        <p><strong>Duration:</strong> {quiz.duration}</p>
+                                    </Col>
+                                    <Col md={2} style={{display: "flex", justifyContent: "center", alignItems: "center"}}>
+                                        <Button variant="primary" style={{height: "min-content"}}>
+                                            {(quiz.isComplete) ? (quiz.score.toString(10) + "/10") : "Take"}
+                                        </Button>
+                                    </Col>
+                                </Row>
+                                <hr />
+                            </>
                         );
                     })
                 }

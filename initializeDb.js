@@ -12,6 +12,10 @@ async function main (){
     await db.connect();
     console.log("DB connection initialized.");
 
+    await db.query('DROP TABLE IF EXISTS `MultipleChoice`;')
+    await db.query('DROP TABLE IF EXISTS `TrueFalse`;')
+    await db.query('DROP TABLE IF EXISTS `FlashCard`;')
+    await db.query('DROP TABLE IF EXISTS `Quiz`;')
     await db.query('DROP TABLE IF EXISTS `CartCourses`;');
     await db.query('DROP TABLE IF EXISTS `WishlistCourses`;');
     await db.query('DROP TABLE IF EXISTS `Refund`;')
@@ -177,6 +181,45 @@ async function main (){
         FOREIGN KEY (course_id) REFERENCES Course(id));`
     );
 
+
+    // QUIZ
+    await db.query(
+        `CREATE TABLE Quiz(id INT AUTO_INCREMENT,
+        duration TIME(6) NOT NULL,
+        name VARCHAR(128) NOT NULL,
+        creator_id INT NOT NULL,
+        course_id INT NOT NULL,
+        PRIMARY KEY(id),
+        FOREIGN KEY(creator_id) REFERENCES Creator(id),
+        FOREIGN KEY(course_id) REFERENCES Course(id));`
+    );
+
+    await db.query(
+        `CREATE TABLE FlashCard(id INT AUTO_INCREMENT,
+        question VARCHAR(500),
+        quiz_id INT NOT NULL,
+        PRIMARY KEY(id),
+        FOREIGN KEY(quiz_id) REFERENCES Quiz(id),
+        UNIQUE(question, quiz_id));`
+    );
+
+    await db.query(
+        `CREATE TABLE TrueFalse(id INT,
+        answer TINYINT(1) NOT NULL,
+        PRIMARY KEY(id),
+        FOREIGN KEY(id) REFERENCES FlashCard(id));`
+    );
+
+    await db.query(
+        `CREATE TABLE MultipleChoice(id INT,
+        choice1 VARCHAR(255) NOT NULL,
+        choice2 VARCHAR(255) NOT NULL,
+        choice3 VARCHAR(255) NOT NULL,
+        choice4 VARCHAR(255) NOT NULL,
+        answer INT NOT NULL, 
+        PRIMARY KEY(id),
+        FOREIGN KEY(id) REFERENCES FlashCard(id));`
+    );
 
     console.log("DB tables created.");
 

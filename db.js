@@ -549,6 +549,24 @@ class Db{
         });
     }
 
+    makeRefund(courseId, title, reason, userId){
+        return new Promise(resolve=>{
+            this._db.query(
+                'INSERT INTO Refund (title, reason, user_id, course_id) VALUES ?',
+                [[[title, reason, userId, courseId]]],
+                (error, results, fields) => {
+                    if (error) {
+                        console.log(error);
+                        resolve(false);
+                    } else {
+                        console.log(results);
+                        resolve(true);
+                    }
+                }
+            );
+        });
+    }
+
     getUserById(userId){
         return new Promise(resolve => {
             this._db.query(
@@ -708,5 +726,96 @@ class Db{
         });
     }
 
+    getUserCourses(userId){
+        return new Promise(resolve => {
+            this._db.query(
+                `SELECT * FROM Course, Buy WHERE course_id = id AND user_id = ${userId}`,
+                (error, results, fields)=>{
+                    if(error){
+                        console.log(error);
+                        resolve(null);
+                    }else{
+                        console.log(results);
+                        resolve(results);
+                    }
+                });
+        });
+    }
+
+    insertQuiz(duration, name, creator_id, course_id){
+        return new Promise(resolve => {
+            this._db.query(
+                `INSERT INTO Quiz(duration, name, creator_id, course_id)
+                VALUES (\'${duration}\', \'${name}\', \'${creator_id}\', \'${course_id}\');`,
+                (error, results, fields) => {
+                    if (error){
+                        console.log(error);
+                        resolve(null);
+                    } else {
+                        console.log("results.insertId");
+                        console.log(results.insertId);
+                        resolve(results.insertId);
+                    }
+                }
+            );
+        });
+    }
+
+    insertFlashCard(question, quiz_id){
+        return new Promise(resolve => {
+            this._db.query(
+                `INSERT INTO FlashCard(question, quiz_id)
+                VALUES (\'${question}\', \'${quiz_id}\');`,
+                (error, results, fields) => {
+                    if (error){
+                        console.log(error);
+                        resolve(null);
+                    } else {
+                        resolve(results.insertId);
+                    }
+                }
+            );
+        });
+    }
+
+    insertTrueFalse(f_id, answer){
+        return new Promise(resolve => {
+            this._db.query(
+                `INSERT INTO TrueFalse(id, answer)
+                VALUES (\'${f_id}\', \'${answer}\');`,
+                (error, results, fields) => {
+                    if (error){
+                        console.log(error);
+                        resolve(null);
+                    } else {
+                        resolve(true);
+                    }
+                }
+            );
+        });
+    }
+
+    // INSERT INTO MultipleChoice(ID, choice1, choice2, choice3, choice4, answer)
+    // SELECT ID, <written_choice1>, <written_choice2>, <written_choice3>, <written_choice4>, <selected_answer>
+    // FROM FlashCard f
+    // WHERE f.question = <written_question> AND f.quiz_id IN (SELECT q.ID
+    // FROM Quiz q
+    // WHERE q.creator_id = @creator_id AND q.course_id = @course_id);
+    insertMultiple(f_id, choice1, choice2, choice3, choice4, answer){
+        return new Promise(resolve => {
+            this._db.query(
+                `INSERT INTO MultipleChoice(id, choice1, choice2, choice3, choice4, answer)
+                VALUES (\'${f_id}\', \'${choice1}\', \'${choice2}\', \'${choice3}\', \'${choice4}\', \'${answer}\');`,
+                (error, results, fields) => {
+                    if (error){
+                        console.log(error);
+                        resolve(null);
+                    } else {
+                        resolve(true);
+                    }
+                }
+            );
+        });
+    }
 }
 module.exports = new Db();

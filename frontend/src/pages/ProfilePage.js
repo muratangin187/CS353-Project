@@ -1,5 +1,5 @@
 import {Button, Card, Col, Container, Form, Image, Jumbotron, Row, Toast} from "react-bootstrap";
-import {useState, useRef, useContext, useEffect} from "react";
+import React, {useState, useRef, useContext, useEffect} from "react";
 import {Link, useHistory} from 'react-router-dom';
 import axios from "axios";
 import AuthService from "../services/AuthService";
@@ -27,13 +27,48 @@ export default function ProfilePage() {
 
     return (
         <Container style={{marginTop: 20}}>
-            <Card>
+            <Card style={{width:"50vw"}}>
                 <Card.Header>
                     Profile of {user?.name}
                 </Card.Header>
                 <Card.Body>
-                    <Row>
-                        <Button className="ml-auto mr-2" variant="danger" type="submit" onClick={logout}>
+                    <Row className="justify-content-md-center mt-2">
+                        <Button  variant="outline-secondary" type="submit" style={{width:"35vw"}} onClick={()=>{
+                            history.push("/my-refunds");
+                        }}>
+                            My Wishlist
+                        </Button>
+                    </Row>
+                    <Row className="justify-content-md-center mt-2">
+                        <Button  variant="outline-secondary" type="submit" style={{width:"35vw"}} onClick={()=>{
+                            history.push("/my-refunds");
+                        }}>
+                            My Cart
+                        </Button>
+                    </Row>
+                    <Row className="justify-content-md-center mt-2">
+                        <Button  variant="outline-secondary" type="submit" style={{width:"35vw"}} onClick={()=>{
+                            history.push("/my-refunds");
+                        }}>
+                            Balance
+                        </Button>
+                    </Row>
+                    <Row className="justify-content-md-center mt-2">
+                        <Button  variant="outline-secondary" type="submit" style={{width:"35vw"}} onClick={()=>{
+                            history.push("/my-refunds");
+                        }}>
+                            Change Profile Photo
+                        </Button>
+                    </Row>
+                    <Row className="justify-content-md-center mt-2">
+                        <Button  variant="outline-secondary" type="submit" style={{width:"35vw"}} onClick={()=>{
+                            history.push("/my-refunds");
+                        }}>
+                            Status of Refunds
+                        </Button>
+                    </Row>
+                    <Row className="justify-content-md-center mt-2">
+                        <Button  variant="danger" type="submit" onClick={logout} style={{width:"35vw"}}>
                             Log out
                         </Button>
                     </Row>

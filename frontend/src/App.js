@@ -28,6 +28,7 @@ import CourseDescPage from "./pages/CourseDescPage";
 import CreateQuizPage from "./pages/CreateQuizPage";
 import MyRefundsPage from "./pages/MyRefundsPage";
 import AboutUs from "./pages/AboutUsPage";
+import MyBalance from "./pages/MyBalance";
 
 let timer = null;
 
@@ -115,7 +116,8 @@ function App() {
                           <Route path='/my-cart' component={MyCartPage}/>
                           <Route path='/my-wishlist' component={MyWishlistPage}/>
                           <Route path='/create-announcement/:creatorId' component={CreateAnnouncementPage}/>
-                          <Route path='/answer-question-page/:questionId' component={AnswerQuestionPage}/>                          <Route path='/answer-question-page/:questionId' component={AnswerQuestionPage}/>
+                          <Route path='/answer-question-page/:questionId' component={AnswerQuestionPage}/>
+                          <Route path='/my-balance' component={MyBalance}/>
                           <Route path='/create-discount-page' component={CreateDiscountPage}/>
 
                       </Switch>

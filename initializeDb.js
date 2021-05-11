@@ -1,5 +1,6 @@
 const config = require("./config.js");
 const mysql = require("mysql");
+const crypto = require('crypto');
 
 let db = mysql.createConnection({
     host     : config.HOST,
@@ -36,7 +37,7 @@ async function main (){
     await db.query('CREATE TABLE Person(\n' +
         'id INT AUTO_INCREMENT,\n' +
         'email VARCHAR(64) NOT NULL,\n' +
-        'password VARCHAR(30) NOT NULL,\n' +
+        'password VARCHAR(50) NOT NULL,\n' +
         'name VARCHAR(20) NOT NULL,\n' +
         'surname VARCHAR(20) NOT NULL,\n' +
         'username VARCHAR(20) NOT NULL,\n' +
@@ -223,13 +224,20 @@ async function main (){
 
     console.log("DB tables created.");
 
-    await db.query(`INSERT INTO Person (username, email, name, surname, password, photo) VALUES ('test_user', 'test_user@gmail.com', 'Mehmet', 'Testoglu', '123', 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg');`);
-    await db.query(`INSERT INTO Person (username, email, name, surname, password, photo) VALUES ('test_creator', 'test_creator@gmail.com', 'David', 'Testoglu', '123', 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg');`);
-    await db.query(`INSERT INTO Person (username, email, name, surname, password, photo) VALUES ('test_admin', 'test_admin@gmail.com', 'Atalar', 'Testoglu', '123', 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg');`);
+    let hash = crypto.createHash('md5').update("123").digest('hex');
+    await db.query(`INSERT INTO Person (username, email, name, surname, password, photo) VALUES ('test_user', 'test_user@gmail.com', 'Mehmet', 'Testoglu', '${hash}', 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg');`);
+    await db.query(`INSERT INTO Person (username, email, name, surname, password, photo) VALUES ('test_user2', 'test_user2@gmail.com', 'Mehmet2', 'Testoglu2', '${hash}', 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg');`);
+    await db.query(`INSERT INTO Person (username, email, name, surname, password, photo) VALUES ('test_creator', 'test_creator@gmail.com', 'David', 'Testoglu', '${hash}', 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg');`);
+    await db.query(`INSERT INTO Person (username, email, name, surname, password, photo) VALUES ('test_admin', 'test_admin@gmail.com', 'Atalar', 'Testoglu', '${hash}', 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg');`);
     await db.query(`INSERT INTO User (id,hideCourses,balance) VALUES (1, false, 10000);`);
-    await db.query(`INSERT INTO Creator (id,about, website, linkedin, youtube) VALUES (2, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus nibh arcu, facilisis nec posuere eget, molestie ac felis. Aenean aliquam, nibh scelerisque pharetra pharetra, mi nunc hendrerit urna, in iaculis sapien est sit amet ex. Quisque sit amet ante eros. In hac habitasse platea dictumst. Cras convallis augue eget libero egestas, luctus malesuada diam pretium.', 'www.google.com', 'www.linkedin.com', 'www.youtube.com');`);
-    await db.query(`INSERT INTO Admin (id) VALUES (3);`);
-    await db.query(`INSERT INTO Course(id,title,price,description,thumbnail,category,creator_id,averageRating,ratingCount) VALUES (0, 'Python egitimi', 120, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus nibh arcu, facilisis nec posuere eget, molestie ac felis. Aenean aliquam, nibh scelerisque pharetra pharetra, mi nunc hendrerit urna.', 'https://i1.wp.com/stickker.net/wp-content/uploads/2015/09/python.png?fit=600,600&ssl=1', 'Technology', 2, 4.5, 1)`);
+    await db.query(`INSERT INTO User (id,hideCourses,balance) VALUES (2, false, 10000);`);
+    await db.query(`INSERT INTO Creator (id,about, website, linkedin, youtube) VALUES (3, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus nibh arcu, facilisis nec posuere eget, molestie ac felis. Aenean aliquam, nibh scelerisque pharetra pharetra, mi nunc hendrerit urna, in iaculis sapien est sit amet ex. Quisque sit amet ante eros. In hac habitasse platea dictumst. Cras convallis augue eget libero egestas, luctus malesuada diam pretium.', 'www.google.com', 'www.linkedin.com', 'www.youtube.com');`);
+    await db.query(`INSERT INTO Admin (id) VALUES (4);`);
+    await db.query(`INSERT INTO Course(id,title,price,description,thumbnail,category,creator_id,averageRating,ratingCount) VALUES (1, 'Python egitimi', 120, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus nibh arcu, facilisis nec posuere eget, molestie ac felis. Aenean aliquam, nibh scelerisque pharetra pharetra, mi nunc hendrerit urna.', 'https://i1.wp.com/stickker.net/wp-content/uploads/2015/09/python.png?fit=600,600&ssl=1', 'Technology', 3, 4.5, 1)`);
+    await db.query(`INSERT INTO Buy (user_id, course_id) VALUES (1,1);`);
+    await db.query(`INSERT INTO Buy (user_id, course_id) VALUES (2,1);`);
+    await db.query(`INSERT INTO Refund (title, reason, course_id, user_id, admin_id) VALUES ("Cok dandik ", "parami iade edin", 1, 1, NULL);`);
+    await db.query(`INSERT INTO Refund (title, reason, course_id, user_id, admin_id) VALUES ("Cok guzel kurs", "ama gene siz parami iade edin", 1, 2, NULL);`);
 
     console.log("Initialization finished");
 }

@@ -1,5 +1,6 @@
 const mysql = require('mysql');
 const config = require("./config");
+const crypto = require('crypto');
 
 class Db{
     constructor() {
@@ -124,9 +125,10 @@ class Db{
 
     insertPerson(username, email, photo, name, surname, password){
         return new Promise(resolve=> {
+            let hash = crypto.createHash('md5').update(password).digest('hex');
             this._db.query(
                 'INSERT INTO Person (username, email, name, surname, password, photo) VALUES ?',
-                [[[username, email, name, surname, password, photo]]],
+                [[[username, email, name, surname, hash, photo]]],
                 (error, results, fields) => {
                     if (error){
                         console.log(error);
@@ -185,6 +187,72 @@ class Db{
                     }
                 }
             );
+        });
+    }
+
+    closeRefund(refundId, isAccepted, adminId){
+        return new Promise(resolve => {
+            let status = isAccepted ? "ALLOWED" : "REJECTED";
+            console.log(refundId + " - " + isAccepted);
+            this._db.query(
+                `UPDATE Refund SET state='${status}', admin_id=${adminId} WHERE id=${refundId}`,
+                (error, results, fields) => {
+                    if (error){
+                        console.log(error);
+                        resolve(false);
+                    }else{
+                        resolve(true);
+                    }
+                }
+            );
+        });
+    }
+
+    loadUserBalance(userId, balance){
+        return new Promise(resolve=>{
+            this._db.query(
+                `UPDATE User SET balance = balance + ${balance} WHERE id = ${userId};`,
+                (error, results, fields)=>{
+                    if(error){
+                        console.log(error);
+                        resolve(false);
+                    }else{
+                        console.log(results);
+                        resolve(true);
+                    }
+                });
+        });
+    }
+
+    getUserRefunds(userId){
+        return new Promise(resolve=>{
+            this._db.query(
+                `SELECT ref.id, ref.title, ref.reason, ref.state, ref.seen, ref.reason, c.title as course_title, c.id as course_id, p.username as username FROM Refund ref, Course c, Person p WHERE ref.course_id = c.ID AND ref.user_id = p.ID AND ref.user_id=${userId} ORDER BY admin_id;`,
+                (error, results, fields)=>{
+                    if(error){
+                        console.log(error);
+                        resolve(null);
+                    }else{
+                        console.log(results);
+                        resolve(results);
+                    }
+                });
+        });
+    }
+
+    getAllRefunds(){
+        return new Promise(resolve=>{
+            this._db.query(
+                `SELECT ref.id, ref.title, ref.reason, ref.state, ref.seen, ref.reason, c.title as course_title, c.id as course_id, p.username as username FROM Refund ref, Course c, Person p WHERE ref.course_id = c.ID AND ref.user_id = p.ID ORDER BY admin_id;`,
+                (error, results, fields)=>{
+                    if(error){
+                        console.log(error);
+                        resolve(null);
+                    }else{
+                        console.log(results);
+                        resolve(results);
+                    }
+                });
         });
     }
 
@@ -627,8 +695,9 @@ class Db{
 
     checkCreds(username, password){
         return new Promise(resolve => {
+            let hash = crypto.createHash('md5').update(password).digest('hex');
             this._db.query(
-                `SELECT id FROM Person WHERE username = \'${username}\' AND password = \'${password}\';`,
+                `SELECT id FROM Person WHERE username = \'${username}\' AND password = \'${hash}\';`,
                 async (error, results, fields) => {
                     if (error){
                         console.log(error);

@@ -13,27 +13,10 @@ export default function AdminPage() {
     const [startDate, setStartDate] = useState(new Date());
     const [endDate, setEndDate] = useState(new Date());
     const [courses, setCourses] = useState([]);
-    const [refunds, setRefunds] = useState([{
-        id:1,
-        title:"Parami iade edin",
-        state: 'PENDING',
-        seen: 0,
-        reason:"cok dandik kurs",
-        user_id:"1",
-        course_id:"1",
-        admin_id:null
-    },{
-        id:1,
-        title:"Parami iade edin",
-        state: 'REJECTED',
-        seen: 0,
-        reason:"cok dandik kurs",
-        user_id:"1",
-        course_id:"1",
-        admin_id:null
-    }]);
     const [selectedCourse, setSelectedCourse] = useState(null);
+    const [refunds, setRefunds] = useState([]);
     const [percentage, setPercentage] = useState(10);
+    const [updatePage, setUpdatePage] = useState(false);
 
     useEffect(async()=>{
         let response = await axios({
@@ -42,7 +25,20 @@ export default function AdminPage() {
         });
         setCourses(response.data);
         setSelectedCourse(response.data[0].id)
-    },[]);
+
+        let response2 = await axios({
+            url: "/api/course/get-all-refunds",
+            method: "GET"
+        });
+        if(response2.status == 400){
+            setShow(true);
+            setContent("Error,", response2.data);
+            setIntent("failure");
+        }else{
+            console.log(response2.data);
+            setRefunds(response2.data);
+        }
+    },[updatePage]);
 
     const createDiscount = async () => {
         setIntent("normal");
@@ -78,6 +74,28 @@ export default function AdminPage() {
         window.location = window.location.origin;
     }
 
+    const closeRefund = async (refundId, isAccepted)=>{
+        let admin = (await getCurrentUser).data;
+        let response = await axios({
+            url: "/api/course/close-refund",
+            method: "POST",
+            data: {
+                refundId: refundId,
+                isAccepted: isAccepted,
+                adminId: admin.id
+            }
+        });
+        setShow(true);
+        if(response.status == 200){
+            setIntent("success");
+            setContent("Success", response.data.message);
+        }else{
+            setIntent("failure");
+            setContent("Refund close failed", response.data.message);
+        }
+        setUpdatePage(!updatePage);
+    }
+
     const refundBox = (refund) => {
         return (
                 <ListGroup className="m-3" style={{width:"65vw"}}>
@@ -90,10 +108,10 @@ export default function AdminPage() {
                             </Col>
                             {refund.state == "PENDING" ? (
                                 <Row className="ml-5 mr-1">
-                                    <Button className="ml-auto mr-2" variant="success" type="submit">
+                                    <Button className="ml-auto mr-2" variant="success" type="submit" onClick={()=>closeRefund(refund.id, 1)}>
                                         Accept
                                     </Button>
-                                    <Button className="ml-auto mr-2" variant="danger" type="submit">
+                                    <Button className="ml-auto mr-2" variant="danger" type="submit" onClick={()=>closeRefund(refund.id, 0)}>
                                         Reject
                                     </Button>
                                 </Row>
@@ -109,10 +127,10 @@ export default function AdminPage() {
                             {/*{refund.user_id}*/}
                             {/*{courses.find(c=>c.id == refund.course_id)?.name}*/}
                             <Col>
-                                Course: Python
+                                Course: {refund.course_title}
                             </Col>
                             <Col>
-                                User: Murat ANGIN
+                                User: {refund.username}
                             </Col>
                         </Row>
                     </ListGroup.Item>

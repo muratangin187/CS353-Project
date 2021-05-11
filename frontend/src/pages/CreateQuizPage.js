@@ -1,18 +1,54 @@
 import {Container, Row, Col, Form, FormGroup, Button, Card} from "react-bootstrap";
-import {useState} from "react";
+import {useContext, useEffect, useState} from "react";
+import {NotificationContext} from "../services/NotificationContext";
+import {AuthContext} from "../services/AuthContext";
+import {useParams} from "react-router-dom";
+import QuizService from "../services/QuizService";
 
 export default function CreateQuizPage() {
+    const {setShow, setContent, setIntent} = useContext(NotificationContext);
+    const {getCurrentUser} = useContext(AuthContext);
     const [quiz, setQuiz] = useState({
         name: "",
         duration: "",
         questions: [
             {
                 type: true, // true->TF, false->M
-                question: ""
+                question: "",
+                answers: 1
             },
         ]
 
     });
+
+    const [user, setUser] = useState(null);
+    const {cid} = useParams();
+
+    useEffect(async () => {
+        let response = await getCurrentUser;
+        setUser(response?.data);
+    }, []);
+
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+        setIntent("normal");
+        setContent("Processing", "Please wait");
+        setShow(true);
+        let response = await QuizService.createQuiz(user.id, cid, quiz);
+        setShow(true);
+
+        if(response){
+            setIntent("success");
+            setContent("Success", "Quiz is created successfully");
+        }else{
+            setIntent("failure");
+            setContent("Quiz insertion operation failed", response.data.message);
+        }
+    };
+
+    // const handleSubmit = () => {
+    //     alert(JSON.stringify(quiz));
+    // };
 
     const handleInputChange = (event) => {
         const target = event.target;
@@ -39,28 +75,16 @@ export default function CreateQuizPage() {
         }
     };
 
-    const handleRadioOnChange = (event) => {
+    const handleOnChange = (event) => {
         let target = event.target;
         setQuiz(prevState => {
             let splitArr = target.id.split(".");
             let copiedQuestions = [...(prevState.questions)];
             let questionObj = copiedQuestions[parseInt(splitArr[1], 10)];
-            questionObj.answers = target.value === "true";
-            return ({
-                ...prevState,
-                questions: copiedQuestions
-            });
-        });
-    };
-
-    const handleSelectBoxOnChange = (event) => {
-        let target = event.target;
-
-        setQuiz(prevState => {
-            let splitArr = target.id.split(".");
-            let copiedQuestions = [...(prevState.questions)];
-            let questionObj = copiedQuestions[parseInt(splitArr[1], 10)];
-            questionObj.selectedAnswer = parseInt(target.value, 10);
+            if (target.type === "radio")
+                questionObj.answers = parseInt(target.value, 10);
+            else
+                questionObj.selectedAnswer = parseInt(target.value, 10);
             return ({
                 ...prevState,
                 questions: copiedQuestions
@@ -77,12 +101,14 @@ export default function CreateQuizPage() {
             questionObj = {
                 type: !copiedQuestions[index].type,
                 answers: ["", "", "", ""],
-                question: ""
+                question: "",
+                selectedAnswer: 1
             };
         } else {
             questionObj = {
                 type: !copiedQuestions[index].type,
-                question: ""
+                question: "",
+                answers: 1
             };
         }
 
@@ -121,17 +147,13 @@ export default function CreateQuizPage() {
         }));
     };
 
-    const handleSubmit = () => {
-        alert(JSON.stringify(quiz));
-    };
-
     return (
         <Card style={{margin: 20}}>
             <Container style={{marginTop: 10, marginBottom: 10}} fluid>
                 <Row id='title'>
                     <Col><h3>Create Quiz</h3></Col>
                 </Row>
-                <Form id='name_duration_form'>
+                <Form id='name_duration_form' onSubmit={(event) => handleSubmit(event)}>
                     <Form.Row id='name_duration'>
                         <FormGroup as={Col} controlId='name' id='name_group'>
                             <Form.Control
@@ -175,9 +197,9 @@ export default function CreateQuizPage() {
                                                 <Form.Control
                                                     name={"radio." + index.toString(10)}
                                                     type="radio"
-                                                    value={true}
-                                                    checked={quiz.questions[index].answers === true}
-                                                    onChange={handleRadioOnChange}
+                                                    value={1}
+                                                    checked={quiz.questions[index].answers === 1}
+                                                    onChange={handleOnChange}
                                                 />
                                             </FormGroup>
                                             <FormGroup as={Col} md={5} controlId={"answers." + index.toString(10)} className='answer_group' style={{display: "flex", flexDirection: "column"}}>
@@ -185,9 +207,9 @@ export default function CreateQuizPage() {
                                                 <Form.Control
                                                     name={"radio." + index.toString(10)}
                                                     type="radio"
-                                                    value={false}
-                                                    checked={quiz.questions[index].answers === false}
-                                                    onChange={handleRadioOnChange}
+                                                    value={0}
+                                                    checked={quiz.questions[index].answers === 0}
+                                                    onChange={handleOnChange}
                                                 />
                                             </FormGroup>
                                             <Col md={2}>
@@ -255,7 +277,7 @@ export default function CreateQuizPage() {
                                                     name={"selected_answers." + index.toString(10)}
                                                     as="select"
                                                     value={quiz.questions[index].selectedAnswer}
-                                                    onChange={handleSelectBoxOnChange}>
+                                                    onChange={handleOnChange}>
                                                     <option value={1}>1. Question</option>
                                                     <option value={2}>2. Question</option>
                                                     <option value={3}>3. Question</option>
@@ -285,7 +307,10 @@ export default function CreateQuizPage() {
                             </Button>
                         </Col>
                         <Col md={2}>
-                            <Button style={{width: "inherit"}} onClick={handleSubmit}>
+                            {/*<Button style={{width: "inherit"}} onClick={handleSubmit}>*/}
+                            {/*    Submit*/}
+                            {/*</Button>*/}
+                            <Button style={{width: "inherit"}} type="submit">
                                 Submit
                             </Button>
                         </Col>

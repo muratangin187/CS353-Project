@@ -196,12 +196,9 @@ async function main (){
         choice2 VARCHAR(255) NOT NULL,
         choice3 VARCHAR(255) NOT NULL,
         choice4 VARCHAR(255) NOT NULL,
-        answer VARCHAR(255) NOT NULL, 
+        answer INT NOT NULL, 
         PRIMARY KEY(id),
-        FOREIGN KEY(id) REFERENCES FlashCard(id),
-        CONSTRAINT ck_answer CHECK (
-            answer IN (choice1, choice2, choice3, choice4)
-        ));`
+        FOREIGN KEY(id) REFERENCES FlashCard(id));`
     );
 
     console.log("DB tables created.");

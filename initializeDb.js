@@ -12,6 +12,10 @@ async function main (){
     await db.connect();
     console.log("DB connection initialized.");
 
+    await db.query('DROP TABLE IF EXISTS `MultipleChoice`;')
+    await db.query('DROP TABLE IF EXISTS `TrueFalse`;')
+    await db.query('DROP TABLE IF EXISTS `FlashCard`;')
+    await db.query('DROP TABLE IF EXISTS `Quiz`;')
     await db.query('DROP TABLE IF EXISTS `Refund`;')
     await db.query('DROP TABLE IF EXISTS `CompleteLecture`;');
     await db.query('DROP TABLE IF EXISTS `Buy`;');
@@ -158,6 +162,45 @@ async function main (){
         FOREIGN KEY (user_id, course_id) REFERENCES Buy(user_id, course_id));`
     );
 
+    // QUIZ
+    await db.query(
+        `CREATE TABLE Quiz(id INT AUTO_INCREMENT,
+        duration TIME(6) NOT NULL,
+        name VARCHAR(128) NOT NULL,
+        creator_id INT NOT NULL,
+        course_id INT NOT NULL,
+        PRIMARY KEY(id),
+        FOREIGN KEY(creator_id) REFERENCES Creator(id),
+        FOREIGN KEY(course_id) REFERENCES Course(id));`
+    );
+
+    await db.query(
+        `CREATE TABLE FlashCard(id INT AUTO_INCREMENT,
+        question VARCHAR(500),
+        quiz_id INT NOT NULL,
+        PRIMARY KEY(id),
+        FOREIGN KEY(quiz_id) REFERENCES Quiz(id),
+        UNIQUE(question, quiz_id));`
+    );
+
+    await db.query(
+        `CREATE TABLE TrueFalse(id INT,
+        answer TINYINT(1) NOT NULL,
+        PRIMARY KEY(id),
+        FOREIGN KEY(id) REFERENCES FlashCard(id));`
+    );
+
+    await db.query(
+        `CREATE TABLE MultipleChoice(id INT,
+        choice1 VARCHAR(255) NOT NULL,
+        choice2 VARCHAR(255) NOT NULL,
+        choice3 VARCHAR(255) NOT NULL,
+        choice4 VARCHAR(255) NOT NULL,
+        answer INT NOT NULL, 
+        PRIMARY KEY(id),
+        FOREIGN KEY(id) REFERENCES FlashCard(id));`
+    );
+
     console.log("DB tables created.");
 
     await db.query(`INSERT INTO Person (username, email, name, surname, password, photo) VALUES ('test_user', 'test_user@gmail.com', 'Mehmet', 'Testoglu', '123', 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg');`);
@@ -167,7 +210,6 @@ async function main (){
     await db.query(`INSERT INTO Creator (id,about, website, linkedin, youtube) VALUES (2, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus nibh arcu, facilisis nec posuere eget, molestie ac felis. Aenean aliquam, nibh scelerisque pharetra pharetra, mi nunc hendrerit urna, in iaculis sapien est sit amet ex. Quisque sit amet ante eros. In hac habitasse platea dictumst. Cras convallis augue eget libero egestas, luctus malesuada diam pretium.', 'www.google.com', 'www.linkedin.com', 'www.youtube.com');`);
     await db.query(`INSERT INTO Admin (id) VALUES (3);`);
     await db.query(`INSERT INTO Course(id,title,price,description,thumbnail,category,creator_id,averageRating,ratingCount) VALUES (0, 'Python egitimi', 120, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus nibh arcu, facilisis nec posuere eget, molestie ac felis. Aenean aliquam, nibh scelerisque pharetra pharetra, mi nunc hendrerit urna.', 'https://i1.wp.com/stickker.net/wp-content/uploads/2015/09/python.png?fit=600,600&ssl=1', 'Technology', 2, 4.5, 1)`);
-
     console.log("Initialization finished");
 }
 

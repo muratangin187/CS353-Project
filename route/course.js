@@ -76,6 +76,30 @@ router.post("/buyCourse", async (req, res) => {
     }
 });
 
+router.post("/addCourseToCart", async (req, res) => {
+    let result = await db.addCourseToCart(
+        req.body.uid,
+        req.body.cid
+    );
+    if (result == null) {
+        res.status(400).send({"message": "There is an error occurred in the db write stage of buying a course"});
+    } else {
+        res.status(200).send({"message": "Successfully course bought"});
+    }
+});
+
+router.post("/addCourseToWishlist", async (req, res) => {
+    let result = await db.addCourseToWishlist(
+        req.body.uid,
+        req.body.cid
+    );
+    if (result == null) {
+        res.status(400).send({"message": "There is an error occurred in the db write stage of buying a course"});
+    } else {
+        res.status(200).send({"message": "Successfully course bought"});
+    }
+});
+
 router.post("/completeLecture", async(req, res) => {
     let result = await db.completeLecture(
         req.body.uid,

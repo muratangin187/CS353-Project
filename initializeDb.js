@@ -12,6 +12,8 @@ async function main (){
     await db.connect();
     console.log("DB connection initialized.");
 
+    await db.query('DROP TABLE IF EXISTS `CartCourses`;');
+    await db.query('DROP TABLE IF EXISTS `WishlistCourses`;');
     await db.query('DROP TABLE IF EXISTS `Refund`;')
     await db.query('DROP TABLE IF EXISTS `CompleteLecture`;');
     await db.query('DROP TABLE IF EXISTS `Buy`;');
@@ -24,6 +26,7 @@ async function main (){
     await db.query('DROP TABLE IF EXISTS `Creator`;');
     await db.query('DROP TABLE IF EXISTS `Admin`;');
     await db.query('DROP TABLE IF EXISTS `Person`;');
+
 
     console.log("DB tables removed.");
     await db.query('CREATE TABLE Person(\n' +
@@ -157,6 +160,23 @@ async function main (){
         FOREIGN KEY (lecture_id) REFERENCES Lecture(id),
         FOREIGN KEY (user_id, course_id) REFERENCES Buy(user_id, course_id));`
     );
+
+    await db.query(
+            `CREATE TABLE CartCourses( user_id INT,
+        course_id INT,
+        PRIMARY KEY (user_id, course_id),
+        FOREIGN KEY (user_id) REFERENCES User(id),
+        FOREIGN KEY (course_id) REFERENCES Course(id));`
+    );
+
+    await db.query(
+        `CREATE TABLE WishlistCourses( user_id INT,
+        course_id INT,
+        PRIMARY KEY (user_id, course_id),
+        FOREIGN KEY (user_id) REFERENCES User(id),
+        FOREIGN KEY (course_id) REFERENCES Course(id));`
+    );
+
 
     console.log("DB tables created.");
 

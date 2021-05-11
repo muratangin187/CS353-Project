@@ -52,6 +52,76 @@ class Db{
         });
     }
 
+
+    getCourseBought(uid){
+        return new Promise(resolve=>{
+            this._db.query(
+                'SELECT * FROM Buy b, Course c WHERE b.user_id = ? AND c.id = b.course_id',
+                [uid],
+                (error, results, fields)=>{
+                    if(error){
+                        console.log(error);
+                        resolve(null);
+                    }else{
+                        console.log(results);
+                        resolve(results);
+                    }
+                });
+        });
+    }
+
+    getCourseAddedCart(uid){
+        return new Promise(resolve=>{
+            this._db.query(
+                'SELECT * FROM CartCourses b, Course c WHERE b.user_id = ? AND c.id = b.course_id',
+                [uid],
+                (error, results, fields)=>{
+                    if(error){
+                        console.log(error);
+                        resolve(null);
+                    }else{
+                        console.log(results);
+                        resolve(results);
+                    }
+                });
+        });
+    }
+
+    getCourseAddedWishlist(uid){
+        return new Promise(resolve=>{
+            this._db.query(
+                'SELECT * FROM WishlistCourses b, Course c WHERE b.user_id = ? AND c.id = b.course_id',
+                [uid],
+                (error, results, fields)=>{
+                    if(error){
+                        console.log(error);
+                        resolve(null);
+                    }else{
+                        console.log(results);
+                        resolve(results);
+                    }
+                });
+        });
+    }
+
+
+    getCourse(cid){
+        return new Promise(resolve=>{
+            this._db.query(
+                'SELECT * FROM Course WHERE id = ? LIMIT 1',
+                [cid],
+                (error, results, fields)=>{
+                    if(error){
+                        console.log(error);
+                        resolve(null);
+                    }else{
+                        console.log(results);
+                        resolve(results[0]);
+                    }
+                });
+        });
+    }
+
     insertPerson(username, email, photo, name, surname, password){
         return new Promise(resolve=> {
             this._db.query(
@@ -208,6 +278,70 @@ class Db{
                         resolve(null);
                     } else {
                         resolve(results.insertId);
+                    }
+                }
+            );
+        });
+    }
+
+    addCourseToCart(uid, cid){
+        return new Promise(resolve => {
+            this._db.query(
+                `INSERT INTO CartCourses(user_id, course_id) VALUES (${uid}, ${cid});`,
+                (error, results, fields) => {
+                    if(error){
+                        console.log(error);
+                        resolve(null);
+                    } else {
+                        resolve(results.insertId);
+                    }
+                }
+            );
+        });
+    }
+
+    addCourseToWishlist(uid, cid){
+        return new Promise(resolve => {
+            this._db.query(
+                `INSERT INTO WishlistCourses(user_id, course_id) VALUES (${uid}, ${cid});`,
+                (error, results, fields) => {
+                    if(error){
+                        console.log(error);
+                        resolve(null);
+                    } else {
+                        resolve(results.insertId);
+                    }
+                }
+            );
+        });
+    }
+    removeCourseFromCart(cid){
+        return new Promise(resolve => {
+            this._db.query(
+                `DELETE FROM CartCourses w WHERE w.course_id = ?`,
+                [cid],
+                (error, results, fields) => {
+                    if(error){
+                        console.log(error);
+                        resolve(null);
+                    } else {
+                        resolve(results);
+                    }
+                }
+            );
+        });
+    }
+    removeCourseFromWishlist(cid){
+        return new Promise(resolve => {
+            this._db.query(
+                `DELETE FROM WishlistCourses w WHERE w.course_id = ?`,
+                [cid],
+                (error, results, fields) => {
+                    if(error){
+                        console.log(error);
+                        resolve(null);
+                    } else {
+                        resolve(results);
                     }
                 }
             );
@@ -515,6 +649,39 @@ class Db{
                         }else{
                             resolve(false);
                         }
+                    }
+                }
+            );
+        });
+    }
+
+
+    addCourseToCard(uid, cid){
+        return new Promise(resolve => {
+            this._db.query(
+                `INSERT INTO CartCourses(user_id, course_id) VALUES (${uid}, ${cid});`,
+                (error, results, fields) => {
+                    if(error){
+                        console.log(error);
+                        resolve(null);
+                    } else {
+                        resolve(results.insertId);
+                    }
+                }
+            );
+        });
+    }
+
+    addCourseToWishlist(uid, cid){
+        return new Promise(resolve => {
+            this._db.query(
+                `INSERT INTO WishlistCourses(user_id, course_id) VALUES (${uid}, ${cid});`,
+                (error, results, fields) => {
+                    if(error){
+                        console.log(error);
+                        resolve(null);
+                    } else {
+                        resolve(results.insertId);
                     }
                 }
             );

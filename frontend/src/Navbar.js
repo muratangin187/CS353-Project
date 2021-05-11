@@ -24,7 +24,12 @@ function CustomNavbar(){
             {user ? (user.isAdmin ? (
                 <Link to="/admin"><Button style={{marginRight: 20}} variant="outline-dark">Admin Panel</Button></Link>
             ) : (
+                <>
                 <Link to="/profile"><Button style={{marginRight: 20}} variant="outline-dark">Profile of {user.name}</Button></Link>
+                    <Nav.Link href="/my-cart">My Cart</Nav.Link>
+                    <Nav.Link href="/my-wishlist">My Wishlist</Nav.Link>
+
+                </>
             )) : (
                 <>
                     <Link to="/login"><Button className="ml-auto" style={{marginRight: 20}} variant="outline-dark">Login</Button></Link>

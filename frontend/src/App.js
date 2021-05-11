@@ -105,8 +105,8 @@ function App() {
                           <Route path='/register' component={RegisterPage}/>
                           <Route path='/create-lecture/:cid' component={CreateLecturePage}/>
                           <Route path='/creator-profile/:creatorId' component={CreatorProfilePage}/>
-                          <Route path='/my-cart/:userId' component={MyCartPage}/>
-                          <Route path='/my-wishlist/:userId' component={MyWishlistPage}/>
+                          <Route path='/my-cart' component={MyCartPage}/>
+                          <Route path='/my-wishlist' component={MyWishlistPage}/>
                           <Route path='/create-announcement/:creatorId' component={CreateAnnouncementPage}/>
                           <Route path='/answer-question-page/:questionId' component={AnswerQuestionPage}/>                          <Route path='/answer-question-page/:questionId' component={AnswerQuestionPage}/>
                           <Route path='/create-discount-page' component={CreateDiscountPage}/>

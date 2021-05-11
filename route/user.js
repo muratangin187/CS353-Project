@@ -10,6 +10,73 @@ router.get("/:id", async (req, res) => {
     res.status(200).send(result);
 });
 
+router.get("/bought-courses/:id", async (req, res)=>{
+    console.log(JSON.stringify(req.params.id));
+    let result = await db.getCourseBought(
+        req.params.id,
+    );
+    if(result == null){
+        res.status(400).send({"message": "There is an error occurred in the db retrieve stage of course creation."});
+    }else{
+        console.log(result);
+        res.status(200).send(result);
+    }
+});
+
+router.get("/wishlist-courses/:id", async (req, res)=>{
+    console.log(JSON.stringify(req.params.id));
+    let result = await db.getCourseAddedWishlist(
+        req.params.id,
+    );
+    if(result == null){
+        res.status(400).send({"message": "There is an error occurred in the db retrieve stage of course creation."});
+    }else{
+        console.log(result);
+        res.status(200).send(result);
+    }
+});
+
+
+router.get("/cart-courses/:id", async (req, res)=>{
+    console.log(JSON.stringify(req.params.id));
+    let result = await db.getCourseAddedCart(
+        req.params.id,
+    );
+    if(result == null){
+        res.status(400).send({"message": "There is an error occurred in the db retrieve stage of course creation."});
+    }else{
+        console.log(result);
+        res.status(200).send(result);
+    }
+});
+
+router.delete("/remove-wishlist/:cid", async (req, res)=>{
+    console.log(JSON.stringify(req.params.cid));
+    let result = await db.removeCourseFromWishlist(
+        req.params.cid,
+    );
+    if(result == null){
+        res.status(404).send({"message": "There is an error occurred in the db retrieve stage of course creation."});
+    }else{
+        console.log(result);
+        res.status(200).send(result);
+    }
+});
+
+router.delete("/remove-cart/:cid", async (req, res)=>{
+    console.log(JSON.stringify(req.params.cid));
+    let result = await db.removeCourseFromCart(
+        req.params.cid,
+    );
+    if(result == null){
+        res.status(404).send({"message": "There is an error occurred in the db retrieve stage of course creation."});
+    }else{
+        console.log(result);
+        res.status(200).send(result);
+    }
+});
+
+
 router.post("/login", async (req, res) => {
     if(!req.body.username || !req.body.password){
         res.status(400).send({message:"You need to provide username and password."});

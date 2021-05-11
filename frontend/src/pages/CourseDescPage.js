@@ -105,6 +105,30 @@ export default function CourseDescPage() {
         }
     }
 
+
+    const handleAddToCard = async () => {
+        let response = await axios({
+            url: "/api/course/addCourseToCart",
+            method: "POST",
+            data: {
+                uid: userData.id,
+                cid: courseData.id
+            }
+        });
+    }
+
+
+    const handleAddToWishlist = async () => {
+        let response = await axios({
+            url: "/api/course/addCourseToWishlist",
+            method: "POST",
+            data: {
+                uid: userData.id,
+                cid: courseData.id
+            }
+        });
+    }
+
     return (
         <Container className="mt-5" style={{width: "75vw"}}>
             <Row className="border-bottom border-primary" style={{width: "75vw"}}>
@@ -149,8 +173,8 @@ export default function CourseDescPage() {
                     </ListGroup>
                     <Col>
                     <Button block onClick={handleShow}>Buy Course</Button>
-                        <Button block>Add to Cart</Button>
-                        <Button block>Add to Wishlist</Button>
+                        <Button block onClick={() => handleAddToCard()} href="/my-cart">Add to Card</Button>
+                        <Button block onClick={() => handleAddToWishlist()} href="/my-wishlist">Add to Wishlist</Button>
                     </Col>
                     <Card
                         bg="light"

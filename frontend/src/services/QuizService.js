@@ -1,5 +1,4 @@
 import axios from "axios";
-import {response} from "express";
 
 class QuizService{
     async createQuiz(creatorId, courseId, quiz){

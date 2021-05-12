@@ -62,7 +62,7 @@ export default function MainCoursePage() {
         <LecturesComp cid={params.cid}/>
       </Tab>
       <Tab eventKey="quizzes" title="Quizzes">
-      <QuizzesComp/>
+      <QuizzesComp cid={params.cid}/>
       </Tab>
       <Tab eventKey="qanda" title="Q/A">
       <QandAComp/>

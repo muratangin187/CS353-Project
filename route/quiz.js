@@ -56,4 +56,36 @@ router.post("/insert_multiple", async (req, res) => {
     }
 });
 
+router.get("/retrieve_quizzes/:course_id", async (req, res) => {
+    let courseId = req.params["course_id"];
+    console.log("Course ID - 1");
+    console.log(courseId);
+
+    let result = await db.getQuizzes(courseId);
+
+    if (!result){
+        res.status(400).send({message: "Retrieve quizzes operation are failed"});
+    } else {
+        res.status(200).send(result);
+    }
+});
+
+router.get("/retrieve_completed_quizzes/:course_id/:user_id", async (req, res) => {
+    let courseId = req.params["course_id"];
+    let userId = req.params["user_id"];
+
+    console.log("Course ID - 2");
+    console.log(courseId);
+    console.log("User ID");
+    console.log(userId);
+
+    let result = await db.getCompletedQuizzes(courseId, userId);
+
+    if (!result){
+        res.status(400).send({message: "Retrieve completed quizzes operation are failed"});
+    } else {
+        res.status(200).send(result);
+    }
+});
+
 module.exports = router;

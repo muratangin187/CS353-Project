@@ -11,12 +11,14 @@ import {
     ButtonGroup,
     ToggleButton, Spinner,
 } from "react-bootstrap";
-import React from 'react';
+import React, {useContext} from 'react';
 import {useState, useRef, useEffect} from "react";
 import axios from "axios";
 import {CgWebsite} from "react-icons/cg";
 import {AiFillLinkedin, AiFillYoutube} from "react-icons/ai";
 import {Link} from "react-router-dom";
+import {AuthContext} from "../services/AuthContext";
+import QuizService from "../services/QuizService";
 
 
 function LecturesComp(props) {
@@ -70,25 +72,24 @@ function LecturesComp(props) {
 
 function QuizzesComp(props) {
     const courseId = props.cid;
+    const {getCurrentUser} = useContext(AuthContext);
     const [quizList, setQuizList] = useState([
         {
             isComplete: true,
-            name: "quiz - 1",
+            name: "test - 1",
             duration: "11:00",
             score: 5
-        },
-        {
-            isComplete: true,
-            name: "quiz - 2",
-            duration: "12:00",
-            score: 6
-        },
-        {
-            isComplete: false,
-            name: "quiz - 3",
-            duration: "13:00",
         }
     ]);
+    const [user, setUser] = useState(null);
+
+    useEffect(async () => {
+        let user_res = await getCurrentUser;
+        setUser(user_res?.data);
+
+        let quizList_res = await QuizService.getCourseQuizzes(user.id, courseId);
+        setQuizList(quizList_res);
+    }, []);
 
     return (
       <Container className="ml-auto" >

@@ -1,4 +1,5 @@
 import axios from "axios";
+import {response} from "express";
 
 class QuizService{
     async createQuiz(creatorId, courseId, quiz){
@@ -61,6 +62,54 @@ class QuizService{
         }
 
         return 1;
+    }
+
+    async getCourseQuizzes(userId, courseId){
+        let quizzes;
+        await axios.get("/api/quiz/retrieve_quizzes/" + courseId.toString(10))
+            .then(response => {
+                quizzes = response;
+            });
+
+        if (quizzes.status == 400)
+            return null;
+
+        quizzes = quizzes.data;
+
+        let completedQuizzes;
+        await axios.get("/api/quiz/retrieve_completed_quizzes/" + courseId.toString(10) + "/" + userId.toString(10))
+            .then(response => {
+                completedQuizzes = response;
+            });
+
+        if (completedQuizzes.status == 400)
+            return null;
+
+        completedQuizzes = completedQuizzes.data;
+        let idArr = completedQuizzes.map(obj => {
+            return obj.id;
+        });
+
+        let result = [];
+
+        for (let i = 0; i < quizzes.length; i++){
+            if (idArr.includes(quizzes[i].id)){
+                let index = idArr.findIndex(id => id === quizzes[i].id);
+                result[i] = {
+                    isComplete: true,
+                    name: quizzes[i].name,
+                    duration: quizzes[i].duration,
+                    score: completedQuizzes[index].score
+                };
+            } else {
+                result[i] = {
+                    isComplete: false,
+                    name: quizzes[i].name,
+                    duration: quizzes[i].duration,
+                };
+            }
+        }
+
     }
 }
 

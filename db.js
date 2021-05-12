@@ -650,5 +650,42 @@ class Db{
             );
         });
     }
+
+    getQuizzes(course_id){
+        return new Promise(resolve => {
+            this._db.query(
+                `SELECT id, name, duration
+                FROM Quiz
+                WHERE course_id = \'${course_id}\';`,
+                (error, results, fields) => {
+                    if (error){
+                        console.log(error);
+                        resolve(null);
+                    } else {
+                        resolve(results);
+                    }
+                }
+            );
+        });
+    }
+
+    getCompletedQuizzes(course_id, user_id){
+        return new Promise(resolve => {
+            this._db.query(
+                `SELECT id, score
+                FROM Quiz, CompletedQuizzes
+                WHERE id = quiz_id AND course_id = \'${course_id}\' AND user_id = \'${user_id}\';`,
+                (error, results, fields) => {
+                    if (error){
+                        console.log(error);
+                        resolve(null);
+                    } else {
+                        resolve(results);
+                    }
+                }
+            );
+        });
+    }
 }
+
 module.exports = new Db();

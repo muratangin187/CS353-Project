@@ -12,6 +12,7 @@ async function main (){
     await db.connect();
     console.log("DB connection initialized.");
 
+    await db.query('DROP TABLE IF EXISTS `CompletedQuizzes`;')
     await db.query('DROP TABLE IF EXISTS `MultipleChoice`;')
     await db.query('DROP TABLE IF EXISTS `TrueFalse`;')
     await db.query('DROP TABLE IF EXISTS `FlashCard`;')
@@ -200,6 +201,17 @@ async function main (){
         PRIMARY KEY(id),
         FOREIGN KEY(id) REFERENCES FlashCard(id));`
     );
+
+    await db.query(`
+        CREATE TABLE CompletedQuizzes(
+            quiz_id INT,
+            user_id INT,
+            score REAL,
+            FOREIGN KEY(quiz_id) REFERENCES Quiz(id),
+            FOREIGN KEY(user_id) REFERENCES User(id));
+    `);
+
+
 
     console.log("DB tables created.");
 

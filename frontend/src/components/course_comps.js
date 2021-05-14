@@ -85,10 +85,12 @@ function QuizzesComp(props) {
 
     useEffect(async () => {
         let user_res = await getCurrentUser;
+        console.log(user_res);
         setUser(user_res?.data);
 
-        let quizList_res = await QuizService.getCourseQuizzes(user.id, courseId);
-        setQuizList(quizList_res);
+        let quizList_res = await QuizService.getCourseQuizzes(user_res.data.id, courseId);
+        if (quizList_res)
+            setQuizList(quizList_res);
     }, []);
 
     return (
@@ -106,7 +108,7 @@ function QuizzesComp(props) {
                                         <p><strong>Duration:</strong> {quiz.duration}</p>
                                     </Col>
                                     <Col md={2} style={{display: "flex", justifyContent: "center", alignItems: "center"}}>
-                                        <Button variant="primary" style={{height: "min-content"}}>
+                                        <Button variant="primary" style={{height: "min-content"}} disabled={quiz.isComplete}>
                                             {(quiz.isComplete) ? (quiz.score.toString(10) + "/10") : "Take"}
                                         </Button>
                                     </Col>

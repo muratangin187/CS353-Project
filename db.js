@@ -652,6 +652,7 @@ class Db{
     }
 
     getQuizzes(course_id){
+        console.log("");
         return new Promise(resolve => {
             this._db.query(
                 `SELECT id, name, duration

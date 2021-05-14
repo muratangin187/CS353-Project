@@ -62,7 +62,7 @@ router.get("/retrieve_quizzes/:course_id", async (req, res) => {
     console.log(courseId);
 
     let result = await db.getQuizzes(courseId);
-
+    console.log(result);
     if (!result){
         res.status(400).send({message: "Retrieve quizzes operation are failed"});
     } else {
@@ -80,7 +80,7 @@ router.get("/retrieve_completed_quizzes/:course_id/:user_id", async (req, res) =
     console.log(userId);
 
     let result = await db.getCompletedQuizzes(courseId, userId);
-
+    console.log(result);
     if (!result){
         res.status(400).send({message: "Retrieve completed quizzes operation are failed"});
     } else {

@@ -64,16 +64,18 @@ class QuizService{
     }
 
     async getCourseQuizzes(userId, courseId){
+        console.log("getCourseQuizzes START");
         let quizzes;
         await axios.get("/api/quiz/retrieve_quizzes/" + courseId.toString(10))
             .then(response => {
                 quizzes = response;
             });
-
+        console.log("quizzes");
         if (quizzes.status == 400)
             return null;
 
         quizzes = quizzes.data;
+        console.log(quizzes);
 
         let completedQuizzes;
         await axios.get("/api/quiz/retrieve_completed_quizzes/" + courseId.toString(10) + "/" + userId.toString(10))
@@ -84,11 +86,12 @@ class QuizService{
         if (completedQuizzes.status == 400)
             return null;
 
+        console.log(completedQuizzes);
         completedQuizzes = completedQuizzes.data;
         let idArr = completedQuizzes.map(obj => {
             return obj.id;
         });
-
+        console.log(idArr);
         let result = [];
 
         for (let i = 0; i < quizzes.length; i++){
@@ -108,7 +111,8 @@ class QuizService{
                 };
             }
         }
-
+        console.log(result);
+        return result;
     }
 }
 

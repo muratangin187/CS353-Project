@@ -27,6 +27,7 @@ import AdminPage from "./pages/AdminPage";
 import CourseDescPage from "./pages/CourseDescPage";
 import CreateQuizPage from "./pages/CreateQuizPage";
 import MyRefundsPage from "./pages/MyRefundsPage";
+import QuizPage from "./pages/QuizPage";
 
 let timer = null;
 
@@ -97,6 +98,7 @@ function App() {
                           <Route path='/courses' component={Api}/>
                           <Route path='/my-courses' component={MyCoursesPage}/>
                           <Route path='/course/:cid/create-quiz' component={CreateQuizPage}/>
+                          <Route path='/course/:cid/quiz/:qid' component={QuizPage}/>
                           <Route path='/course/:cid/lecture/:lid' component={LecturePage}/>
                           <Route path='/course/:cid' component={MainCoursePage}/>
                           <Route path='/create-course' component={CreateCoursePage}/>
@@ -114,7 +116,6 @@ function App() {
                           <Route path='/create-announcement/:creatorId' component={CreateAnnouncementPage}/>
                           <Route path='/answer-question-page/:questionId' component={AnswerQuestionPage}/>                          <Route path='/answer-question-page/:questionId' component={AnswerQuestionPage}/>
                           <Route path='/create-discount-page' component={CreateDiscountPage}/>
-
                       </Switch>
                   </div>
               </BrowserRouter>

@@ -72,33 +72,57 @@ function LecturesComp(props) {
 
 
 
-class QuizzesComp extends React.Component {
-    constructor(props) {
-        super(props);
-        this.isCompleted = false;
-    }
-    render() {
-      return (
-          <Container className="ml-auto" >
-            <ListGroup style={{width:"75vw"}}>
-                <ListGroup.Item> 
-                    <Row>
-                        <Col>1.</Col>
-                        <Col xs={8} className="mr-5">
-                            <h4>Beginner Quiz</h4>
-                            <p>What is AWS, how to use it</p>
-                        </Col>
-                        <Col xs={1} className="ml-5">
-                        <Button className="ml-auto mr-2" variant="primary" type="submit">
-                                    {this.isCompleted ? "Score 5/10" : "Take"}
-                        </Button>
-                        </Col>
-                    </Row>
-                </ListGroup.Item>
-            </ListGroup>
-          </Container>
-      );
-    }
+function QuizzesComp(props) {
+    const courseId = props.cid;
+    const [quizList, setQuizList] = useState([
+        {
+            isComplete: true,
+            name: "quiz - 1",
+            duration: "11:00",
+            score: 5
+        },
+        {
+            isComplete: true,
+            name: "quiz - 2",
+            duration: "12:00",
+            score: 6
+        },
+        {
+            isComplete: false,
+            name: "quiz - 3",
+            duration: "13:00",
+        }
+    ]);
+
+    return (
+      <Container className="ml-auto" >
+        <ListGroup style={{width:"75vw"}}>
+            <ListGroup.Item>
+                {
+                    quizList.map((quiz, index) => {
+                        return(
+                            <>
+                                <Row style={{marginBottom: 10}}>
+                                    <Col style={{display: "flex", justifyContent: "center", alignItems: "center"}} md={1}>{index + 1}.</Col>
+                                    <Col md={9}>
+                                        <h4>{quiz.name}</h4>
+                                        <p><strong>Duration:</strong> {quiz.duration}</p>
+                                    </Col>
+                                    <Col md={2} style={{display: "flex", justifyContent: "center", alignItems: "center"}}>
+                                        <Button variant="primary" style={{height: "min-content"}}>
+                                            {(quiz.isComplete) ? (quiz.score.toString(10) + "/10") : "Take"}
+                                        </Button>
+                                    </Col>
+                                </Row>
+                                <hr />
+                            </>
+                        );
+                    })
+                }
+            </ListGroup.Item>
+        </ListGroup>
+      </Container>
+    );
 }
 
 class QandAComp extends React.Component {

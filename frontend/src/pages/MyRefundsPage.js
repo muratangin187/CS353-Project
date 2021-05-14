@@ -11,45 +11,52 @@ export default function MyRefundsPage(){
     const history = useHistory();
     const [user, setUser] = useState(null);
     const [modalShow, setModalShow] = useState(false);
-    const [refunds, setRefunds] = useState([{
-        id:1,
-        title:"Parami iade edin",
-        state: 'PENDING',
-        seen: 0,
-        reason:"cok dandik kurs",
-        user_id:"1",
-        course_id:"1",
-        admin_id:null
-    },{
-        id:1,
-        title:"Parami iade edin",
-        state: 'REJECTED',
-        seen: 0,
-        reason:"cok dandik kurs",
-        user_id:"1",
-        course_id:"1",
-        admin_id:null
-    }]);
+    const [refunds, setRefunds] = useState([]);
 
     const [courses, setCourses] = useState([]);
 
     const [title, setTitle] = useState("");
     const [reason, setReason] = useState("");
     const [courseId, setCourseId] = useState(0);
+    const [updatePage, setUpdatePage] = useState(false);
 
 
     useEffect(async()=>{
         let response = await getCurrentUser;
         setUser(response?.data);
         let responseCourses = await axios({
-            url: "/api/user/all-courses",
+            url: "/api/user/bought-courses/" + response?.data.id,
             method: "GET"
         });
-        if(responseCourses.status == 200)
-            setCourses(responseCourses.data);
-        else
+
+        let response2 = await axios({
+            url: "/api/user/get-refunds/"+response?.data.id,
+            method: "GET"
+        });
+        if(response2.status == 400){
+            setShow(true);
+            setContent("Error,", response2.data.message);
+            setIntent("failure");
+        }else{
+            console.log(response2.data);
+            setRefunds(response2.data);
+        }
+
+        if(responseCourses.status == 200) {
+            let lastCourses = [];
+            for (let i = 0; i < responseCourses.data?.length; i++) {
+                if(!response2.data.map(a=>a.course_id).includes(responseCourses.data[i].id)){
+                    lastCourses.push(responseCourses.data[i]);
+                }
+            }
+            console.log(lastCourses);
+            setCourses(lastCourses);
+            setCourseId(lastCourses[0]?.id);
+        }else {
             setCourses([]);
-    }, []);
+        }
+
+    }, [updatePage]);
 
     const refundBox = (refund) => {
         return(
@@ -68,9 +75,7 @@ export default function MyRefundsPage(){
                         </Col>
                     </Row>
                     <Row className="mt-3 ml-2">
-                        {/*{refund.user_id}*/}
-                        {/*{courses.find(c=>c.id == refund.course_id)?.name}*/}
-                            Course: Python
+                            Course: {refund.course_title}
                     </Row>
                 </ListGroup.Item>
             </ListGroup>
@@ -97,6 +102,8 @@ export default function MyRefundsPage(){
             setIntent("failure");
             setContent("Failure", response.data.message);
         }
+        setModalShow(false);
+        setUpdatePage(!updatePage);
     }
 
     return (
@@ -117,27 +124,23 @@ export default function MyRefundsPage(){
                     <p>
                         <Form.Group controlId="exampleForm.ControlSelect1">
                             <Form.Label>Course</Form.Label>
-                            <Form.Control as="select">
-                                <option>1</option>
-                                <option>2</option>
-                                <option>3</option>
-                                <option>4</option>
-                                <option>5</option>
+                            <Form.Control as="select" onChange={(e)=>setCourseId(e.target.id)}>
+                                {courses.map(c=>(<option value={c.id}>{c.title}</option>))}
                             </Form.Control>
                         </Form.Group>
                         <Form.Group controlId="exampleForm.ControlInput1">
                             <Form.Label>Refund title</Form.Label>
-                            <Form.Control type="text" placeholder="Title" />
+                            <Form.Control type="text" placeholder="Title" onChange={(e)=>setTitle(e.target.value)}/>
                         </Form.Group>
                         <Form.Group controlId="exampleForm.ControlTextarea1">
                             <Form.Label>Your reason</Form.Label>
-                            <Form.Control as="textarea" rows={3} placeholder="Reason"/>
+                            <Form.Control as="textarea" rows={3} placeholder="Reason" onChange={(e)=>setReason(e.target.value)}/>
                         </Form.Group>
                     </p>
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={()=>setModalShow(false)}>Close</Button>
-                    <Button variant="danger" onClick={()=>makeRequest()}>Close</Button>
+                    <Button variant="danger" onClick={()=>makeRequest()}>Make Refund Request</Button>
                 </Modal.Footer>
             </Modal>
             <Row className="justify-content-md-center mt-5 align-items-center">
@@ -154,7 +157,7 @@ export default function MyRefundsPage(){
             </Row>
             <Row className="justify-content-md-center mt-5 align-items-center">
                 <h2>Refunds</h2>
-                <Button className="ml-5" variant="danger" type="submit" onClick={()=>setModalShow(true)}>
+                <Button className="ml-5" variant="danger" type="submit" onClick={()=>setModalShow(true)} disabled={courses.length==0}>
                     Make refund request
                 </Button>
             </Row>

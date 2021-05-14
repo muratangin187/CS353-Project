@@ -1,44 +1,79 @@
-import {Container, Row, Col, Image, Card, Button} from "react-bootstrap";
-import {useEffect, useState} from "react";
+import {Container, Row, Col, Image, Card, Button, Spinner} from "react-bootstrap";
+import React, {useContext, useEffect, useState} from "react";
 // import axios from "axios";
 // import {useParams} from "react-router-dom";
 import '../style/my_cart.css';
 import {FiShoppingCart} from "react-icons/fi"
+import {useHistory, useParams} from "react-router-dom";
+import axios from "axios";
+import {NotificationContext} from "../services/NotificationContext";
+import {AuthContext} from "../services/AuthContext";
 
 export default function MyWishlistPage(){
-    // TODO after implementing server side delete tmp_course_list
-    const tmp_course_list = [
-        {
-            ID: 1,
-            title: "title - 1",
-            price: 100,
-            thumbnail: "thumbnail.jpg",
-            creatorName: "creator - 1"
-        },
-        {
-            ID: 2,
-            title: "title - 2",
-            price: 200,
-            thumbnail: "thumbnail.jpg",
-            creatorName: "creator - 2"
-        },
-        {
-            ID: 3,
-            title: "title - 3",
-            price: 300,
-            thumbnail: "thumbnail.jpg",
-            creatorName: "creator - 3"
-        },
-        {
-            ID: 4,
-            title: "title - 4",
-            price: 400,
-            thumbnail: "thumbnail.jpg",
-            creatorName: "creator - 4"
-        }
-    ];
 
-    const [courseList, setCourseList] = useState(tmp_course_list);
+
+    const {setShow, setContent, setIntent} = useContext(NotificationContext);
+    const {getCurrentUser} = useContext(AuthContext);
+    const history = useHistory();
+    const [user, setUser] = useState(null);
+    const [courseList, setCourseList] = useState(null);
+
+    useEffect(async () => {
+        let response = await getCurrentUser;
+        setUser(response?.data);
+        axios.get('/api/user/wishlist-courses/' + response?.data.id)
+            .then(response => {
+                setCourseList(response.data);
+            })
+            .catch(error => {
+                console.log(error);
+            });
+    }, []);
+
+    const handleByRemove = async (index) => {
+        axios.delete('/api/user/remove-wishlist/' + courseList[index].id.toString(10))
+            .then(response => {
+                let tmp = [...courseList]
+                tmp.splice(index,1)
+                setCourseList(tmp)
+                index--
+            })
+            .catch(error => {
+                console.log(error);
+            });
+    }
+
+
+
+    const handleBuyAdd = async (index) => {
+        let response = await axios({
+            url: "/api/course/addCourseToCart",
+            method: "POST",
+            data: {
+                uid: user.id,
+                cid: courseList[index].id.toString(10)
+            }
+        });
+    }
+
+    function addWithRemove(index){
+        handleBuyAdd(index);
+        handleByRemove(index);
+    }
+
+
+    if(courseList == null || courseList?.length === 0 ){
+        return (<Container className="mt-5">
+            <h2>You don't have any Courses</h2>
+            <h3>
+                You can buy Courses from
+                <span className="actions">
+        <a className="btn" href="/" >Homepage</a>
+    </span>
+            </h3>
+
+        </Container>);
+    }
 
     return (
         <div id="my_cart_div">
@@ -51,62 +86,58 @@ export default function MyWishlistPage(){
                                 <h2>Your Wishlist</h2>
                             </Col>
                         </Row>
-                        {
-                            courseList.map((course) => {
-                                return (
-                                    <>
-                                        <Row className="list_row" style={{margin: 8}}>
-                                            <Col className="list_col_f" md={4} style={{display: "flex", flexDirection: "row"}}>
-                                                <Image src={course.thumbnail} style={{width: 80, marginRight: 10}}/>
-                                                <div style={{display: "flex", flexDirection: "column", justifyContent: "space-evenly"}}>
-                                                    <p>{course.title}</p>
-                                                    <p>{course.creatorName}</p>
-                                                </div>
-                                            </Col>
-                                            <Col className="list_col_s" md={{span: 4, offset: 4}}>
-
-
-                                                <div style={{display: "flex", flexDirection: "column", justifyContent: "space-evenly"}}>
-                                                    <p><strong>Current Price</strong></p>
-                                                    <p style={{textAlign: "center"}}>{course.price} TL</p>
-                                                </div>
-
-                                                <div style={{display: "flex", alignItems: "center"}}>
-                                                    <Button variant="secondary" onClick={() => {}}>Add Card</Button>
-                                                    {/*  TODO onclick add card  */}
-                                                </div>
-
-                                                <div style={{display: "flex", alignItems: "center"}}>
-                                                    <Button variant="danger" onClick={() => {}}>Remove</Button>
-                                                    {/*  TODO onclick remove  */}
-                                                </div>
-
-                                            </Col>
-                                        </Row>
-                                        <hr/>
-                                    </>
-                                );
-                            })
-                        }
-                        <Row>
-                            <Col md={{span: 2, offset: 10}} style={{display: "flex", justifyContent: "center"}}>
-                                <div style={{display: "flex", flexDirection: "column"}}>
-                                    <p><strong><u>+Total Price</u></strong></p>
-                                    <p style={{textAlign: "center"}}>
-                                        {
-                                            courseList.map((course) => course.price)
-                                                .reduce((acc, curr) => acc + curr)
-                                        } TL
-                                    </p>
-                                </div>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col md={{span: 6, offset: 3}} style={{display: "flex", flexDirection: "column"}}>
-                                <Button variant="outline-dark" style={{margin: 8}}>Buy courses in my Wishlist</Button>
-                            </Col>
-                        </Row>
                     </Container>
+                    {
+                        courseList && courseList.map((course, index) => {
+                            return (
+                                <>
+                                    <Row className="list_row" style={{margin: 8}}>
+                                        <Col className="list_col_f" md={4} style={{display: "flex", flexDirection: "row"}}>
+                                            <Image src={course.thumbnail} style={{width: 80, marginRight: 10}}/>
+                                            <div style={{display: "flex", flexDirection: "column", justifyContent: "space-evenly"}}>
+                                                <p>{course.title}</p>
+                                                <p>{course.creatorName}</p>
+                                            </div>
+                                        </Col>
+                                        <Col className="list_col_s" md={{span: 4, offset: 4}}>
+
+
+                                            <div style={{display: "flex", flexDirection: "column", justifyContent: "space-evenly"}}>
+                                                <p><strong>Current Price</strong></p>
+                                                <p style={{textAlign: "center"}}>{course.price} TL</p>
+                                            </div>
+
+                                            <div style={{display: "flex", alignItems: "center"}}>
+                                                <Button variant="secondary" onClick={() => addWithRemove(index)}>Add Card</Button>
+
+                                            </div>
+
+                                            <div style={{display: "flex", alignItems: "center"}}>
+                                                <Button variant="danger" onClick={ () => handleByRemove(index)}>
+                                                    Remove
+                                                </Button>
+                                            </div>
+
+                                        </Col>
+                                    </Row>
+                                    <hr/>
+                                </>
+                            );
+                        })
+                    }
+                    <Row>
+                        <Col md={{span: 2, offset: 10}} style={{display: "flex", justifyContent: "center"}}>
+                            <div style={{display: "flex", flexDirection: "column"}}>
+                                <p><strong><u>+Total Price</u></strong></p>
+                                <p style={{textAlign: "center"}}>
+                                    {
+                                        courseList && courseList.length !== 0 &&(courseList.map((course) => course.price)
+                                            .reduce((acc, curr) => acc + curr))
+                                    } TL
+                                </p>
+                            </div>
+                        </Col>
+                    </Row>
                 </Card.Body>
             </Card>
         </div>

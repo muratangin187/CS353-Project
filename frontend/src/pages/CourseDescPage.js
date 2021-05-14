@@ -9,7 +9,7 @@ import {
     Spinner, Card
 } from "react-bootstrap";
 import React, {useState, useEffect, useContext} from "react";
-import {useParams} from 'react-router-dom';
+import {useHistory, useParams} from 'react-router-dom';
 import axios from 'axios';
 
 import {
@@ -29,6 +29,7 @@ export default function CourseDescPage() {
     const [courseCreator, setCourseCreator] = useState({}); // course creator JSON object
     const [show, setShow] = useState(false);
     const [userData, setUserData] = useState(null);
+    let history = useHistory();
 
     const handleClose = () => setShow(false);
     const handleShow = () => {
@@ -50,6 +51,14 @@ export default function CourseDescPage() {
     useEffect(async () => {
         let userResponse = await getCurrentUser;
         setUserData(userResponse?.data);
+
+        let getPaidCourses = await axios.get('/api/user/bought-courses/' + userResponse?.data.id);
+        if(getPaidCourses.status == 200){
+            console.log(JSON.stringify(getPaidCourses.data));
+            if(getPaidCourses.data.find((c)=>c.course_id == params.cid)){
+                history.push("/course/" + params.cid);
+            }
+        }
 
         let response = await axios({
             url:"/api/course/retrieve/" + params.cid,
@@ -105,6 +114,30 @@ export default function CourseDescPage() {
         }
     }
 
+
+    const handleAddToCard = async () => {
+        let response = await axios({
+            url: "/api/course/addCourseToCart",
+            method: "POST",
+            data: {
+                uid: userData.id,
+                cid: courseData.id
+            }
+        });
+    }
+
+
+    const handleAddToWishlist = async () => {
+        let response = await axios({
+            url: "/api/course/addCourseToWishlist",
+            method: "POST",
+            data: {
+                uid: userData.id,
+                cid: courseData.id
+            }
+        });
+    }
+
     return (
         <Container className="mt-5" style={{width: "75vw"}}>
             <Row className="border-bottom border-primary" style={{width: "75vw"}}>
@@ -149,8 +182,8 @@ export default function CourseDescPage() {
                     </ListGroup>
                     <Col>
                     <Button block onClick={handleShow}>Buy Course</Button>
-                        <Button block>Add to Cart</Button>
-                        <Button block>Add to Wishlist</Button>
+                        <Button block onClick={() => handleAddToCard()} href="/my-cart">Add to Card</Button>
+                        <Button block onClick={() => handleAddToWishlist()} href="/my-wishlist">Add to Wishlist</Button>
                     </Col>
                     <Card
                         bg="light"

@@ -5,7 +5,7 @@ import {useEffect, useState} from "react";
 import axios from "axios";
 
 function CourseCard(course){
-    let link = "/course/" + course.id;
+    let link = "/course-desc/" + course.id;
     return (
         <Link to={link} key={course.id} style={{ textDecoration: 'none', color: "black" }}>
             <Card className="m-3" style={{ width: '18rem'}}>

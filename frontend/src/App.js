@@ -16,6 +16,7 @@ import ProfilePage from "./pages/ProfilePage";
 import CreatorProfilePage from "./pages/CreatorProfilePage";
 import MyCartPage from "./pages/MyCartPage";
 import MyWishlistPage from "./pages/MyWishlistPage";
+import CreateAnnouncementPage from "./pages/CreateAnnouncementPage";
 import MyCertificatesPage from "./pages/MyCertificatesPage";
 import AnswerQuestionPage from "./pages/AnswerQuestionPage";
 import CreateDiscountPage from "./pages/CreateDiscountPage";
@@ -25,8 +26,10 @@ import CreateLecturePage from "./pages/CreateLecturePage";
 import LecturePage from "./pages/LecturePage";
 import AdminPage from "./pages/AdminPage";
 import CourseDescPage from "./pages/CourseDescPage";
+import CreateQuizPage from "./pages/CreateQuizPage";
 import MyRefundsPage from "./pages/MyRefundsPage";
-import CreateAnnouncementPage from "./pages/CreateAnnouncementPage";
+import AboutUs from "./pages/AboutUsPage";
+import MyBalance from "./pages/MyBalance";
 
 let timer = null;
 
@@ -96,11 +99,12 @@ function App() {
                           <Route exact path='/' component={Homepage}/>
                           <Route path='/courses' component={Api}/>
                           <Route path='/my-courses' component={MyCoursesPage}/>
+                          <Route path='/course/:cid/create-quiz' component={CreateQuizPage}/>
                           <Route path='/course/:cid/lecture/:lid' component={LecturePage}/>
                           <Route path='/course/:cid' component={MainCoursePage}/>
                           <Route path='/create-course' component={CreateCoursePage}/>
                           <Route path='/course-desc/:cid' component={CourseDescPage}/>
-                          <Route path='/about' component={Api}/>
+                          <Route path='/about' component={AboutUs}/>
                           <Route path='/login' component={LoginPage}/>
                           <PrivateRoute path='/profile' component={ProfilePage} role={0}/>
                           <PrivateRoute path='/admin' component={AdminPage} role={2}/>
@@ -110,6 +114,11 @@ function App() {
                           <Route path='/my-cart/:userId' component={MyCartPage}/>
                           <Route path='/my-wishlist/:userId' component={MyWishlistPage}/>
                           <Route path='/my-refunds' component={MyRefundsPage}/>
+                          <Route path='/my-cart' component={MyCartPage}/>
+                          <Route path='/my-wishlist' component={MyWishlistPage}/>
+                          <Route path='/create-announcement/:creatorId' component={CreateAnnouncementPage}/>
+                          <Route path='/answer-question-page/:questionId' component={AnswerQuestionPage}/>
+                          <Route path='/my-balance' component={MyBalance}/>
                           <Route path='/my-certificates' component={MyCertificatesPage}/>
                           <Route path='/create-announcement' component={CreateAnnouncementPage}/>
                           <Route path='/answer-question-page/:questionId' component={AnswerQuestionPage}/>                          <Route path='/answer-question-page/:questionId' component={AnswerQuestionPage}/>

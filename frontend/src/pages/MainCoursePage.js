@@ -71,7 +71,7 @@ export default function MainCoursePage() {
         <RatingsComp cid={params.cid}/>
       </Tab>
       <Tab eventKey="announcements" title="Announcements">
-       <AnnouncementsComp/>
+       <AnnouncementsComp cid={params.cid}/>
       </Tab>
       <Tab eventKey="about" title="About">
        <AboutComp courseData={courseData}/>

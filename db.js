@@ -301,6 +301,22 @@ class Db{
         });
     }
 
+    getUserCertificates(uid) {
+        return new Promise( resolve => {
+           this._db.query(
+               `SELECT C.name, C.course_id FROM Certificate C, HasCertificates HC WHERE HC.certificate_id = C.id AND HC.user_id = ${uid};`,
+               (error, results, fields) => {
+                   if(error) {
+                       console.log(error);
+                       resolve(null);
+                   } else {
+                       resolve(results);
+                   }
+               }
+           )
+        });
+    }
+
     getCourseRatings(cid){
         return new Promise( resolve => {
             this._db.query(
@@ -388,6 +404,22 @@ class Db{
         return new Promise( resolve => {
             this._db.query(
                 `SELECT * FROM Bookmark WHERE user_id=${uid} AND lecture_id=${lid}`,
+                (error, results, fields) => {
+                    if (error) {
+                        console.log(error);
+                        resolve(null);
+                    } else {
+                        resolve(results);
+                    }
+                }
+            );
+        });
+    }
+
+    getAnnouncements(cid){
+        return new Promise( resolve => {
+            this._db.query(
+                `SELECT * FROM Announcement WHERE course_id=${cid}`,
                 (error, results, fields) => {
                     if (error) {
                         console.log(error);

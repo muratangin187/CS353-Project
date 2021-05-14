@@ -16,6 +16,7 @@ import ProfilePage from "./pages/ProfilePage";
 import CreatorProfilePage from "./pages/CreatorProfilePage";
 import MyCartPage from "./pages/MyCartPage";
 import MyWishlistPage from "./pages/MyWishlistPage";
+import MyCertificatesPage from "./pages/MyCertificatesPage";
 import AnswerQuestionPage from "./pages/AnswerQuestionPage";
 import CreateDiscountPage from "./pages/CreateDiscountPage";
 
@@ -109,6 +110,7 @@ function App() {
                           <Route path='/my-cart/:userId' component={MyCartPage}/>
                           <Route path='/my-wishlist/:userId' component={MyWishlistPage}/>
                           <Route path='/my-refunds' component={MyRefundsPage}/>
+                          <Route path='/my-certificates' component={MyCertificatesPage}/>
                           <Route path='/create-announcement' component={CreateAnnouncementPage}/>
                           <Route path='/answer-question-page/:questionId' component={AnswerQuestionPage}/>                          <Route path='/answer-question-page/:questionId' component={AnswerQuestionPage}/>
                           <Route path='/create-discount-page' component={CreateDiscountPage}/>

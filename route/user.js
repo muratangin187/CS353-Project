@@ -114,13 +114,15 @@ router.get("/logout", (req, res) => {
     res.json({"api": "logout"});
 });
 
-router.get("/all-courses", async(req, res)=>{
-    let response = await db.getUserCourses(req.body.userId);
-    if(!response){
-        res.status(400).send({"message": "There is an error occured."});
-    }else {
+router.get("/getUserCertificates/:uid", async (req, res) => {
+    let response = await db.getUserCertificates(req.params.uid);
+    if(response == null){
+        res.status(400).send([]);
+    }else{
+        console.log(response);
         res.status(200).send(response);
     }
 });
+
 
 module.exports = router;

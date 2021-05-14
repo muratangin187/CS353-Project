@@ -12,7 +12,14 @@ async function main (){
     await db.connect();
     console.log("DB connection initialized.");
 
-    await db.query('DROP TABLE IF EXISTS `Rating`');
+    await db.query('DROP TRIGGER IF EXISTS `rating_update`;');
+    await db.query('DROP TRIGGER IF EXISTS `rating_insert`;');
+    await db.query('DROP TRIGGER IF EXISTS `give_certificate`;');
+    await db.query('DROP TRIGGER IF EXISTS `create_certificate`;');
+    await db.query('DROP TABLE IF EXISTS `HasCertificates`;');
+    await db.query('DROP TABLE IF EXISTS `Certificate`;');
+    await db.query('DROP TABLE IF EXISTS `Announcement`;');
+    await db.query('DROP TABLE IF EXISTS `Rating`;');
     await db.query('DROP TABLE IF EXISTS `Refund`;')
     await db.query('DROP TABLE IF EXISTS `CompleteLecture`;');
     await db.query('DROP TABLE IF EXISTS `Buy`;');
@@ -187,6 +194,25 @@ async function main (){
 );`
     );
 
+    await db.query(
+        `CREATE TABLE Certificate( 
+        id INT AUTO_INCREMENT,
+        name VARCHAR(255) NOT NULL,
+        course_id INT NOT NULL,
+        PRIMARY KEY (id),
+        FOREIGN KEY (course_id) REFERENCES Course(id),
+        UNIQUE(course_id));`
+    );
+
+    await db.query(
+        `CREATE TABLE HasCertificates(
+        certificate_id INT NOT NULL,
+        user_id INT NOT NULL,
+        PRIMARY KEY(certificate_id, user_id),
+        FOREIGN KEY (certificate_id) REFERENCES Certificate(id),
+        FOREIGN KEY (user_id) REFERENCES User(id));`
+    );
+
     console.log("DB tables created.");
 
     await db.query(
@@ -207,6 +233,26 @@ async function main (){
          SET averageRating = (SELECT AVG(ratingScore) FROM Rating WHERE course_id = NEW.course_id), ratingCount = ratingCount + 1
          WHERE Course.id = NEW.course_id;
          `
+    );
+
+    await db.query(
+        `CREATE TRIGGER give_certificate
+         AFTER INSERT ON CompleteLecture
+         FOR EACH ROW
+         BEGIN
+            IF ((SELECT COUNT(lecture_id) AS lid_cnt FROM CompleteLecture WHERE user_id = NEW.user_id AND course_id = NEW.course_id) = (SELECT COUNT(lecture_index) as lid_cnt FROM Lecture WHERE course_id = NEW.course_id AND isVisible = 1)) THEN
+                INSERT INTO HasCertificates(certificate_id, user_id) VALUES ( (SELECT DISTINCT id FROM Certificate WHERE course_id = NEW.course_id), NEW.user_id);
+            END IF;
+         END 
+         `
+    );
+
+    await db.query(
+        `CREATE TRIGGER create_certificate
+         AFTER INSERT ON Course
+         FOR EACH ROW
+         INSERT INTO Certificate(name, course_id) VALUES (NEW.title, NEW.id);
+        `
     );
 
     console.log("Triggers have been created.");

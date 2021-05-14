@@ -375,23 +375,46 @@ function RatingItem(rating){
     </ListGroup.Item>);
 }
 
-function AnnouncementsComp() {
+function AnnouncementsComp(props) {
+    const cid = props.cid;
+    const [announcementsData, setAnnouncementsData] = useState(null);
+
+    useEffect(() => {
+        axios.get('/api/course/allAnnouncements/' + cid)
+            .then(response => {
+                setAnnouncementsData(response.data);
+            })
+            .catch(error => {
+                console.log(error);
+            });
+    }, []);
+
+    const AnnouncementItem = (announcement) => {
+        return (<Card style={{width:"75vw"}} className="mb-3">
+            <Card.Header>{announcement.title}</Card.Header>
+            <Card.Body>
+                <blockquote className="blockquote mb-0">
+                    <p>
+                        {announcement.content}
+                    </p>
+                    <footer className="text-muted" style={{fontSize:"14px"}}>
+                        {new Date(announcement.date).toLocaleDateString("tr-TR")}
+                    </footer>
+                </blockquote>
+            </Card.Body>
+        </Card>);
+    }
+
+    if(!announcementsData){
+        return (<Container className="mt-5">
+            <Spinner className="mt-5" style={{width:"35vw", height:"35vw"}} animation="border" variant="dark"/>
+        </Container>);
+    }
+
     return (
-        <Container style={{width:"75vw"}}>
-        <Card style={{width:"75vw"}}>
-  <Card.Header>Server files updated</Card.Header>
-  <Card.Body>
-    <blockquote className="blockquote mb-0">
-      <p>
-        {' '}
-        You need to redownload files in Lecture 25{' '}
-      </p>
-      <footer className="text-muted" style={{fontSize:"14px"}}>
-        20 October 2020
-      </footer>
-    </blockquote>
-  </Card.Body>
-</Card></Container>
+        <Container className="mt-3" style={{width:"75vw"}}>
+            {announcementsData.map((announcement) => AnnouncementItem(announcement))}
+        </Container>
     );
 }
 

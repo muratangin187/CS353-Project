@@ -158,9 +158,22 @@ router.get("/:lid/allBookmarks/:uid", async (req, res) => {
     }
 })
 
+router.get("/allAnnouncements/:cid", async (req, res) => {
+    console.log(JSON.stringify(req.params.cid));
+    let result = await db.getAnnouncements(
+        req.params.cid,
+    );
+    if(result == null){
+        res.status(400).send([]);
+    }else{
+        console.log(result);
+        res.status(200).send(result);
+    }
+})
+
 router.get("/:cid/allRatings", async (req, res) => {
     console.log(JSON.stringify(req.params.lid));
-    let result = await db.getRatings(
+    let result = await db.getCourseRatings(
         req.params.cid,
     );
     if(result == null){

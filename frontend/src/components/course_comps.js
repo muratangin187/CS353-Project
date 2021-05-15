@@ -9,14 +9,16 @@ import {
     Badge,
     Form,
     ButtonGroup,
-    ToggleButton, Spinner,
+    ToggleButton, Spinner, Modal,
 } from "react-bootstrap";
-import React from 'react';
+import React, {useContext} from 'react';
 import {useState, useRef, useEffect} from "react";
 import axios from "axios";
 import {CgWebsite} from "react-icons/cg";
 import {AiFillLinkedin, AiFillYoutube} from "react-icons/ai";
 import {Link} from "react-router-dom";
+import {NotificationContext} from "../services/NotificationContext";
+import {AuthContext} from "../services/AuthContext";
 
 
 function LecturesComp(props) {
@@ -46,7 +48,8 @@ function LecturesComp(props) {
               url:"/api/course/getVisibleLectures/" + cid,
               method: "GET",
           });
-          setLectureData(response.data);
+          if(response.status == 200)
+            setLectureData(response.data);
       }, []);
 
     if(!lectureData){
@@ -67,6 +70,121 @@ function LecturesComp(props) {
 }
 
 
+function ManageDiscountsComp(props) {
+    const courseId = props.cid;
+    const {getCurrentUser} = useContext(AuthContext);
+    const {setShow, setContent, setIntent} = useContext(NotificationContext);
+    const [discounts, setDiscounts] = useState([]);
+    const [updatePage, setUpdatePage] = useState(false);
+
+    useEffect(async()=>{
+        let response = await axios({
+            url: "/api/course/get-discounts/"+courseId,
+            method: "GET"
+        });
+        if(response.status != 200){
+            setShow(true);
+            setContent("Error,", response.data.message);
+            setIntent("failure");
+        }else{
+            let temp = [...response.data];
+            for (let i = 0; i < response.data.length; i++) {
+                console.log("Check discount " + response.data[i].percentage);
+                let response2 = await axios({
+                    url: "/api/course/discounts/"+response.data[i].id,
+                    method: "GET"
+                });
+                console.log("Result discount " + response2.data);
+                temp[i].allowed = response2.data;
+            }
+            console.log(temp);
+            setDiscounts(temp);
+        }
+    }, [updatePage]);
+
+    const allowDiscount = async(did, isAllowed) => {
+        let responseUser = await getCurrentUser;
+        let response = await axios({
+            url: "/api/course/allow-discount/",
+            method: "POST",
+            data: {
+                cid: responseUser.data?.id,
+                did: did,
+                isAllowed: isAllowed
+            }
+        });
+        setShow(true);
+        if(response.data) {
+            setContent("Success", "You successfully " + (isAllowed ? "allowed a discount." : "removed a discount."));
+            setIntent("success");
+        }else{
+            setContent("Failure", "There is an error occured.");
+            setIntent("failure");
+        }
+        setUpdatePage(!updatePage);
+    };
+
+    const disableDiscount = async(did) => {
+        let responseUser = await getCurrentUser;
+        let response = await axios({
+            url: "/api/course/disable-discount/",
+            method: "POST",
+            data: {
+                did: did,
+            }
+        });
+        setShow(true);
+        if(response.data) {
+            setContent("Success", "You successfully disabled a discount.");
+            setIntent("success");
+        }else{
+            setContent("Failure", "There is an error occured.");
+            setIntent("failure");
+        }
+        setUpdatePage(!updatePage);
+    };
+
+    return (
+        <Container className="ml-auto" >
+            <ListGroup style={{width:"75vw"}}>
+                <ListGroup.Item>
+                    {
+                        discounts.map((discount, index) => {
+                            return(
+                                <>
+                                    <Row style={{marginBottom: 10}}>
+                                        <Col style={{display: "flex", justifyContent: "center", alignItems: "center"}} md={1}>{index + 1}.</Col>
+                                        <Col md={9}>
+                                            <h4>%{discount.percentage} Discount | Price after discount: {discount.price * (100-discount.percentage) / 100}</h4>
+                                            <p><strong>Start Date:</strong> {discount.startDate.substr(0,10)} | <strong>End Date:</strong> {discount.endDate.substr(0,10)}</p>
+                                        </Col>
+                                            {discount.allowed ? (
+                                                <Col md={2} style={{display: "flex", justifyContent: "center", alignItems: "center"}}>
+                                                    <Button variant="warning" style={{height: "min-content"}} onClick={()=>disableDiscount(discount.id)}>
+                                                        Disable
+                                                    </Button>
+                                                </Col>
+                                            ) : (
+                                                <Col md={2} style={{display: "flex", justifyContent: "center", alignItems: "center"}}>
+                                                    <Button variant="primary" style={{height: "min-content"}} onClick={()=>allowDiscount(discount.id, true)}>
+                                                        Allow
+                                                    </Button>
+                                                    <Button variant="danger" style={{height: "min-content"}} onClick={()=>allowDiscount(discount.id, false)}>
+                                                    Remove
+                                                    </Button>
+                                                </Col>
+                                            )}
+                                    </Row>
+                                    <hr />
+                                </>
+                            );
+                        })
+                    }
+                </ListGroup.Item>
+            </ListGroup>
+        </Container>
+    );
+}
 
 function QuizzesComp(props) {
     const courseId = props.cid;
@@ -121,42 +239,182 @@ function QuizzesComp(props) {
     );
 }
 
-class QandAComp extends React.Component {
-    constructor(props) {
-        super(props);
+function QandAComp(props) {
+    const [modalShow, setModalShow] = useState(false);
+    const [question, setQuestion] = useState("");
+    const {setShow, setContent, setIntent} = useContext(NotificationContext);
+    const [childOf, setChildOf] = useState(null);
+    const [questions, setQuestions] = useState([]);
+    const {getCurrentUser} = useContext(AuthContext);
+    const [user, setUser] = useState(null);
+    const [updatePage, setUpdatePage] = useState(false);
+    const [isCreator, setIsCreator] = useState(false);
+
+    useEffect(async()=>{
+        let response = await getCurrentUser;
+        setUser(response?.data);
+        setIsCreator(response?.data.id == props.courseData.creator_id);
+        
+        let rootQuestions = await axios({
+            url: "/api/course/get-root-questions/" + props.cid,
+            method: "GET"
+        });
+
+        if(rootQuestions.status == 200){
+            let temp = [...rootQuestions.data];
+            for(let i = 0; i < temp.length; i++){
+                temp[i].children = await getChildrenRecursive(temp[i].id);
+                let answer = await getAnswer(temp[i].id);
+                if(answer){
+                    temp[i].answer = answer;
+                }
+            }
+            console.log(JSON.stringify(temp,null,2));
+            setQuestions(temp);
+        }
+    },[updatePage]);
+
+    const getChildrenRecursive = async (qid) => {
+        console.log("get children recursive");
+        let children = await axios({
+            url: "/api/course/get-question-children/" + qid,
+            method: "GET"
+        });
+        if(children.status == 200){
+            let childrenTemp = [...children.data];
+            for(let i = 0; i < childrenTemp.length; i++){
+                childrenTemp[i].children = await getChildrenRecursive(childrenTemp[i].id);
+                let answer = await getAnswer(childrenTemp[i].id);
+                if(answer){
+                    childrenTemp[i].answer = answer;
+                }
+            }
+            return childrenTemp;
+        }else{
+            return [];
+        }
     }
-    render() {
-      return (
-          <Container className="ml-auto" >
-            <Row>
-            <ListGroup style={{width:"75vw"}}>
-                <ListGroup.Item> 
-                    <Row>
-                        <Col>1.</Col>
-                        <Col xs={8} className="mr-5">
-                            <h4>Beginner Quiz</h4>
-                            <p>What is AWS, how to use it</p>
-                        </Col>
-                        <Col xs={1} className="ml-5">
-                        </Col>
-                    </Row>
-                </ListGroup.Item>
-                <ListGroup.Item className="ml-5"> 
-                    <Row className="ml-5">
-                        <Col>1.</Col>
-                        <Col xs={8} className="mr-5">
-                            <h4>Beginner Quiz</h4>
-                            <p>What is AWS, how to use it</p>
-                        </Col>
-                        <Col xs={1} className="ml-5">
-                        </Col>
-                    </Row>
-                </ListGroup.Item>
-            </ListGroup>
+
+    const getAnswer = async(qid)=>{
+        let response = await axios({
+            url: "/api/course/get-question-answer/" + qid,
+            method: "GET"
+        });
+        console.log("Answer for " + qid + ": " + response.data);
+        return response.data;
+    }
+
+    const askQuestion = async() => {
+        if(question == "" || question.length < 5){
+            setShow(true);
+            setContent("Failure", "Please write a longer " + (isCreator ? "answer" : "question"));
+            setIntent("failure");
+        }else{
+            let data;
+            if(childOf){
+                data = {
+                    content: question,
+                    cid: props.cid,
+                    qid: childOf,
+                    uid: user.id,
+                    answer: isCreator ? 1 : 0
+                }
+            }else{
+                data = {
+                    content: question,
+                    cid: props.cid,
+                    uid: user.id,
+                    answer: isCreator ? 1 : 0
+                }
+            }
+            let response = await axios({
+                url: "/api/course/ask-question",
+                method: "POST",
+                data: data
+            });
+            if(response.status == 200){
+                setShow(true);
+                setIntent("success");
+                setContent("Success", response.data.message);
+            }else{
+                setShow(true);
+                setIntent("failure");
+                setContent("Failure", response.data.message);
+            }
+            setModalShow(false);
+            setUpdatePage(!updatePage);
+        }
+    }
+
+    const questionComp = (question)=>{
+        return (
+            <div className="mt-3">
+                <Row>
+                    <Col className="mr-5">
+                        <h4>{question.username}</h4>
+                        <p>{question.content}</p>
+                        <p>{question.answer ? ("Answer: " + question.answer.content ) : ""}</p>
+                    </Col>
+                    <Col xs="auto" style={{float: "right"}} className="ml-5">
+                        {question.answer ? (<></>) : (
+                        <Button variant="success" type="submit" onClick={()=>{
+                            setModalShow(true);
+                            setChildOf(question.id);
+                        }}>
+                            {isCreator ? "Answer Question" : "Ask Question"}
+                        </Button>
+                        )}
+                    </Col>
+                </Row>
+                {question && question.children && question.children.length > 0 && question.children.map(q=>(<Row className="ml-5">{questionComp(q)}</Row>))}
+            </div>
+        );
+    }
+
+    return (
+    <Container className="ml-auto" >
+        <Modal
+            show={modalShow}
+            size="lg"
+            aria-labelledby="contained-modal-title-vcenter"
+            centered
+        >
+            <Modal.Header closeButton>
+                <Modal.Title id="contained-modal-title-vcenter">
+                    {isCreator ? "Answer Question" : "Ask a question"}
+                </Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                <h4>Please write your {isCreator ? "answer" : "question"}</h4>
+                <p>
+                    <Form.Group controlId="exampleForm.ControlTextarea1">
+                        <Form.Label>{isCreator ? "Answer" : "Question"}</Form.Label>
+                        <Form.Control as="textarea" rows={3} placeholder="Question" onChange={(e)=>setQuestion(e.target.value)}/>
+                    </Form.Group>
+                </p>
+            </Modal.Body>
+            <Modal.Footer>
+                <Button variant="secondary" onClick={()=>setModalShow(false)}>Close</Button>
+                <Button variant="danger" onClick={()=>askQuestion()}>Ask Question</Button>
+            </Modal.Footer>
+        </Modal>
+        {(!isCreator) ? (
+            <Row className="justify-content-md-center mb-2 mt-2 align-items-center">
+                <Button variant="success" type="submit" onClick={()=>{
+                    setModalShow(true);
+                    setChildOf(null);
+                }}>
+                    Ask Question
+                </Button>
             </Row>
-          </Container>
-      );
-    }
+        ) : (<></>)}
+          <Row>
+              <ListGroup style={{width:"75vw"}}>
+                  {questions.map(q=>(<ListGroup.Item>{questionComp(q)}</ListGroup.Item>))} 
+              </ListGroup>
+        </Row>
+      </Container>
+    );
 }
 
 function RatingsComp() {
@@ -317,4 +575,4 @@ function AboutComp(props) {
     );
 }
 
-export {LecturesComp, QuizzesComp, QandAComp, RatingsComp, AnnouncementsComp, AboutComp, ListRatingsComp}
+export {LecturesComp, QuizzesComp, QandAComp, RatingsComp, AnnouncementsComp, AboutComp, ListRatingsComp, ManageDiscountsComp}

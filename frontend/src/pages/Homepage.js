@@ -41,7 +41,8 @@ export default function Homepage(){
                 minimum,maximum,order,orderDirection, search,categories, pageNumber: 1
             }
         });
-        setCourses(response.data);
+        if(response.status == 200)
+            setCourses(response.data);
     },[]);
 
     const handleCategory = (category)=>{

@@ -13,6 +13,9 @@ async function main (){
     await db.connect();
     console.log("DB connection initialized.");
 
+    await db.query('DROP TABLE IF EXISTS `Answer`;');
+    await db.query('DROP TABLE IF EXISTS `Question`;');
+    await db.query('DROP TABLE IF EXISTS `Allow`;');
     await db.query('DROP TABLE IF EXISTS `MultipleChoice`;')
     await db.query('DROP TABLE IF EXISTS `TrueFalse`;')
     await db.query('DROP TABLE IF EXISTS `FlashCard`;')
@@ -222,6 +225,35 @@ async function main (){
         FOREIGN KEY(id) REFERENCES FlashCard(id));`
     );
 
+
+    await db.query(
+        `CREATE TABLE Allow( creator_id INT, discount_id INT,
+        PRIMARY KEY (creator_id, discount_id),
+        FOREIGN KEY (creator_id) REFERENCES Creator(id), FOREIGN KEY (discount_id) REFERENCES Discount(id));`
+    );
+
+    await db.query(
+        `CREATE TABLE Question( id INT AUTO_INCREMENT,
+        content VARCHAR(1024) NOT NULL,
+        date DATETIME NOT NULL DEFAULT(sysdate()), user_id INT NOT NULL,
+        course_id INT NOT NULL,
+        parent_id INT DEFAULT NULL,
+        PRIMARY KEY (id),
+        FOREIGN KEY (user_id) REFERENCES User(id), FOREIGN KEY (course_id) REFERENCES Course(id)
+        );`
+    );
+
+    await db.query(
+        `CREATE TABLE Answer( id INT AUTO_INCREMENT,
+        content VARCHAR(1024) NOT NULL,
+        date DATETIME NOT NULL DEFAULT(sysdate()), question_id INT NOT NULL,
+        creator_id INT NOT NULL,
+        PRIMARY KEY (id),
+        FOREIGN KEY (question_id) REFERENCES Question(id), FOREIGN KEY (creator_id) REFERENCES Creator(id)
+        );`
+    );
+
+
     console.log("DB tables created.");
 
     let hash = crypto.createHash('md5').update("123").digest('hex');
@@ -238,6 +270,8 @@ async function main (){
     await db.query(`INSERT INTO Buy (user_id, course_id) VALUES (2,1);`);
     await db.query(`INSERT INTO Refund (title, reason, course_id, user_id, admin_id) VALUES ("Cok dandik ", "parami iade edin", 1, 1, NULL);`);
     await db.query(`INSERT INTO Refund (title, reason, course_id, user_id, admin_id) VALUES ("Cok guzel kurs", "ama gene siz parami iade edin", 1, 2, NULL);`);
+    await db.query(`INSERT INTO Question (content, user_id, course_id) VALUES ("Kurs sonucunda sertifika var mi", 1, 1);`);
+    await db.query(`INSERT INTO Question (content, user_id, course_id, parent_id) VALUES ("Kurs sonucunda sertifika var mi", 2, 1, 1);`);
 
     console.log("Initialization finished");
 }

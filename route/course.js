@@ -205,6 +205,30 @@ router.get("/get-all-refunds", async(req, res)=>{
     }
 });
 
+router.get("/get-discounts/:cid", async(req, res)=>{
+    let result = await db.getAllDiscounts(req.params.cid);
+    if(result == null){
+        res.status(400).send({"message": "There is an error occured in the db read stage of discount creation."});
+    }else{
+        res.status(200).send(result);
+    }
+});
+
+router.post("/allow-discount", async (req, res)=>{
+    let result = await db.allowDiscount(req.body.cid,req.body.did,req.body.isAllowed);
+    res.status(200).send(result);
+});
+
+router.post("/disable-discount", async (req, res)=>{
+    let result = await db.disableDiscount(req.body.did);
+    res.status(200).send(result);
+});
+
+router.get("/discounts/:did", async(req, res)=>{
+    let result = await db.isDiscountAllowed(req.params.did);
+    res.status(200).send(result);
+});
+
 router.post("/create-discount", async (req, res)=>{
     let result = await db.createDiscount(
         req.body.courseId,
@@ -266,6 +290,54 @@ router.post("/refund", async(req, res)=>{
         res.status(200).send({message: "Refund request successfully sent."});
     else
         res.status(400).send({message: "There is an error occured on the refund process."});
+});
+
+router.post("/ask-question", async(req, res)=>{
+    console.log("Asking question: " + req.body.content + " - " + req.body.cid + " - " + req.body.qid);
+    if(req.body.answer == 1){
+        let result = await db.answerQuestion(
+            req.body.content,
+            req.body.uid,
+            req.body.qid
+        );
+        if(result)
+            res.status(200).send({message: "Answered question successfully."});
+        else
+            res.status(400).send({message: "There is an error occured on the question answering process."});
+    }else{
+        let result = await db.askQuestion(
+            req.body.content,
+            req.body.cid,
+            req.body.qid,
+            req.body.uid
+        );
+        if(result)
+            res.status(200).send({message: "Asked question successfully."});
+        else
+            res.status(400).send({message: "There is an error occured on the question asking process."});
+    }
+});
+
+router.get("/get-root-questions/:cid", async(req, res)=>{
+    console.log(`Get root questions for course: ${req.params.cid}`);
+    let result = await db.getRootQuestions(req.params.cid);
+    if(result == null){
+        res.status(400).send({"message": "There is an error occured in the db read stage of question retrieval."});
+    }else{
+        res.status(200).send(result);
+    }
+});
+
+router.get("/get-question-answer/:qid", async (req, res) => {
+    console.log(`Get answer of question: ${req.params.qid}`);
+    let result = await db.getAnswer(req.params.qid);
+    res.status(200).send(result);
+});
+
+router.get("/get-question-children/:qid", async (req, res) => {
+    console.log(`Get children questions for question: ${req.params.qid}`);
+    let result = await db.getQuestionChildren(req.params.qid);
+    res.status(200).send(result);
 });
 
 module.exports = router;

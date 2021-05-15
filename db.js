@@ -256,6 +256,88 @@ class Db{
         });
     }
 
+    allowDiscount(cid, did, isAllowed){
+        if(isAllowed){
+            return new Promise(resolve => {
+                this._db.query(
+                    `INSERT INTO Allow(creator_id, discount_id) VALUES ('${cid}', '${did}')`,
+                    (error, results, fields) => {
+                        if (error){
+                            console.log(error);
+                            resolve(false);
+                        }else{
+                            resolve(true);
+                        }
+                    }
+                );
+            });
+        }else{
+            return new Promise(resolve => {
+                this._db.query(
+                    `DELETE FROM Discount WHERE id = ${did}`,
+                    (error, results, fields) => {
+                        if(error){
+                            console.log(error);
+                            resolve(false);
+                        } else {
+                            resolve(true);
+                        }
+                    }
+                );
+            });
+        }
+    }
+
+    disableDiscount(did){
+        return new Promise(resolve => {
+            this._db.query(
+                `DELETE FROM Allow WHERE discount_id = ${did}`,
+                (error, results, fields) => {
+                    if(error){
+                        console.log(error);
+                        resolve(false);
+                    } else {
+                        resolve(true);
+                    }
+                }
+            );
+        });
+    }
+
+    isDiscountAllowed(did){
+        return new Promise(resolve=>{
+            this._db.query(
+                `SELECT * FROM Allow WHERE discount_id = ${did} LIMIT 1`,
+                (error, results, fields)=>{
+                    if(error){
+                        console.log(error);
+                        resolve(false);
+                    }else{
+                        if(results.length == 1)
+                            resolve(true);
+                        else
+                            resolve(false);
+                    }
+                });
+        });
+    }
+
+    getAllDiscounts(cid){
+        return new Promise(resolve=>{
+            this._db.query(
+                `SELECT * FROM Discount d, Course c WHERE d.course_id = c.id AND c.id = ${cid};`,
+                (error, results, fields)=>{
+                    if(error){
+                        console.log(error);
+                        resolve(null);
+                    }else{
+                        console.log(results);
+                        resolve(results);
+                    }
+                });
+        });
+    }
+
     createDiscount(courseId, startDate, endDate, percentage, adminId){
         return new Promise(resolve => {
             this._db.query(
@@ -269,6 +351,100 @@ class Db{
                     }
                 }
             );
+        });
+    }
+    
+    getQuestionChildren(qid){
+        return new Promise(resolve=>{
+            this._db.query(
+                `SELECT q.id as id, q.content as content, q.date as date, q.parent_id as parent_id, p.username as username FROM Question q, Person p WHERE p.id = q.user_id AND q.parent_id = ${qid}`,
+                (error, results, fields)=>{
+                    if(error){
+                        console.log(error);
+                        resolve([]);
+                    }else{
+                        console.log(results);
+                        resolve(results);
+                    }
+                });
+        });
+    }
+
+    getRootQuestions(cid){
+        return new Promise(resolve=>{
+            this._db.query(
+                `SELECT q.id as id, q.content as content, q.date as date, q.parent_id as parent_id, p.username as username FROM Question q, Person p WHERE p.id = q.user_id AND q.parent_id IS null AND course_id = ${cid}`,
+                (error, results, fields)=>{
+                    if(error){
+                        console.log(error);
+                        resolve(null);
+                    }else{
+                        console.log(results);
+                        resolve(results);
+                    }
+                });
+        });
+    }
+
+    getAnswer(qid){
+        return new Promise(resolve=>{
+            this._db.query(
+                `SELECT a.id as id, a.content as content, a.date as date, a.question_id as question_id, p.username as username FROM Answer a, Person p WHERE p.id = a.creator_id AND a.question_id = ${qid}`,
+                (error, results, fields)=>{
+                    if(error){
+                        console.log(error);
+                        resolve(null);
+                    }else{
+                        console.log(results[0]);
+                        resolve(results[0]);
+                    }
+                });
+        });
+    }
+
+    answerQuestion(content, uid, qid){
+        return new Promise(resolve=> {
+            this._db.query(
+                `INSERT INTO Answer(content, question_id, creator_id) VALUES ('${content}', ${qid}, ${uid})`,
+                (error, results, fields) => {
+                    if (error){
+                        console.log(error);
+                        resolve(false);
+                    }else{
+                        resolve(true);
+                    }
+                }
+            );
+        });
+    }
+
+    askQuestion(content, cid, qid, uid){
+        return new Promise(resolve=> {
+            if(qid){
+                this._db.query(
+                    `INSERT INTO Question(content, course_id, parent_id, user_id) VALUES ('${content}', ${cid}, ${qid}, ${uid})`,
+                    (error, results, fields) => {
+                        if (error){
+                            console.log(error);
+                            resolve(false);
+                        }else{
+                            resolve(true);
+                        }
+                    }
+                );
+            }else{
+                this._db.query(
+                    `INSERT INTO Question(content, course_id, user_id) VALUES ('${content}', ${cid}, ${uid})`,
+                    (error, results, fields) => {
+                        if (error){
+                            console.log(error);
+                            resolve(false);
+                        }else{
+                            resolve(true);
+                        }
+                    }
+                );
+            }
         });
     }
 

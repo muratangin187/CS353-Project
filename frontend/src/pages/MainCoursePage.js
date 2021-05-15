@@ -17,7 +17,7 @@ import {
     QuizzesComp,
     RatingsComp,
     AnnouncementsComp,
-    AboutComp
+    AboutComp, ManageDiscountsComp
 } from "../components/course_comps";
 
 export default function MainCoursePage() {
@@ -65,13 +65,16 @@ export default function MainCoursePage() {
       <QuizzesComp/>
       </Tab>
       <Tab eventKey="qanda" title="Q/A">
-      <QandAComp/>
+      <QandAComp  cid={params.cid} courseData={courseData}/>
       </Tab>
       <Tab eventKey="ratings" title="Ratings">
         <RatingsComp/>
       </Tab>
       <Tab eventKey="announcements" title="Announcements">
        <AnnouncementsComp/>
+      </Tab>
+      <Tab eventKey="discounts" title="Manage Discounts">
+          <ManageDiscountsComp cid={params.cid}/>
       </Tab>
       <Tab eventKey="about" title="About">
        <AboutComp courseData={courseData}/>

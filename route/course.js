@@ -142,14 +142,13 @@ router.post("/completeLecture", async(req, res) => {
 });
 
 router.get("/retrieve/:cid", async (req, res)=>{
-    console.log(JSON.stringify(req.params.cid));
     let result = await db.getCourse(
         req.params.cid,
     );
     if(result == null){
         res.status(400).send({"message": "There is an error occurred in the db retrieve stage of course creation."});
     }else{
-        console.log(result);
+        console.log("RESULT:", JSON.stringify(result,null,2));
         res.status(200).send(result);
     }
 });

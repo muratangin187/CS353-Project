@@ -39,15 +39,29 @@ class Db{
     getCourse(cid){
         return new Promise(resolve=>{
             this._db.query(
-                'SELECT * FROM Course WHERE id = ? LIMIT 1',
-                [cid],
-                (error, results, fields)=>{
+                `SELECT d.percentage as percentage FROM Allow a, Discount d WHERE a.discount_id = d.id AND d.course_id = ${cid} LIMIT 1`,
+                (error, discounts, fields) => {
                     if(error){
                         console.log(error);
                         resolve(null);
                     }else{
-                        console.log(results);
-                        resolve(results[0]);
+                        this._db.query(
+                            'SELECT * FROM Course WHERE id = ? LIMIT 1',
+                            [cid],
+                            (error, results, fields)=>{
+                                if(error){
+                                    console.log(error);
+                                    resolve(null);
+                                }else{
+                                    console.log("DISCOUNT:", JSON.stringify(discounts, null, 2));
+                                    console.log("RESULTS IN :", JSON.stringify(results[0],null,2));
+                                    if(discounts[0] && discounts[0].percentage)
+                                        results[0].discount = discounts[0].percentage;
+                                    else
+                                        results[0].discount = 0;
+                                    resolve(results[0]);
+                                }
+                            });
                     }
                 });
         });
@@ -105,23 +119,6 @@ class Db{
         });
     }
 
-
-    getCourse(cid){
-        return new Promise(resolve=>{
-            this._db.query(
-                'SELECT * FROM Course WHERE id = ? LIMIT 1',
-                [cid],
-                (error, results, fields)=>{
-                    if(error){
-                        console.log(error);
-                        resolve(null);
-                    }else{
-                        console.log(results);
-                        resolve(results[0]);
-                    }
-                });
-        });
-    }
 
     insertPerson(username, email, photo, name, surname, password){
         return new Promise(resolve=> {
@@ -357,7 +354,7 @@ class Db{
     getAllDiscounts(cid){
         return new Promise(resolve=>{
             this._db.query(
-                `SELECT * FROM Discount d, Course c WHERE d.course_id = c.id AND c.id = ${cid};`,
+                `SELECT d.id as id, d.percentage as percentage, d.startDate as startDate, d.endDate as endDate, d.course_id as course_id, d.admin_id as admin_id, c.price FROM Discount d, Course c WHERE d.course_id = c.id AND c.id = ${cid};`,
                 (error, results, fields)=>{
                     if(error){
                         console.log(error);
@@ -505,23 +502,45 @@ class Db{
         console.log(categoryString);
         let sql = "";
         if(orderDirection == "ASC") orderDirection = "";
-        if(order == "Price"){
-            sql = `SELECT * FROM Course WHERE (category IN (${categoryString})) AND (price BETWEEN ${minimum} AND ${maximum}) AND (description LIKE '${searchString}' OR title LIKE '${searchString}' OR category LIKE '${searchString}') ORDER BY price ${orderDirection} LIMIT ${offset}, 10;`;
-        }else if(order == "Rating"){
-            sql = `SELECT * FROM Course WHERE (category IN (${categoryString})) AND (price BETWEEN ${minimum} AND ${maximum}) AND (description LIKE '${searchString}' OR title LIKE '${searchString}' OR category LIKE '${searchString}') ORDER BY averageRating ${orderDirection} LIMIT ${offset}, 10;`;
-        }else{
-            // TODO add it when discount added
-            sql = `SELECT * FROM Course WHERE (category IN (${categoryString})) AND (price BETWEEN ${minimum} AND ${maximum}) AND (description LIKE '${searchString}' OR title LIKE '${searchString}' OR category LIKE '${searchString}') ORDER BY price ${orderDirection} LIMIT ${offset}, 10;`;
-        }
         return new Promise(resolve=>{
-            this._db.query(sql, (error, results, fields) => {
-                    if (error){
+            this._db.query(
+                `SELECT d.course_id as course_id, d.percentage as percentage FROM Allow a, Discount d WHERE a.discount_id = d.id`,
+                (error, discounts, fields) => {
+                    if(error){
                         console.log(error);
-                        resolve(null);
+                        resolve([]);
                     }else{
-                        console.log(sql);
-                        console.log(results);
-                        resolve(results);
+                        if(order == "Price"){
+                            sql = `SELECT * FROM Course WHERE (category IN (${categoryString})) AND (price BETWEEN ${minimum} AND ${maximum}) AND (description LIKE '${searchString}' OR title LIKE '${searchString}' OR category LIKE '${searchString}') ORDER BY price ${orderDirection} LIMIT ${offset}, 11;`;
+                        }else if(order == "Rating"){
+                            sql = `SELECT * FROM Course WHERE (category IN (${categoryString})) AND (price BETWEEN ${minimum} AND ${maximum}) AND (description LIKE '${searchString}' OR title LIKE '${searchString}' OR category LIKE '${searchString}') ORDER BY averageRating ${orderDirection} LIMIT ${offset}, 10;`;
+                        }else{
+                            // TODO add it when discount added
+                            sql = `SELECT * FROM Course WHERE (category IN (${categoryString})) AND (price BETWEEN ${minimum} AND ${maximum}) AND (description LIKE '${searchString}' OR title LIKE '${searchString}' OR category LIKE '${searchString}') ORDER BY price ${orderDirection} LIMIT ${offset}, 10;`;
+                        }
+                        console.log("DISCOUNTS:", JSON.stringify(discounts, null,2));
+                        this._db.query(sql, (error, results, fields) => {
+                                if (error){
+                                    console.log(error);
+                                    resolve([]);
+                                }else{
+                                    results.forEach(r=>{
+                                        let discount = discounts.find(d=>d.course_id == r.id)
+                                        if(discount) r.discount = discount.percentage; else r.discount = 0;
+                                    });
+                                    console.log(results);
+                                    results.sort((a,b)=> {
+                                        let afinal = a.price * (100-a.discount) / 100;
+                                        let bfinal = b.price * (100-b.discount) / 100;
+                                        if(orderDirection == "")
+                                            return afinal < bfinal;
+                                        else
+                                            return afinal > bfinal;
+                                    });
+                                    resolve(results);
+                                }
+                            }
+                        );
                     }
                 }
             );

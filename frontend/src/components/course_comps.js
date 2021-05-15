@@ -164,6 +164,7 @@ function ManageDiscountsComp(props) {
 
     const allowDiscount = async(did, isAllowed) => {
         let responseUser = await getCurrentUser;
+        console.log("Allow discount cid:" + responseUser.data?.id + " did:" + did);
         let response = await axios({
             url: "/api/course/allow-discount/",
             method: "POST",

@@ -30,6 +30,7 @@ export default function CourseDescPage() {
     const [show, setShow] = useState(false);
     const [userData, setUserData] = useState(null);
     const [creatorLink, setCreatorLink] = useState("");
+    const [disableButton, setDisableButton] = useState(null);
     let history = useHistory();
 
     const handleClose = () => setShow(false);
@@ -78,9 +79,14 @@ export default function CourseDescPage() {
             .catch(error => {
                 console.log(error);
             });
+        if( userResponse?.data.isAdmin || userResponse?.data.isCreator){
+            setDisableButton(true);
+        } else {
+            setDisableButton(false);
+        }
     }, []);
 
-    if(!courseData ||!courseCreator){
+    if(!courseData ||!courseCreator || disableButton == null){
         return (<Container className="mt-5">
             <Spinner cselassName="mt-5" style={{width:"35vw", height:"35vw"}} animation="border" variant="dark"/>
         </Container>);
@@ -187,9 +193,9 @@ export default function CourseDescPage() {
                         <ListGroup.Item><Row><Col>Current Price</Col><Col>{(courseData.price * (100 - courseData.discount) / 100) + " TL"}</Col></Row></ListGroup.Item>
                     </ListGroup>
                     <Col>
-                    <Button block onClick={handleShow}>Buy Course</Button>
-                        <Button block onClick={() => handleAddToCard()} href="/my-cart">Add to Card</Button>
-                        <Button block onClick={() => handleAddToWishlist()} href="/my-wishlist">Add to Wishlist</Button>
+                    <Button block disabled={disableButton} onClick={handleShow}>Buy Course</Button>
+                        <Button block disabled={disableButton} onClick={() => handleAddToCard()} href="/my-cart">Add to Card</Button>
+                        <Button block disabled={disableButton} onClick={() => handleAddToWishlist()} href="/my-wishlist">Add to Wishlist</Button>
                     </Col>
                     <Card
                         bg="light"

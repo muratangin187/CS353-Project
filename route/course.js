@@ -379,6 +379,15 @@ router.get("/isCourseRated/:cid/:uid", async (req, res) => {
     res.status(200).send(result);
 });
 
+router.get("/isCourseBought/:cid/:uid", async (req, res) => {
+    console.log(JSON.stringify(req.params.cid));
+    let result = await db.isCourseBought(
+        req.params.cid,
+        req.params.uid,
+    );
+    res.status(200).send(result);
+});
+
 router.post("/refund", async(req, res)=>{
     let result = await db.makeRefund(
         req.body.courseId,

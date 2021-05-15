@@ -26,6 +26,7 @@ export default function LecturePage(){
     const [buttonDisableData, setButtonDisableData] = useState(null);
     const {getCurrentUser} = useContext(AuthContext);
     const [userData, setUserData] = useState(null);
+    const [boughtData, setBoughtData] = useState(null);
     const noteFormRef = useRef(null);
     const bookmarkFormRef = useRef(null);
     const cid = params.cid;
@@ -70,6 +71,12 @@ export default function LecturePage(){
         });
         console.log(bookmarksResponse.data);
         setBookmarksData(bookmarksResponse.data);
+
+        let boughtResponse = await axios({
+            url:"/api/course/isCourseBought/" + params.cid + "/" + userResponse.data.id,
+            method: "GET",
+        });
+        setBoughtData(boughtResponse.data);
     }, [params.lid]);
 
     const durationToTime = (duration) => {
@@ -90,6 +97,28 @@ export default function LecturePage(){
             <Spinner className="mt-5" style={{width:"35vw", height:"35vw"}} animation="border" variant="dark"/>
         </Container>);
     }
+
+    if(!boughtData && !userData.isCreator){
+        return (
+            <Container fluid>
+                <Row className="justify-content-md-center mt-2">
+                    <h2>You cannot see this page</h2>
+                </Row>
+                <Row className="justify-content-md-center mt-2">
+                    <h2>You have not bought this course</h2>
+                </Row>
+            </Container>);
+    } else if (userData.isCreator && userData.id != courseData.creator_id){
+        return (<Container fluid>
+            <Row className="justify-content-md-center mt-2">
+                <h2>You cannot see this page</h2>
+            </Row>
+            <Row className="justify-content-md-center mt-2">
+                <h2>You are not the creator of this course</h2>
+            </Row>
+        </Container>);
+    }
+
     const handleNoteSubmit = async (event) => {
         setIntent("normal");
         setContent("Processing", "Please wait");

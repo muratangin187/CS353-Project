@@ -114,7 +114,6 @@ function App() {
                           <PrivateRoute path='/my-refunds' component={MyRefundsPage} role={[userRole]}/>
                           <PrivateRoute path='/my-cart' component={MyCartPage} role={[userRole]}/>
                           <PrivateRoute path='/my-wishlist' component={MyWishlistPage} role={[userRole]}/>
-                          <PrivateRoute path='/create-announcement/:creatorId' component={CreateAnnouncementPage} role={[creatorRole]}/>
                           <PrivateRoute path='/my-balance' component={MyBalance} role={[userRole]}/>
                           <PrivateRoute path='/my-certificates' component={MyCertificatesPage} role={[userRole]}/>
                           <PrivateRoute path='/create-announcement' component={CreateAnnouncementPage} role={[creatorRole]}/>

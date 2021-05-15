@@ -57,13 +57,13 @@ export default function CreatorProfilePage(){
                         </Row>
                         <Row id="creator_links">
                             <div id="links">
-                                <Button className="link_item" variant="outline-dark" href={courseCreator.website}>
+                                <Button className="link_item" variant="outline-dark" href={"https://" + courseCreator.website}>
                                     <CgWebsite />
                                 </Button>
-                                <Button className="link_item" variant="outline-dark" href={courseCreator.linkedin}>
+                                <Button className="link_item" variant="outline-dark" href={"https://" + courseCreator.linkedin}>
                                     <AiFillLinkedin />
                                 </Button>
-                                <Button className="link_item" variant="outline-dark" href={courseCreator.youtube}>
+                                <Button className="link_item" variant="outline-dark" href={"https://" + courseCreator.youtube}>
                                     <AiFillYoutube />
                                 </Button>
                             </div>

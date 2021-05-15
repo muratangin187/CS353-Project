@@ -643,6 +643,22 @@ class Db{
         });
     }
 
+    isCourseBought(cid, uid){
+        return new Promise( resolve => {
+           this._db.query(
+               `SELECT * FROM Buy WHERE user_id = ${uid} AND course_id = ${cid};`,
+               (error, results, fields) => {
+                   if( error) {
+                       console.log(error);
+                       resolve(false);
+                   } else {
+                       resolve(!!results.length);
+                   }
+               }
+           );
+        });
+    }
+
     isCourseCompleted(cid, uid){
         return new Promise(resolve => {
             this._db.query(

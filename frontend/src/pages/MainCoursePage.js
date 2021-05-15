@@ -91,7 +91,7 @@ export default function MainCoursePage() {
       onSelect={(k) => setKey(k)}
     >
       <Tab eventKey="lectures" title="Lectures">
-        <LecturesComp cid={params.cid}/>
+        <LecturesComp cid={params.cid} isCreator={userData.id === courseData.creator_id}/>
       </Tab>
       <Tab eventKey="quizzes" title="Quizzes">
       <QuizzesComp/>
@@ -100,10 +100,10 @@ export default function MainCoursePage() {
       <QandAComp  cid={params.cid} courseData={courseData}/>
       </Tab>
       <Tab eventKey="ratings" title="Ratings">
-        <RatingsComp cid={params.cid}/>
+        <RatingsComp cid={params.cid} isCreator={userData.id === courseData.creator_id}/>
       </Tab>
       <Tab eventKey="announcements" title="Announcements">
-       <AnnouncementsComp cid={params.cid}/>
+       <AnnouncementsComp cid={params.cid} isCreator={userData.id === courseData.creator_id}/>
       </Tab>
       <Tab eventKey="discounts" title="Manage Discounts">
           <ManageDiscountsComp cid={params.cid}/>

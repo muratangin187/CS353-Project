@@ -321,9 +321,6 @@ async function main (){
 
     console.log("Triggers have been created.");
 
-    await db.query(`INSERT INTO Person (username, email, name, surname, password, photo) VALUES ('test_user', 'test_user@gmail.com', 'Mehmet', 'Testoglu', '123', 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg');`);
-    await db.query(`INSERT INTO Person (username, email, name, surname, password, photo) VALUES ('test_creator', 'test_creator@gmail.com', 'David', 'Testoglu', '123', 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg');`);
-    await db.query(`INSERT INTO Person (username, email, name, surname, password, photo) VALUES ('test_admin', 'test_admin@gmail.com', 'Atalar', 'Testoglu', '123', 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg');`);
     let hash = crypto.createHash('md5').update("123").digest('hex');
     await db.query(`INSERT INTO Person (username, email, name, surname, password, photo) VALUES ('test_user', 'test_user@gmail.com', 'Mehmet', 'Testoglu', '${hash}', 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg');`);
     await db.query(`INSERT INTO Person (username, email, name, surname, password, photo) VALUES ('test_user2', 'test_user2@gmail.com', 'Mehmet2', 'Testoglu2', '${hash}', 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg');`);

@@ -1234,5 +1234,38 @@ class Db{
             );
         });
     }
+
+    clearDiscounts(){
+        this._db.query(
+            `SELECT id FROM Discount WHERE endDate < CURRENT_TIMESTAMP`,
+            (error, results, fields) => {
+                if(error){
+                    console.log(error);
+                }else{
+                    for(let i = 0; i < results.length; i++){
+                        this._db.query(
+                            `DELETE FROM Allow WHERE discount_id = ${results[i].id}`,
+                            (error, results, fields) => {
+                                if(error){
+                                    console.log(error);
+                                } else {
+                                }
+                            }
+                        );
+                        this._db.query(
+                            `DELETE FROM Discount WHERE id = ${results[i].id}`,
+                            (error, results, fields) => {
+                                if(error){
+                                    console.log(error);
+                                } else {
+                                }
+                            }
+                        );
+                    }
+                    console.log(results);
+                }
+            }
+        );
+    }
 }
 module.exports = new Db();

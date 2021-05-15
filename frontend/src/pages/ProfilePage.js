@@ -56,7 +56,7 @@ export default function ProfilePage() {
                     </Row>
                     <Row className="justify-content-md-center mt-2">
                         <Button  variant="outline-secondary" type="submit" style={{width:"35vw"}} onClick={()=>{
-                            history.push("/my-balance");
+                            history.replace("/my-balance");
                         }}>
                             Balance
                         </Button>

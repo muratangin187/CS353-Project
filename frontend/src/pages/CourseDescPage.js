@@ -6,10 +6,10 @@ import {
     Button,
     Modal,
     Image,
-    Spinner, Card
+    Spinner, Card 
 } from "react-bootstrap";
 import React, {useState, useEffect, useContext} from "react";
-import {useHistory, useParams} from 'react-router-dom';
+import {useHistory, useParams, Link} from 'react-router-dom';
 import axios from 'axios';
 
 import {
@@ -29,6 +29,7 @@ export default function CourseDescPage() {
     const [courseCreator, setCourseCreator] = useState({}); // course creator JSON object
     const [show, setShow] = useState(false);
     const [userData, setUserData] = useState(null);
+    const [creatorLink, setCreatorLink] = useState("");
     let history = useHistory();
 
     const handleClose = () => setShow(false);
@@ -65,6 +66,7 @@ export default function CourseDescPage() {
             method: "GET",
         });
         setCourseData(response.data);
+        setCreatorLink("/creator-profile/" + response.data.creator_id);
         axios.get('/api/creator/' + response.data.creator_id)
             .then(result => {
                 setCourseCreator(result.data);
@@ -193,10 +195,9 @@ export default function CourseDescPage() {
                     >
                         <Card.Img variant="top" src={(courseCreator.photo != "placeholder.jpg") ? courseCreator.photo : "profile.png"} className="creator-img" />
                         <Card.Body style={{alignItems: "center"}}>
-                            <Card.Title style={{textAlign: "center"}}> {courseCreator.name} {courseCreator.surname} </Card.Title>
-                            <Card.Text style={{textAlign: "center"}}>
-                                Job Of Creator
-                            </Card.Text>
+                            <Link to={creatorLink}>
+                                <Card.Title style={{textAlign: "center"}}> {courseCreator.name} {courseCreator.surname} </Card.Title>
+                            </Link>
                         </Card.Body>
                         <Card.Body>
                             <div id="links">

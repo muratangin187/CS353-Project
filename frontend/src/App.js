@@ -1,5 +1,5 @@
 import './App.css';
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {BrowserRouter, Link, Route, Switch} from 'react-router-dom';
 import {Button, Card, Nav, Toast} from 'react-bootstrap';
 import RegisterPage from "./pages/RegisterPage";
@@ -17,6 +17,7 @@ import CreatorProfilePage from "./pages/CreatorProfilePage";
 import MyCartPage from "./pages/MyCartPage";
 import MyWishlistPage from "./pages/MyWishlistPage";
 import CreateAnnouncementPage from "./pages/CreateAnnouncementPage";
+import MyCertificatesPage from "./pages/MyCertificatesPage";
 import AnswerQuestionPage from "./pages/AnswerQuestionPage";
 import CreateDiscountPage from "./pages/CreateDiscountPage";
 
@@ -37,6 +38,7 @@ function App() {
     const [title, setTitle] = useState("Processing");
     const [show, setShow] = useState(false);
     const [toastStyle, setToastStyle] = useState({});
+    const [userRole, creatorRole, adminRole, anonRole] = [0, 1, 2, 3];
 
   return (
       <NotificationContext.Provider value={{
@@ -96,29 +98,31 @@ function App() {
                       <CustomNavbar/>
                       <Switch>
                           <Route exact path='/' component={Homepage}/>
-                          <Route path='/courses' component={Api}/>
-                          <Route path='/my-courses' component={MyCoursesPage}/>
-                          <Route path='/course/:cid/create-quiz' component={CreateQuizPage}/>
-                          <Route path='/course/:cid/lecture/:lid' component={LecturePage}/>
-                          <Route path='/course/:cid' component={MainCoursePage}/>
-                          <Route path='/create-course' component={CreateCoursePage}/>
-                          <Route path='/course-desc/:cid' component={CourseDescPage}/>
+                          <PrivateRoute path='/courses' component={Api} role={userRole}/>
+                          <PrivateRoute path='/my-courses' component={MyCoursesPage} role={userRole}/>
+                          <PrivateRoute path='/course/:cid/create-quiz' component={CreateQuizPage} role={creatorRole}/>
+                          <PrivateRoute path='/course/:cid/lecture/:lid' component={LecturePage} role={userRole}/>
+                          <PrivateRoute path='/course/:cid' component={MainCoursePage} role={userRole}/>
+                          <PrivateRoute path='/create-course' component={CreateCoursePage} role={creatorRole}/>
+                          <PrivateRoute path='/course-desc/:cid' component={CourseDescPage} role={anonRole}/>
                           <Route path='/about' component={AboutUs}/>
                           <Route path='/login' component={LoginPage}/>
-                          <PrivateRoute path='/profile' component={ProfilePage} role={0}/>
-                          <PrivateRoute path='/admin' component={AdminPage} role={2}/>
+                          <Route path='/profile' component={ProfilePage}/>
+                          <PrivateRoute path='/admin' component={AdminPage} role={adminRole}/>
                           <Route path='/register' component={RegisterPage}/>
-                          <Route path='/create-lecture/:cid' component={CreateLecturePage}/>
-                          <Route path='/creator-profile/:creatorId' component={CreatorProfilePage}/>
-                          <Route path='/my-cart/:userId' component={MyCartPage}/>
-                          <Route path='/my-wishlist/:userId' component={MyWishlistPage}/>
-                          <Route path='/my-refunds' component={MyRefundsPage}/>
-                          <Route path='/my-cart' component={MyCartPage}/>
-                          <Route path='/my-wishlist' component={MyWishlistPage}/>
-                          <Route path='/create-announcement/:creatorId' component={CreateAnnouncementPage}/>
-                          <Route path='/answer-question-page/:questionId' component={AnswerQuestionPage}/>
-                          <Route path='/my-balance' component={MyBalance}/>
-                          <Route path='/create-discount-page' component={CreateDiscountPage}/>
+                          <PrivateRoute path='/create-lecture/:cid' component={CreateLecturePage} role={creatorRole}/>
+                          <Route path='/creator-profile/:creatorId' component={CreatorProfilePage} />
+                          <PrivateRoute path='/my-cart/:userId' component={MyCartPage} role={userRole}/>
+                          <PrivateRoute path='/my-wishlist/:userId' component={MyWishlistPage} role={userRole}/>
+                          <PrivateRoute path='/my-refunds' component={MyRefundsPage} role={userRole}/>
+                          <PrivateRoute path='/my-cart' component={MyCartPage} role={userRole}/>
+                          <PrivateRoute path='/my-wishlist' component={MyWishlistPage} role={userRole}/>
+                          <PrivateRoute path='/create-announcement/:creatorId' component={CreateAnnouncementPage} role={creatorRole}/>
+                          <PrivateRoute path='/answer-question-page/:questionId' component={AnswerQuestionPage} role={creatorRole}/>
+                          <PrivateRoute path='/my-balance' component={MyBalance} role={userRole}/>
+                          <PrivateRoute path='/my-certificates' component={MyCertificatesPage} role={userRole}/>
+                          <PrivateRoute path='/create-announcement' component={CreateAnnouncementPage} role={creatorRole}/>
+                          <PrivateRoute path='/create-discount-page' component={CreateDiscountPage} role={adminRole}/>
 
                       </Switch>
                   </div>

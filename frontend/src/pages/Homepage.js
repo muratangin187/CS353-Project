@@ -1,7 +1,7 @@
 import {Link} from "react-router-dom";
 import {Button, Card, CardDeck, Col, Container, Form, Pagination, Row} from "react-bootstrap";
 import {Categories} from "../constants/constants";
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import axios from "axios";
 
 function CourseCard(course){

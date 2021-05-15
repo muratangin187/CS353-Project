@@ -9,16 +9,20 @@ const PrivateRoute = ({component: Component, role, ...rest}) => {
         let temp = await AuthService.getCurrentUser();
         if(temp){
             if(role == 0){ // USER
-                setUser(temp.data);
-            }else if(role == 1){ // CREATOR
+                if(!temp.data.isAdmin && !temp.data.isCreator){
+                    setUser(temp.data);
+                }
+            } else if(role == 1){ // CREATOR
                 if(temp.data.isCreator){
                     setUser(temp.data);
                 }
-            }else if(role == 2){ // ADMIN
+            } else if(role == 2){ // ADMIN
                 if(temp.data.isAdmin){
                     setUser(temp.data);
                 }
             }
+        } else if (role == 3) { // ANONYMOUS
+            setUser(1);
         }
     }, []);
     return (

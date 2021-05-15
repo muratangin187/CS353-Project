@@ -173,7 +173,7 @@ export default function CourseDescPage() {
                 </Modal.Footer>
             </Modal>
             <Row className="mt-3" style={{width: "75vw"}}>
-                <Col xs={8}> <ListRatingsComp/> </Col>
+                <Col xs={8}><ListRatingsComp cid={courseData.id}/> </Col>
                 <Col xs={4}>
                     <ListGroup variant="flush" className="mb-5">
                         <ListGroup.Item><Row><Col>Normal Price:</Col><Col>{courseData.price + " TL"}</Col></Row></ListGroup.Item>
@@ -200,13 +200,13 @@ export default function CourseDescPage() {
                         </Card.Body>
                         <Card.Body>
                             <div id="links">
-                                <Button className="link_item" variant="outline-dark" href={courseCreator.website}>
+                                <Button className="link_item" variant="outline-dark" href={"https://" + courseCreator.website}>
                                     <CgWebsite />
                                 </Button>
-                                <Button className="link_item" variant="outline-dark" href={courseCreator.linkedin}>
+                                <Button className="link_item" variant="outline-dark" href={"https://" + courseCreator.linkedin}>
                                     <AiFillLinkedin />
                                 </Button>
-                                <Button className="link_item" variant="outline-dark" href={courseCreator.youtube}>
+                                <Button className="link_item" variant="outline-dark" href={"https://" + courseCreator.youtube}>
                                     <AiFillYoutube />
                                 </Button>
                             </div>

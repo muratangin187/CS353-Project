@@ -64,6 +64,34 @@ router.post("/addBookmark", async (req, res)=>{
     }
 });
 
+router.post("/addAnnouncement", async (req, res)=>{
+    let result = await db.addAnnouncement(
+        req.body.title,
+        req.body.content,
+        req.body.creator_id,
+        req.body.course_id
+    );
+    if(result == null){
+        res.status(400).send({"message": "There is an error occurred in the db write stage of announcement creation."});
+    }else{
+        res.status(200).send({"message": "Successfully announcement created."});
+    }
+});
+
+router.post("/addRating", async (req, res)=>{
+    let result = await db.addRating(
+        req.body.ratingScore,
+        req.body.content,
+        req.body.user_id,
+        req.body.course_id
+    );
+    if(result == null){
+        res.status(400).send({"message": "There is an error occurred in the db write stage of rating creation."});
+    }else{
+        res.status(200).send({"message": "Successfully rating created."});
+    }
+});
+
 router.post("/buyCourse", async (req, res) => {
     let result = await db.buyCourse(
         req.body.uid,
@@ -145,6 +173,32 @@ router.get("/:lid/allBookmarks/:uid", async (req, res) => {
     let result = await db.getBookmarks(
         req.params.uid,
         req.params.lid
+    );
+    if(result == null){
+        res.status(400).send([]);
+    }else{
+        console.log(result);
+        res.status(200).send(result);
+    }
+})
+
+router.get("/allAnnouncements/:cid", async (req, res) => {
+    console.log(JSON.stringify(req.params.cid));
+    let result = await db.getAnnouncements(
+        req.params.cid,
+    );
+    if(result == null){
+        res.status(400).send([]);
+    }else{
+        console.log(result);
+        res.status(200).send(result);
+    }
+})
+
+router.get("/:cid/allRatings", async (req, res) => {
+    console.log(JSON.stringify(req.params.lid));
+    let result = await db.getCourseRatings(
+        req.params.cid,
     );
     if(result == null){
         res.status(400).send([]);
@@ -268,12 +322,60 @@ router.get("/getLectureIndices/:cid", async (req, res)=>{
     res.status(200).send(result);
 });
 
+router.get("/getCourseNamesOfCreator/:uid", async (req, res)=>{
+    console.log(JSON.stringify(req.params.uid));
+    let result = await db.getCourseNamesOfCreator(
+        req.params.uid,
+    );
+    res.status(200).send(result);
+});
+
+router.get("/getCourseRatings/:cid", async (req, res)=>{
+    console.log(JSON.stringify(req.params.cid));
+    let result = await db.getCourseRatings(
+        req.params.cid,
+    );
+    res.status(200).send(result);
+});
+
+router.get("/isCourseCompleted/:cid/:uid", async (req, res) => {
+    let result = await db.isCourseCompleted(
+        req.params.cid,
+        req.params.uid,
+    );
+    res.status(200).send(result);
+});
+
 router.get("/isLectureCompleted/:cid/:lid/:uid", async (req, res) => {
     console.log(JSON.stringify(req.params.cid));
     let result = await db.isLectureCompleted(
         req.params.uid,
         req.params.cid,
         req.params.lid,
+    );
+    res.status(200).send(result);
+});
+
+router.post("/updateRating", async (req, res) => {
+    let response = await db.updateRating(
+        req.body.ratingScore,
+        req.body.content,
+        req.body.user_id,
+        req.body.course_id,
+    );
+    if(!response){
+        res.status(400).send({"message": "There is an error occured in the db update stage of rating."});
+    }else {
+        res.status(200).send({"message": "Successfully updated rating."});
+    }
+});
+
+
+router.get("/isCourseRated/:cid/:uid", async (req, res) => {
+    console.log(JSON.stringify(req.params.cid));
+    let result = await db.isCourseRated(
+        req.params.cid,
+        req.params.uid,
     );
     res.status(200).send(result);
 });

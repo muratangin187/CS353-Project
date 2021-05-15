@@ -23,6 +23,7 @@ export default function LecturePage(){
     const [notesData, setNotesData] = useState(null);
     const [bookmarksData, setBookmarksData] = useState(null);
     const [lectureCompletedData, setLectureCompletedData] = useState(null);
+    const [buttonDisableData, setButtonDisableData] = useState(null);
     const {getCurrentUser} = useContext(AuthContext);
     const [userData, setUserData] = useState(null);
     const noteFormRef = useRef(null);
@@ -61,6 +62,7 @@ export default function LecturePage(){
         });
         console.log("CompleteLectureResponse.data: " + completeLectureResponse.data);
         setLectureCompletedData(completeLectureResponse.data);
+        setButtonDisableData(completeLectureResponse.data);
 
         let bookmarksResponse = await axios({
             url:"/api/course/" + lecturePrimaryID + "/allBookmarks/" + uid,
@@ -68,7 +70,7 @@ export default function LecturePage(){
         });
         console.log(bookmarksResponse.data);
         setBookmarksData(bookmarksResponse.data);
-    }, []);
+    }, [params.lid]);
 
     const durationToTime = (duration) => {
         switch (duration.length) {
@@ -83,7 +85,7 @@ export default function LecturePage(){
         }
     }
 
-    if(!courseData || !lectureData || !userData || !notesData || !bookmarksData || lectureCompletedData == null){
+    if(!courseData || !lectureData || !userData || !notesData || !bookmarksData || lectureCompletedData == null || buttonDisableData == null){
         return (<Container className="mt-5">
             <Spinner className="mt-5" style={{width:"35vw", height:"35vw"}} animation="border" variant="dark"/>
         </Container>);
@@ -110,7 +112,6 @@ export default function LecturePage(){
         if(response.status == 200){
             setIntent("success");
             setContent("Success", response.data.message);
-            window.location = window.location.origin;
         }else{
             setIntent("failure");
             setContent("Note cannot be added", response.data.message);
@@ -152,7 +153,6 @@ export default function LecturePage(){
         if(response.status == 200){
             setIntent("success");
             setContent("Success", response.data.message);
-            window.location = window.location.origin;
         } else{
             setIntent("failure");
             setContent("Bookmark cannot be added", response.data.message);
@@ -182,13 +182,12 @@ export default function LecturePage(){
         console.log(indices);
         console.log(`curlectureindex: ${curLectureIndex}, prevIndex: ${prevIndex}`);
 
-        if(prevIndex != -1){
+        if(prevId != -1){
             setIntent("success");
             setContent("Success", "You are being redirected");
-            window.location = window.location.origin;
             setTimeout(()=>{
                 history.push(`/course/${cid}/lecture/${prevId}`);
-            },3000);
+            },1000);
         } else{
             setIntent("failure");
             setContent("Error", "There is no previous lecture");
@@ -196,7 +195,37 @@ export default function LecturePage(){
     }
 
     const goToNextLecture = async () => {
+        let response = await axios({
+            url:"/api/course/getLectureIndices/" + params.cid,
+            method: "GET",
+        });
+        const indices = response.data;
+        const curLectureIndex = lectureData.lecture_index;
+        let nextIndex = Number.MAX_SAFE_INTEGER;
+        let nextId = -1;
 
+        indices.forEach(e => {
+            let element = e.lecture_index;
+            if(element > curLectureIndex && element < nextIndex){
+                nextIndex = element;
+                nextId = e.id;
+            }
+        });
+
+        setShow(true);
+        console.log(indices);
+        console.log(`curlectureindex: ${curLectureIndex}, nextIndex: ${nextIndex}`);
+
+        if(nextId != -1){
+            setIntent("success");
+            setContent("Success", "You are being redirected");
+            setTimeout(()=>{
+                history.push(`/course/${cid}/lecture/${nextId}`);
+            },1000);
+        } else{
+            setIntent("failure");
+            setContent("Error", "There is no next lecture");
+        }
     }
 
     const onCompleteLecture = async () => {
@@ -214,7 +243,7 @@ export default function LecturePage(){
         if( response.status == 200){
             setIntent("success");
             setContent("Success", response.data.message);
-            window.location = window.location.origin;
+            setButtonDisableData(true);
         } else {
             setIntent("failure");
             setContent("Transaction cannot be processed", response.data.message);
@@ -278,7 +307,7 @@ export default function LecturePage(){
                         </div>
                         <Row className="ml-5 mt-2">
                             <Col><Button onClick={goToPreviousLecture}>Previous Lecture</Button></Col>
-                            <Col><Button onClick={onCompleteLecture} disabled={lectureCompletedData}>Complete Lecture</Button></Col>
+                            <Col><Button onClick={onCompleteLecture} disabled={buttonDisableData}>Complete Lecture</Button></Col>
                             <Col><Button onClick={goToNextLecture}>Next Lecture</Button></Col>
                         </Row>
                             <div className="ml-5">

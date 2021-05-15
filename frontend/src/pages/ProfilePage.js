@@ -76,10 +76,18 @@ export default function ProfilePage() {
                         </Button>
                     </Row>
                     <Row className="justify-content-md-center mt-2">
+                    <Button  variant="outline-secondary" type="submit" style={{width:"35vw"}} onClick={()=>{
+                        history.push("/my-certificates");
+                    }}>
+                        My Certificates
+                    </Button>
+                    </Row>
+                    <Row className="justify-content-md-center mt-2">
                         <Button  variant="danger" type="submit" onClick={logout} style={{width:"35vw"}}>
                             Log out
                         </Button>
                     </Row>
+
                 </Card.Body>
             </Card>
         </Container>

@@ -39,13 +39,13 @@ export default function CourseDescPage() {
             setIntent("failure");
             setContent("Transaction cannot be processed", "Please login or register");
             return;
-        } else if( userData.balance < courseData.price){
+        } else if( userData.balance < (courseData.price * (100 - courseData.discount) / 100)){
             setShowToast(true);
             setIntent("failure");
             setContent("Transaction cannot be processed", "Insufficient funds");
             return;
         }
-        console.log(`User balance: ${userData.balance}, Course price: ${courseData.price}`);
+        console.log(`User balance: ${userData.balance}, Course price: ${(courseData.price * (100 - courseData.discount) / 100)}`);
         setShow(true);
     };
 
@@ -65,6 +65,10 @@ export default function CourseDescPage() {
             url:"/api/course/retrieve/" + params.cid,
             method: "GET",
         });
+        if(response.data?.creator_id == userResponse?.data.id){
+            history.push("/course/" + params.cid);
+        }
+        console.log(response.data);
         setCourseData(response.data);
         setCreatorLink("/creator-profile/" + response.data.creator_id);
         axios.get('/api/creator/' + response.data.creator_id)
@@ -99,7 +103,7 @@ export default function CourseDescPage() {
                 method: "POST",
                 data: {
                     userId: userData.id,
-                    amount: -courseData.price
+                    amount: -(courseData.price * (100 - courseData.discount) / 100)
                 }
             });
             if(response2.status == 200){
@@ -163,7 +167,7 @@ export default function CourseDescPage() {
                     <strong>Current Balance:</strong> {userData?.balance ?? 0} TL
                 </Modal.Body>
                 <Modal.Body>
-                    <strong>After Transaction:</strong> {(userData?.balance ?? 0) - courseData.price} TL
+                    <strong>After Transaction:</strong> {(userData?.balance ?? 0) - (courseData.price * (100 - courseData.discount) / 100)} TL
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={handleClose}>
@@ -179,8 +183,8 @@ export default function CourseDescPage() {
                 <Col xs={4}>
                     <ListGroup variant="flush" className="mb-5">
                         <ListGroup.Item><Row><Col>Normal Price:</Col><Col>{courseData.price + " TL"}</Col></Row></ListGroup.Item>
-                        <ListGroup.Item><Row><Col>Discount Amount:</Col><Col>{"5 TL"}</Col></Row></ListGroup.Item>
-                        <ListGroup.Item><Row><Col>Current Price</Col><Col>{(courseData.price - 5) + " TL"}</Col></Row></ListGroup.Item>
+                        <ListGroup.Item><Row><Col>Discount Amount:</Col><Col>{courseData.price * (courseData.discount) / 100}</Col></Row></ListGroup.Item>
+                        <ListGroup.Item><Row><Col>Current Price</Col><Col>{(courseData.price * (100 - courseData.discount) / 100) + " TL"}</Col></Row></ListGroup.Item>
                     </ListGroup>
                     <Col>
                     <Button block onClick={handleShow}>Buy Course</Button>

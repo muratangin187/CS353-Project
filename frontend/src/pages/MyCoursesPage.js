@@ -26,11 +26,10 @@ function CourseCard(course){
     );
 }
 
-export default function Homepage(){
+export default function MyCoursesPage(){
 
     const [order, setOrder] = useState("Price");
     const [orderDirection, setOrderDirection] = useState("ASC");
-    const [search, setSearch] = useState("");
 
     const [courses, setCourses] = useState([]);
     const [pageCount, setPageCount] = useState(5);
@@ -42,6 +41,36 @@ export default function Homepage(){
     const history = useHistory();
     const [user, setUser] = useState(null);
     const [courseList, setCourseList] = useState(null);
+    const [onsearch, setOnSearch] = useState(false);
+
+    const search = async(searchText)=>{
+        if(searchText == ""){
+            let response = await axios({
+                url: "/api/user/search-courses",
+                method: "POST",
+                data: {
+                    uid: user.id,
+                    search: searchText,
+                    isCreator: user.isCreator
+                }
+            });
+            setCourseList(response.data??[]);
+            setOnSearch(false);
+        }else{
+            let response = await axios({
+                url: "/api/user/search-courses",
+                method: "POST",
+                data: {
+                    uid: user.id,
+                    search: searchText,
+                    isCreator: user.isCreator
+                }
+            });
+            setCourseList(response.data??[]);
+            setOnSearch(true);
+        }
+    }
+
 
     useEffect(async () => {
         let response = await getCurrentUser;
@@ -72,7 +101,7 @@ export default function Homepage(){
 
 
 
-    if(courseList == undefined || courseList?.length === 0 ){
+    if(!setOnSearch && (courseList == undefined || courseList?.length === 0 )){
         return (<Container className="mt-5">
             <h2>You don't have any Courses</h2>
             <h3>
@@ -100,7 +129,8 @@ export default function Homepage(){
                                 <Card.Text>
                                     <Form.Group>
                                         <Form.Control type="text" placeholder="Search text" onChange={e=>{
-                                            setSearch(e.target.value);
+                                            search(e.target.value);
+                                            e.preventDefault();
                                         }}/>
                                     </Form.Group>
                                 </Card.Text>

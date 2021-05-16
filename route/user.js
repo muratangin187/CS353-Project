@@ -116,6 +116,11 @@ router.post("/change-password", async(req, res)=>{
     }
 });
 
+router.post("/search-courses", async(req, res)=>{
+    let result = await db.searchCourses(req.body.search, req.body.uid, req.body.isCreator);
+    res.status(200).send(result);
+});
+
 router.post("/change-photo", async(req, res)=>{
     let result = await db.changePhoto(req.body.uid, req.body.photo);
     if(result){

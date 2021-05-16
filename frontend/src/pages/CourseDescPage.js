@@ -79,7 +79,7 @@ export default function CourseDescPage() {
             .catch(error => {
                 console.log(error);
             });
-        if( userResponse?.data.isAdmin || userResponse?.data.isCreator){
+        if( !userResponse || userResponse?.data.isAdmin || userResponse?.data.isCreator){
             setDisableButton(true);
         } else {
             setDisableButton(false);

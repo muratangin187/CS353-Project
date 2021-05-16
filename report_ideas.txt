@@ -1,0 +1,18 @@
+Report ideas;
+    1. Most refunded course in their categories that have at least refunded two times and averageRating is bigger than 4(TOP 10 gibi liste her category icin)
+    2. Users have most expensive cost in different categories
+    3. Users have most expensive cost in different categories -> FAKIRLERI
+
+    -> BUNLAR OUTPUT OLARAK REPORTA KOYULACAK, VIEW PROCEDURE OLURSA IYI OLUR BUNLARDA
+
+Stats:
+    Admin pagede grafik olarak guzel infolar, most bought courses etc.
+    -> En cok rate alan course
+    -> En cok alinan kurs
+    -> en cok refund edilen kurs
+    -> En cok kurs satan creator
+    -> BY Category -> YUZDE KACI TEKNOLOJI PIE CHART OLABILIR
+        -> En cok rate alan course
+        -> En cok alinan kurs
+        -> en cok refund edilen kurs
+        -> En cok kurs satan creator

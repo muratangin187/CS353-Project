@@ -394,6 +394,26 @@ async function main (){
     );
 
     await db.query(
+        `CREATE TRIGGER remove_wishlist
+         AFTER INSERT ON Buy
+         FOR EACH ROW 
+         IF (SELECT COUNT(*) FROM WishlistCourses WHERE course_id = NEW.course_id AND user_id = NEW.user_id) THEN
+            DELETE FROM WishlistCourses WHERE course_id = NEW.course_id AND user_id = NEW.user_id;
+         END IF;
+         `
+    );
+
+    await db.query(
+        `CREATE TRIGGER remove_cart 
+         AFTER INSERT ON Buy
+         FOR EACH ROW 
+         IF (SELECT COUNT(*) FROM CartCourses WHERE course_id = NEW.course_id AND user_id = NEW.user_id) THEN
+            DELETE FROM CartCourses WHERE course_id = NEW.course_id AND user_id = NEW.user_id;
+         END IF;
+         `
+    );
+
+    await db.query(
         `CREATE TRIGGER rating_insert
          AFTER INSERT ON Rating
          FOR EACH ROW 
@@ -473,7 +493,8 @@ async function main (){
     await db.query(`INSERT INTO User (id,hideCourses,balance) VALUES (2, false, 10000);`);
     await db.query(`INSERT INTO Creator (id,about, website, linkedin, youtube) VALUES (3, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus nibh arcu, facilisis nec posuere eget, molestie ac felis. Aenean aliquam, nibh scelerisque pharetra pharetra, mi nunc hendrerit urna, in iaculis sapien est sit amet ex. Quisque sit amet ante eros. In hac habitasse platea dictumst. Cras convallis augue eget libero egestas, luctus malesuada diam pretium.', 'www.google.com', 'www.linkedin.com', 'www.youtube.com');`);
     await db.query(`INSERT INTO Admin (id) VALUES (4);`);
-    await db.query(`INSERT INTO Course(id,title,price,description,thumbnail,category,creator_id,averageRating,ratingCount) VALUES (1, 'Python egitimi', 120, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus nibh arcu, facilisis nec posuere eget, molestie ac felis. Aenean aliquam, nibh scelerisque pharetra pharetra, mi nunc hendrerit urna.', 'https://i1.wp.com/stickker.net/wp-content/uploads/2015/09/python.png?fit=600,600&ssl=1', 'Technology', 3, 4.5, 1)`);
+    await db.query(`INSERT INTO Course(id, title,price,description,thumbnail,category,creator_id) VALUES (1, 'Python Egitimi', 120, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus nibh arcu, facilisis nec posuere eget, molestie ac felis. Aenean aliquam, nibh scelerisque pharetra pharetra, mi nunc hendrerit urna.', 'https://i1.wp.com/stickker.net/wp-content/uploads/2015/09/python.png?fit=600,600&ssl=1', 'Technology', 3)`);
+    await db.query(`INSERT INTO Course(id, title,price,description,thumbnail,category,creator_id) VALUES (2, 'JavaScript: Understanding the Weird Parts', 100, 'In this course you will gain a deep understanding of Javascript, learn how Javascript works under the hood, and how that knowledge helps you avoid common pitfalls and drastically improve your ability to debug problems.', 'https://www.setxrm.com/wp-content/uploads/2019/11/Javascript-programming-language.jpg', 'Technology', 3)`);
     await db.query(`INSERT INTO Buy (user_id, course_id) VALUES (1,1);`);
     await db.query(`INSERT INTO Buy (user_id, course_id) VALUES (2,1);`);
     await db.query(`INSERT INTO Refund (title, reason, course_id, user_id, admin_id) VALUES ("Cok dandik ", "parami iade edin", 1, 1, NULL);`);

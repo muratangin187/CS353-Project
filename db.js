@@ -613,6 +613,39 @@ class Db{
         });
     }
 
+    searchCourses(search, uid, isCreator){
+        let searchString = "%" + search + "%";
+        return new Promise(resolve=>{
+            if(isCreator){
+                    this._db.query(
+                        `SELECT * FROM Course WHERE c.creator_id = ${uid} AND (description LIKE '${searchString}' OR title LIKE '${searchString}' OR category LIKE '${searchString}')`,
+                        (error, results, fields)=>{
+                            if(error){
+                                console.log(error);
+                                resolve([]);
+                            }else{
+                                //console.log(results);
+                                resolve(results);
+                            }
+                        }
+                    );
+            }else{
+                    this._db.query(
+                        `SELECT * FROM Buy b, Course c WHERE b.course_id = c.id AND b.user_id = ${uid} AND (description LIKE '${searchString}' OR title LIKE '${searchString}' OR category LIKE '${searchString}')`,
+                        (error, results, fields)=>{
+                            if(error){
+                                console.log(error);
+                                resolve([]);
+                            }else{
+                                //console.log(results);
+                                resolve(results);
+                            }
+                        }
+                    );
+            }
+        });
+    }
+
     filterCourses(minimum,maximum,order,orderDirection,search,categories, pageNumber){
         let offset = (pageNumber-1) * 10;
         let categoryString = "";

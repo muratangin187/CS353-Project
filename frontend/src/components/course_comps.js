@@ -18,9 +18,10 @@ import {useState, useRef, useEffect} from "react";
 import axios from "axios";
 import {CgWebsite} from "react-icons/cg";
 import {AiFillLinkedin, AiFillYoutube} from "react-icons/ai";
-import {Link,useParams} from "react-router-dom";
-import {NotificationContext} from "../services/NotificationContext";
+import {Link, useHistory, useParams} from "react-router-dom";
 import {AuthContext} from "../services/AuthContext";
+import QuizService from "../services/QuizService";
+import {NotificationContext} from "../services/NotificationContext";
 
 
 function LecturesComp(props) {
@@ -251,25 +252,26 @@ function ManageDiscountsComp() {
 
 function QuizzesComp(props) {
     const courseId = props.cid;
+    const {getCurrentUser} = useContext(AuthContext);
     const [quizList, setQuizList] = useState([
         {
             isComplete: true,
-            name: "quiz - 1",
+            name: "test - 1",
             duration: "11:00",
             score: 5
-        },
-        {
-            isComplete: true,
-            name: "quiz - 2",
-            duration: "12:00",
-            score: 6
-        },
-        {
-            isComplete: false,
-            name: "quiz - 3",
-            duration: "13:00",
         }
     ]);
+
+    let history = useHistory();
+
+    useEffect(async () => {
+        let user_res = await getCurrentUser;
+        console.log(user_res);
+
+        let quizList_res = await QuizService.getCourseQuizzes(user_res.data.id, courseId);
+        if (quizList_res)
+            setQuizList(quizList_res);
+    }, []);
 
     return (
       <Container className="ml-auto" >
@@ -286,7 +288,7 @@ function QuizzesComp(props) {
                                         <p><strong>Duration:</strong> {quiz.duration}</p>
                                     </Col>
                                     <Col md={2} style={{display: "flex", justifyContent: "center", alignItems: "center"}}>
-                                        <Button variant="primary" style={{height: "min-content"}}>
+                                        <Button variant="primary" onClick={() => {history.push("/course/" + courseId.toString(10) + "/quiz/" + quiz.id.toString(10))}} style={{height: "min-content"}} disabled={quiz.isComplete}>
                                             {(quiz.isComplete) ? (quiz.score.toString(10) + "/10") : "Take"}
                                         </Button>
                                     </Col>
@@ -317,7 +319,7 @@ function QandAComp(props) {
         let response = await getCurrentUser;
         setUser(response?.data);
         setIsCreator(response?.data.id == props.courseData.creator_id);
-        
+
         let rootQuestions = await axios({
             url: "/api/course/get-root-questions/" + props.cid,
             method: "GET"
@@ -473,7 +475,7 @@ function QandAComp(props) {
         ) : (<></>)}
           <Row>
               <ListGroup style={{width:"75vw"}}>
-                  {questions.map(q=>(<ListGroup.Item>{questionComp(q)}</ListGroup.Item>))} 
+                  {questions.map(q=>(<ListGroup.Item>{questionComp(q)}</ListGroup.Item>))}
               </ListGroup>
         </Row>
       </Container>

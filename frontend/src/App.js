@@ -29,6 +29,7 @@ import ChangeProfilePage from "./pages/ChangeProfile";
 import CourseDescPage from "./pages/CourseDescPage";
 import CreateQuizPage from "./pages/CreateQuizPage";
 import MyRefundsPage from "./pages/MyRefundsPage";
+import QuizPage from "./pages/QuizPage";
 import {ManageDiscountsComp} from "./components/course_comps";
 import MyNotificationPage from "./pages/MyNotificationPage";
 import AboutUs from "./pages/AboutUsPage";
@@ -103,6 +104,7 @@ function App() {
                           <Route exact path='/' component={Homepage}/>
                           <PrivateRoute path='/my-courses' component={MyCoursesPage} role={[userRole, creatorRole]}/>
                           <PrivateRoute path='/course/:cid/create-quiz' component={CreateQuizPage} role={[creatorRole]}/>
+                          <Route path='/course/:cid/quiz/:qid' component={QuizPage}/>
                           <PrivateRoute path='/course/:cid/lecture/:lid' component={LecturePage} role={[userRole]}/>
                           <PrivateRoute path='/course/:cid' component={MainCoursePage} role={[creatorRole, userRole]}/>
                           <PrivateRoute path='/create-course' component={CreateCoursePage} role={[creatorRole]}/>

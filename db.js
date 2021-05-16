@@ -286,7 +286,7 @@ class Db{
                 );
             });
     }
-    
+
     getUserNotifications(userId){
         return new Promise(resolve=>{
             this._db.query(
@@ -469,7 +469,7 @@ class Db{
             );
         });
     }
-    
+
     getQuestionChildren(qid){
         return new Promise(resolve=>{
             this._db.query(
@@ -1391,6 +1391,116 @@ SELECT * FROM DiscountedCourse `;
             this._db.query(
                 `INSERT INTO MultipleChoice(id, choice1, choice2, choice3, choice4, answer)
                 VALUES (\'${f_id}\', \'${choice1}\', \'${choice2}\', \'${choice3}\', \'${choice4}\', \'${answer}\');`,
+                (error, results, fields) => {
+                    if (error){
+                        console.log(error);
+                        resolve(null);
+                    } else {
+                        resolve(true);
+                    }
+                }
+            );
+        });
+    }
+
+
+
+    getQuizzes(course_id){
+        console.log("");
+        return new Promise(resolve => {
+            this._db.query(
+                `SELECT id, name, duration
+                FROM Quiz
+                WHERE course_id = \'${course_id}\';`,
+                (error, results, fields) => {
+                    if (error){
+                        console.log(error);
+                        resolve(null);
+                    } else {
+                        resolve(results);
+                    }
+                }
+            );
+        });
+    }
+
+    getCompletedQuizzes(course_id, user_id){
+        return new Promise(resolve => {
+            this._db.query(
+                `SELECT id, score
+                FROM Quiz, CompletedQuizzes
+                WHERE id = quiz_id AND course_id = \'${course_id}\' AND user_id = \'${user_id}\';`,
+                (error, results, fields) => {
+                    if (error){
+                        console.log(error);
+                        resolve(null);
+                    } else {
+                        resolve(results);
+                    }
+                }
+            );
+        });
+    }
+
+    getQuizInf(quiz_id){
+        return new Promise(resolve => {
+           this._db.query(
+               `SELECT name, duration
+               FROM Quiz
+               WHERE id = \'${quiz_id}\';`,
+               (error, result, fields) => {
+                   if (error){
+                       console.log(error);
+                       resolve(null);
+                   } else {
+                       resolve(result);
+                   }
+               }
+           );
+        });
+    }
+
+    getQuizQATF(quiz_id){
+        return new Promise(resolve => {
+            this._db.query(
+                `SELECT id, question, answer 
+                FROM FlashCard NATURAL JOIN TrueFalse
+                WHERE quiz_id = \'${quiz_id}\';`,
+                (error, results, fields) => {
+                    if (error){
+                        console.log(error);
+                        resolve(null);
+                    } else {
+                        resolve(results);
+                    }
+                }
+            );
+        });
+    }
+
+    getQuizQAM(quiz_id){
+        return new Promise(resolve => {
+            this._db.query(
+                `SELECT id, question, choice1, choice2, choice3, choice4, answer
+                FROM FlashCard f NATURAL JOIN MultipleChoice m
+                WHERE f.quiz_id = \'${quiz_id}\';`,
+                (error, results, fields) => {
+                    if (error){
+                        console.log(error);
+                        resolve(null);
+                    } else {
+                        resolve(results);
+                    }
+                }
+            );
+        });
+    }
+
+    insertCompletedQuiz(quiz_id, user_id, score){
+        return new Promise(resolve => {
+            this._db.query(
+                `INSERT INTO CompletedQuizzes(quiz_id, user_id, score)
+                VALUES (\'${quiz_id}\', \'${user_id}\', \'${score}\');`,
                 (error, results, fields) => {
                     if (error){
                         console.log(error);

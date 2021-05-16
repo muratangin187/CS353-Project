@@ -13,6 +13,7 @@ async function main (){
     await db.connect();
     console.log("DB connection initialized.");
 
+    await db.query('DROP TABLE IF EXISTS `CompletedQuizzes`;')
     await db.query('DROP TABLE IF EXISTS `RefundNotification`;');
     await db.query('DROP TABLE IF EXISTS `AnnouncementNotification`;');
     await db.query('DROP TABLE IF EXISTS `Notification`;');
@@ -334,6 +335,17 @@ async function main (){
         FOREIGN KEY (id) REFERENCES Notification(id) ON DELETE CASCADE,
         FOREIGN KEY (refund_id) REFERENCES Refund(id));`,
     );
+
+
+    await db.query(`
+        CREATE TABLE CompletedQuizzes(
+            quiz_id INT,
+            user_id INT,
+            score REAL,
+            FOREIGN KEY(quiz_id) REFERENCES Quiz(id),
+            FOREIGN KEY(user_id) REFERENCES User(id));
+    `);
+
 
 
     console.log("DB tables created.");

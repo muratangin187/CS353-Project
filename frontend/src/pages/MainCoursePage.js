@@ -95,7 +95,7 @@ export default function MainCoursePage() {
         <LecturesComp cid={params.cid} isCreator={userData.id === courseData.creator_id}/>
       </Tab>
       <Tab eventKey="quizzes" title="Quizzes">
-      <QuizzesComp/>
+      <QuizzesComp cid={params.cid}/>
       </Tab>
       <Tab eventKey="qanda" title="Q/A">
       <QandAComp  cid={params.cid} courseData={courseData}/>

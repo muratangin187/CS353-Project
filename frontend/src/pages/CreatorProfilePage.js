@@ -36,7 +36,7 @@ export default function CreatorProfilePage(){
                             <Col style={{justifyContent: "flex-end", display: "flex"}}>
                                 {
                                     (courseCreator.photo != "placeholder.jpg") ?
-                                    (<Image src={courseCreator.photo} roundedCircle />)
+                                    (<Image src={courseCreator.photo} roundedCircle style={{width: 150}}/>)
                                     : (<Image src="profile.png" roundedCircle style={{width: 150}}/>)
                                 }
 

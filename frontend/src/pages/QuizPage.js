@@ -18,6 +18,8 @@ export default function QuizPage(){
         duration: "11:00"
     });
 
+    const [duration, setDuration] = useState(99);
+
     const [quizList, setQuizList] = useState([
         {
             mode: true, //true -> TF, false -> M
@@ -52,6 +54,11 @@ export default function QuizPage(){
     useEffect(async () => {
         let inf = await QuizService.getQuizInf(qid);
         setQuizInf(inf ? inf : null);
+        if(inf){
+            let durationInt = parseInt(inf.duration.substr(0,2))*60 + parseInt(inf.duration.substr(3,5));
+            setDuration(durationInt);
+            timer();
+        }
 
         let qList = await QuizService.getQuizQA(qid);
         setQuizList(qList ? qList : null);
@@ -59,6 +66,17 @@ export default function QuizPage(){
         let userTmp = await getCurrentUser;
         setUser(userTmp?.data);
     }, []);
+
+    const timer = ()=>{
+        setInterval(()=>{
+            setDuration(duration => {
+                if(duration <= 0){
+                    handleSubmit();
+                }
+                return duration-1;
+            });
+        }, 1000);
+    };
 
     const handleOnChange = (event) => {
         let target = event.target;
@@ -71,7 +89,8 @@ export default function QuizPage(){
     };
 
     const handleSubmit = async (event) => {
-        event.preventDefault();
+        if(event)
+            event.preventDefault();
         setIntent("normal");
         setContent("Processing", "Please wait");
         setShow(true);
@@ -95,9 +114,7 @@ export default function QuizPage(){
             setContent("Success", response.data.message);
         }
 
-        setTimeout(() => {
-            history.push("/course/" + cid.toString(10));
-        }, 2000);
+        history.push("/course/" + cid.toString(10));
     };
 
     return(
@@ -107,7 +124,7 @@ export default function QuizPage(){
                     <Col><h2>{quizInf.name}</h2></Col>
                 </Row>
                 <Row style={{paddingBottom: 10}}>
-                    <Col><p style={{fontSize: "small"}}><strong>Duration: {quizInf.duration}</strong></p></Col>
+                    <Col><p style={{fontSize: "small"}}><strong>Duration: {duration}</strong></p></Col>
                 </Row>
                 <Form onSubmit={(event) => handleSubmit(event)}>
                     {

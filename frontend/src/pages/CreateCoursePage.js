@@ -42,7 +42,8 @@ export default function CreateCoursePage() {
         setResult({status: response.status, message: response.data.message});
         setToastStyle({backgroundColor: response.status == 200 ? "rgb(200,255,200)" : "rgb(255,200,200)"});
         setTimeout(()=>{
-            history.push("/my-courses");
+            if(response.status == 200)
+                history.push("/my-courses");
         },1000);
     }
 

@@ -158,14 +158,14 @@ class Db{
 
     insertCourse(title, price, description, thumbnail, category, creator_id){
         return new Promise(resolve=> {
-            this._db.query(
-                'INSERT INTO Course (title, price, description, thumbnail, category, creator_id) VALUES ?',
-                [[[title, price, description, thumbnail, category, creator_id]]],
-                (error, results, fields) => {
+            let sql = `INSERT INTO Course (title, price, description, thumbnail, category, creator_id) VALUES ('${title}', ${price}, '${description}', '${thumbnail}', '${category}', ${creator_id})`;
+            this._db.query(sql,(error, results, fields) => {
                     if (error){
                         console.log(error);
                         resolve(null);
                     }else{
+                        console.log(sql);
+                        console.log("SQL FOR CREATE COURSE\n", sql);
                         resolve(results.insertId);
                     }
                 }

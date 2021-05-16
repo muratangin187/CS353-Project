@@ -1,6 +1,6 @@
 import axios from "axios";
-import {useContext, useEffect, useRef, useState} from "react";
-import {Button, Card, Col, Container, Form, Toast} from "react-bootstrap";
+import React, {useContext, useEffect, useRef, useState} from "react";
+import {Button, Card, Col, Container, Form, Row, Spinner, Toast} from "react-bootstrap";
 import {useHistory, useParams} from "react-router-dom";
 import {AuthContext} from "../services/AuthContext";
 
@@ -12,10 +12,17 @@ export default function CreateLecturePage(){
     let history = useHistory();
     const {getCurrentUser} = useContext(AuthContext);
     const [user, setUser] = useState(null);
+    const [courseData, setCourseData] = useState(null);
 
     useEffect( async() => {
         let response = await getCurrentUser;
         setUser(response?.data);
+        let courseResponse = await axios({
+            url:"/api/course/retrieve/" + cid,
+            method: "GET",
+        });
+        // console.log(responseget.status + "-Response:" + JSON.stringify(response.data,null,2));
+        setCourseData(courseResponse.data);
     }, []);
 
     const durationToTime = (duration) => {
@@ -75,6 +82,23 @@ export default function CreateLecturePage(){
         setTimeout(()=>{
             history.push("/");
         },1000);
+    }
+
+    if(!courseData || !user){
+        return (<Container className="mt-5">
+            <Spinner className="mt-5" style={{width:"35vw", height:"35vw"}} animation="border" variant="dark"/>
+        </Container>);
+    }
+
+    if (user.isCreator && user.id != courseData.creator_id){
+        return (<Container fluid>
+            <Row className="justify-content-md-center mt-2">
+                <h2>You cannot see this page</h2>
+            </Row>
+            <Row className="justify-content-md-center mt-2">
+                <h2>This is not your course</h2>
+            </Row>
+        </Container>);
     }
 
     return (

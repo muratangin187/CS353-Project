@@ -13,6 +13,17 @@ async function main (){
     await db.connect();
     console.log("DB connection initialized.");
 
+    await db.query('DROP TABLE IF EXISTS `Answer`;');
+    await db.query('DROP TABLE IF EXISTS `Question`;');
+    await db.query('DROP TABLE IF EXISTS `Allow`;');
+    await db.query('DROP TRIGGER IF EXISTS `rating_update`;');
+    await db.query('DROP TRIGGER IF EXISTS `rating_insert`;');
+    await db.query('DROP TRIGGER IF EXISTS `give_certificate`;');
+    await db.query('DROP TRIGGER IF EXISTS `create_certificate`;');
+    await db.query('DROP TABLE IF EXISTS `HasCertificates`;');
+    await db.query('DROP TABLE IF EXISTS `Certificate`;');
+    await db.query('DROP TABLE IF EXISTS `Announcement`;');
+    await db.query('DROP TABLE IF EXISTS `Rating`;');
     await db.query('DROP TABLE IF EXISTS `MultipleChoice`;')
     await db.query('DROP TABLE IF EXISTS `TrueFalse`;')
     await db.query('DROP TABLE IF EXISTS `FlashCard`;')
@@ -162,8 +173,8 @@ async function main (){
         user_id INT NOT NULL,
         course_id INT NOT NULL,
         PRIMARY KEY (lecture_id, user_id, course_id),
-        FOREIGN KEY (lecture_id) REFERENCES Lecture(id),
-        FOREIGN KEY (user_id, course_id) REFERENCES Buy(user_id, course_id));`
+        FOREIGN KEY (lecture_id) REFERENCES Lecture(id) ON DELETE CASCADE,
+        FOREIGN KEY (user_id, course_id) REFERENCES Buy(user_id, course_id) ON DELETE CASCADE);`
     );
 
     await db.query(
@@ -222,7 +233,123 @@ async function main (){
         FOREIGN KEY(id) REFERENCES FlashCard(id));`
     );
 
+    await db.query(
+        `CREATE TABLE Allow( creator_id INT, discount_id INT,
+        PRIMARY KEY (creator_id, discount_id),
+        FOREIGN KEY (creator_id) REFERENCES Creator(id), FOREIGN KEY (discount_id) REFERENCES Discount(id));`
+    );
+
+    await db.query(
+        `CREATE TABLE Question( id INT AUTO_INCREMENT,
+        content VARCHAR(1024) NOT NULL,
+        date DATETIME NOT NULL DEFAULT(sysdate()), user_id INT NOT NULL,
+        course_id INT NOT NULL,
+        parent_id INT DEFAULT NULL,
+        PRIMARY KEY (id),
+        FOREIGN KEY (user_id) REFERENCES User(id), FOREIGN KEY (course_id) REFERENCES Course(id)
+        );`
+    );
+
+    await db.query(
+        `CREATE TABLE Answer( id INT AUTO_INCREMENT,
+        content VARCHAR(1024) NOT NULL,
+        date DATETIME NOT NULL DEFAULT(sysdate()), question_id INT NOT NULL,
+        creator_id INT NOT NULL,
+        PRIMARY KEY (id),
+        FOREIGN KEY (question_id) REFERENCES Question(id), FOREIGN KEY (creator_id) REFERENCES Creator(id)
+        );`
+    );
+
+    await db.query(
+        `CREATE TABLE Rating(
+        id INT NOT NULL AUTO_INCREMENT,
+        ratingScore DECIMAL(2,1) NOT NULL CHECK (ratingScore IN (1, 2, 3, 4, 5)),
+        content VARCHAR(512),
+        date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        user_id INT NOT NULL,
+        course_id INT NOT NULL,
+        PRIMARY KEY(id),
+        UNIQUE( user_id, course_id),
+        FOREIGN KEY (user_id, course_id) REFERENCES Buy(user_id, course_id)
+        );`
+    );
+
+    await db.query(
+        `CREATE TABLE Announcement(
+        id INT NOT NULL AUTO_INCREMENT,
+        title VARCHAR(100),
+        content VARCHAR(512),
+        date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        creator_id INT NOT NULL,
+        course_id INT NOT NULL,
+        PRIMARY KEY(id),
+        FOREIGN KEY (creator_id) REFERENCES Creator(id),
+        FOREIGN KEY (course_id) REFERENCES Course(id)
+);`
+    );
+
+    await db.query(
+        `CREATE TABLE Certificate( 
+        id INT AUTO_INCREMENT,
+        name VARCHAR(255) NOT NULL,
+        course_id INT NOT NULL,
+        PRIMARY KEY (id),
+        FOREIGN KEY (course_id) REFERENCES Course(id),
+        UNIQUE(course_id));`
+    );
+
+    await db.query(
+        `CREATE TABLE HasCertificates(
+        certificate_id INT NOT NULL,
+        user_id INT NOT NULL,
+        PRIMARY KEY(certificate_id, user_id),
+        FOREIGN KEY (certificate_id) REFERENCES Certificate(id),
+        FOREIGN KEY (user_id) REFERENCES User(id));`
+    );
+
     console.log("DB tables created.");
+
+    await db.query(
+        `CREATE TRIGGER rating_update
+         AFTER UPDATE ON Rating
+         FOR EACH ROW 
+         UPDATE Course
+         SET averageRating = (SELECT AVG(ratingScore) FROM Rating WHERE course_id = NEW.course_id) 
+         WHERE Course.id = NEW.course_id;
+         `
+    );
+
+    await db.query(
+        `CREATE TRIGGER rating_insert
+         AFTER INSERT ON Rating
+         FOR EACH ROW 
+         UPDATE Course
+         SET averageRating = (SELECT AVG(ratingScore) FROM Rating WHERE course_id = NEW.course_id), ratingCount = ratingCount + 1
+         WHERE Course.id = NEW.course_id;
+         `
+    );
+
+    await db.query(
+        `CREATE TRIGGER give_certificate
+         AFTER INSERT ON CompleteLecture
+         FOR EACH ROW
+         BEGIN
+            IF ((SELECT COUNT(lecture_id) AS lid_cnt FROM CompleteLecture WHERE user_id = NEW.user_id AND course_id = NEW.course_id) = (SELECT COUNT(lecture_index) as lid_cnt FROM Lecture WHERE course_id = NEW.course_id AND isVisible = 1)) THEN
+                INSERT INTO HasCertificates(certificate_id, user_id) VALUES ( (SELECT DISTINCT id FROM Certificate WHERE course_id = NEW.course_id), NEW.user_id);
+            END IF;
+         END 
+         `
+    );
+
+    await db.query(
+        `CREATE TRIGGER create_certificate
+         AFTER INSERT ON Course
+         FOR EACH ROW
+         INSERT INTO Certificate(name, course_id) VALUES (NEW.title, NEW.id);
+        `
+    );
+
+    console.log("Triggers have been created.");
 
     let hash = crypto.createHash('md5').update("123").digest('hex');
     await db.query(`INSERT INTO Person (username, email, name, surname, password, photo) VALUES ('test_user', 'test_user@gmail.com', 'Mehmet', 'Testoglu', '${hash}', 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg');`);
@@ -238,6 +365,8 @@ async function main (){
     await db.query(`INSERT INTO Buy (user_id, course_id) VALUES (2,1);`);
     await db.query(`INSERT INTO Refund (title, reason, course_id, user_id, admin_id) VALUES ("Cok dandik ", "parami iade edin", 1, 1, NULL);`);
     await db.query(`INSERT INTO Refund (title, reason, course_id, user_id, admin_id) VALUES ("Cok guzel kurs", "ama gene siz parami iade edin", 1, 2, NULL);`);
+    await db.query(`INSERT INTO Question (content, user_id, course_id) VALUES ("Kurs sonucunda sertifika var mi", 1, 1);`);
+    await db.query(`INSERT INTO Question (content, user_id, course_id, parent_id) VALUES ("Kurs sonucunda sertifika var mi", 2, 1, 1);`);
 
     console.log("Initialization finished");
 }

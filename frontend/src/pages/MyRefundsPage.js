@@ -29,6 +29,11 @@ export default function MyRefundsPage(){
             method: "GET"
         });
 
+        let certificates = await axios({
+            url: "/api/user/getUserCertificates/" + response?.data.id,
+            method: "GET"
+        });
+
         let response2 = await axios({
             url: "/api/user/get-refunds/"+response?.data.id,
             method: "GET"
@@ -42,11 +47,12 @@ export default function MyRefundsPage(){
             setRefunds(response2.data);
         }
 
-        if(responseCourses.status == 200) {
+        if(responseCourses.status == 200 && certificates.status == 200) {
             let lastCourses = [];
             for (let i = 0; i < responseCourses.data?.length; i++) {
                 if(!response2.data.map(a=>a.course_id).includes(responseCourses.data[i].id)){
-                    lastCourses.push(responseCourses.data[i]);
+                    if(certificates.data.find(c=>c.course_id == responseCourses.data[i].id) == undefined)
+                        lastCourses.push(responseCourses.data[i]);
                 }
             }
             console.log(lastCourses);

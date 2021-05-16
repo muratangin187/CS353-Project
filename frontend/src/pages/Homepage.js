@@ -1,7 +1,7 @@
 import {Link} from "react-router-dom";
 import {Button, Card, CardDeck, Col, Container, Form, Pagination, Row} from "react-bootstrap";
 import {Categories} from "../constants/constants";
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import axios from "axios";
 
 function CourseCard(course){
@@ -11,7 +11,8 @@ function CourseCard(course){
             <Card className="m-3" style={{ width: '18rem'}}>
                 <Card.Img variant="top" src={course.thumbnail}/>
                 <Card.Body>
-                    <Card.Subtitle className="mb-2" style={{fontSize:12}}>{course.category} | {course.averageRating}/5 | -5% Discount | {course.price}TL</Card.Subtitle> {/*TODO change discount to dynamic*/}
+                    <Card.Subtitle className="mb-2" style={{fontSize:12}}>{course.category} | {course.averageRating}/5</Card.Subtitle>
+                    <Card.Subtitle className="mb-2" style={{fontSize:12}}>{course.discount != 0 ? course.discount + "% Discount | " : " | "} {course.price * (100-course.discount)/100}TL</Card.Subtitle>
                     <Card.Title>{course.title}</Card.Title>
                     <Card.Text>
                         {course.description}
@@ -41,7 +42,8 @@ export default function Homepage(){
                 minimum,maximum,order,orderDirection, search,categories, pageNumber: 1
             }
         });
-        setCourses(response.data);
+        if(response.status == 200)
+            setCourses(response.data);
     },[]);
 
     const handleCategory = (category)=>{

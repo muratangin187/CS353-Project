@@ -15,9 +15,9 @@ function CustomNavbar(){
 
     return (
         <Navbar bg="light" variant="light">
-            <Navbar.Brand href="/">Ucollage</Navbar.Brand>
+            <Navbar.Brand href="/">Ucollege</Navbar.Brand>
             <Nav className="m-auto">
-                <Nav.Link href="/my-courses">My Courses</Nav.Link>
+                {user ? (user.isAdmin ? null : <Nav.Link href="/my-courses">My Courses</Nav.Link>) : null}
                 <Nav.Link href="/about">About Us</Nav.Link>
             </Nav>
             {user ? (user.isAdmin ? (

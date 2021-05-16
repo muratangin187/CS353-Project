@@ -1,10 +1,17 @@
 const express = require("express");
+const cron = require('node-cron');
 const bodyParser = require("body-parser");
 const path = require('path');
 const api = require("./route/api");
 const swaggerJSDocExpress = require("swagger-jsdoc-express");
+const db = require("./db");
 
 const app = express();
+
+cron.schedule('* * * * *', function() {
+    console.log('running a task every minute');
+    db.clearDiscounts();
+});
 
 // create a '/swagger' endpoint ...
 swaggerJSDocExpress.setupSwaggerUIFromSourceFiles(

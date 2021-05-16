@@ -6,10 +6,10 @@ import {
     Button,
     Modal,
     Image,
-    Spinner, Card
+    Spinner, Card 
 } from "react-bootstrap";
 import React, {useState, useEffect, useContext} from "react";
-import {useHistory, useParams} from 'react-router-dom';
+import {useHistory, useParams, Link} from 'react-router-dom';
 import axios from 'axios';
 
 import {
@@ -29,6 +29,8 @@ export default function CourseDescPage() {
     const [courseCreator, setCourseCreator] = useState({}); // course creator JSON object
     const [show, setShow] = useState(false);
     const [userData, setUserData] = useState(null);
+    const [creatorLink, setCreatorLink] = useState("");
+    const [disableButton, setDisableButton] = useState(null);
     let history = useHistory();
 
     const handleClose = () => setShow(false);
@@ -38,13 +40,13 @@ export default function CourseDescPage() {
             setIntent("failure");
             setContent("Transaction cannot be processed", "Please login or register");
             return;
-        } else if( userData.balance < courseData.price){
+        } else if( userData.balance < (courseData.price * (100 - courseData.discount) / 100)){
             setShowToast(true);
             setIntent("failure");
             setContent("Transaction cannot be processed", "Insufficient funds");
             return;
         }
-        console.log(`User balance: ${userData.balance}, Course price: ${courseData.price}`);
+        console.log(`User balance: ${userData.balance}, Course price: ${(courseData.price * (100 - courseData.discount) / 100)}`);
         setShow(true);
     };
 
@@ -64,7 +66,12 @@ export default function CourseDescPage() {
             url:"/api/course/retrieve/" + params.cid,
             method: "GET",
         });
+        if(response.data?.creator_id == userResponse?.data.id){
+            history.push("/course/" + params.cid);
+        }
+        console.log(response.data);
         setCourseData(response.data);
+        setCreatorLink("/creator-profile/" + response.data.creator_id);
         axios.get('/api/creator/' + response.data.creator_id)
             .then(result => {
                 setCourseCreator(result.data);
@@ -72,9 +79,14 @@ export default function CourseDescPage() {
             .catch(error => {
                 console.log(error);
             });
+        if( userResponse?.data.isAdmin || userResponse?.data.isCreator){
+            setDisableButton(true);
+        } else {
+            setDisableButton(false);
+        }
     }, []);
 
-    if(!courseData ||!courseCreator){
+    if(!courseData ||!courseCreator || disableButton == null){
         return (<Container className="mt-5">
             <Spinner cselassName="mt-5" style={{width:"35vw", height:"35vw"}} animation="border" variant="dark"/>
         </Container>);
@@ -97,7 +109,7 @@ export default function CourseDescPage() {
                 method: "POST",
                 data: {
                     userId: userData.id,
-                    amount: -courseData.price
+                    amount: -(courseData.price * (100 - courseData.discount) / 100)
                 }
             });
             if(response2.status == 200){
@@ -161,7 +173,7 @@ export default function CourseDescPage() {
                     <strong>Current Balance:</strong> {userData?.balance ?? 0} TL
                 </Modal.Body>
                 <Modal.Body>
-                    <strong>After Transaction:</strong> {(userData?.balance ?? 0) - courseData.price} TL
+                    <strong>After Transaction:</strong> {(userData?.balance ?? 0) - (courseData.price * (100 - courseData.discount) / 100)} TL
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={handleClose}>
@@ -173,17 +185,17 @@ export default function CourseDescPage() {
                 </Modal.Footer>
             </Modal>
             <Row className="mt-3" style={{width: "75vw"}}>
-                <Col xs={8}> <ListRatingsComp/> </Col>
+                <Col xs={8}><ListRatingsComp cid={courseData.id}/> </Col>
                 <Col xs={4}>
                     <ListGroup variant="flush" className="mb-5">
                         <ListGroup.Item><Row><Col>Normal Price:</Col><Col>{courseData.price + " TL"}</Col></Row></ListGroup.Item>
-                        <ListGroup.Item><Row><Col>Discount Amount:</Col><Col>{"5 TL"}</Col></Row></ListGroup.Item>
-                        <ListGroup.Item><Row><Col>Current Price</Col><Col>{(courseData.price - 5) + " TL"}</Col></Row></ListGroup.Item>
+                        <ListGroup.Item><Row><Col>Discount Amount:</Col><Col>{courseData.price * (courseData.discount) / 100}</Col></Row></ListGroup.Item>
+                        <ListGroup.Item><Row><Col>Current Price</Col><Col>{(courseData.price * (100 - courseData.discount) / 100) + " TL"}</Col></Row></ListGroup.Item>
                     </ListGroup>
                     <Col>
-                    <Button block onClick={handleShow}>Buy Course</Button>
-                        <Button block onClick={() => handleAddToCard()} href="/my-cart">Add to Card</Button>
-                        <Button block onClick={() => handleAddToWishlist()} href="/my-wishlist">Add to Wishlist</Button>
+                    <Button block disabled={disableButton} onClick={handleShow}>Buy Course</Button>
+                        <Button block disabled={disableButton} onClick={() => handleAddToCard()} href="/my-cart">Add to Card</Button>
+                        <Button block disabled={disableButton} onClick={() => handleAddToWishlist()} href="/my-wishlist">Add to Wishlist</Button>
                     </Col>
                     <Card
                         bg="light"
@@ -193,20 +205,19 @@ export default function CourseDescPage() {
                     >
                         <Card.Img variant="top" src={(courseCreator.photo != "placeholder.jpg") ? courseCreator.photo : "profile.png"} className="creator-img" />
                         <Card.Body style={{alignItems: "center"}}>
-                            <Card.Title style={{textAlign: "center"}}> {courseCreator.name} {courseCreator.surname} </Card.Title>
-                            <Card.Text style={{textAlign: "center"}}>
-                                Job Of Creator
-                            </Card.Text>
+                            <Link to={creatorLink}>
+                                <Card.Title style={{textAlign: "center"}}> {courseCreator.name} {courseCreator.surname} </Card.Title>
+                            </Link>
                         </Card.Body>
                         <Card.Body>
                             <div id="links">
-                                <Button className="link_item" variant="outline-dark" href={courseCreator.website}>
+                                <Button className="link_item" variant="outline-dark" href={"https://" + courseCreator.website}>
                                     <CgWebsite />
                                 </Button>
-                                <Button className="link_item" variant="outline-dark" href={courseCreator.linkedin}>
+                                <Button className="link_item" variant="outline-dark" href={"https://" + courseCreator.linkedin}>
                                     <AiFillLinkedin />
                                 </Button>
-                                <Button className="link_item" variant="outline-dark" href={courseCreator.youtube}>
+                                <Button className="link_item" variant="outline-dark" href={"https://" + courseCreator.youtube}>
                                     <AiFillYoutube />
                                 </Button>
                             </div>

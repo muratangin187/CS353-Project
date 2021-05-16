@@ -19,6 +19,7 @@ import {
     AnnouncementsComp,
     AboutComp, ManageDiscountsComp
 } from "../components/course_comps";
+import CourseManagePage from "../pages/CourseManagePage";
 import {AuthContext} from "../services/AuthContext";
 
 export default function MainCoursePage() {
@@ -105,11 +106,13 @@ export default function MainCoursePage() {
       <Tab eventKey="announcements" title="Announcements">
        <AnnouncementsComp cid={params.cid}/>
       </Tab>
-      <Tab eventKey="discounts" title="Manage Discounts">
-          <ManageDiscountsComp cid={params.cid}/>
-      </Tab>
-      <Tab eventKey="about" title="About">
-       <AboutComp courseData={courseData}/>
+      <Tab eventKey="settings" title={userData.isCreator ? "Settings" : "About"}>
+          {userData.isCreator ? (
+            <CourseManagePage courseData={courseData}/>
+          ) : (
+            <AboutComp courseData={courseData}/>
+          )}
+              {/*<ManageDiscountsComp cid={params.cid}/>*/}
       </Tab>
     </Tabs>
         </Container>

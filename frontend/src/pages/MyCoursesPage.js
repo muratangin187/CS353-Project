@@ -44,6 +44,17 @@ export default function Homepage(){
     useEffect(async () => {
         let response = await getCurrentUser;
         setUser(response?.data);
+        if(response.data && response.data.isCreator){
+            axios.get('/api/user/get-created-courses/' + response?.data.id)
+                .then(response => {
+                    setCourseList(response.data);
+                    console.log(response);
+                    console.log(response.data);
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+        }else{
         axios.get('/api/user/bought-courses/' + response?.data.id)
             .then(response => {
                 setCourseList(response.data);
@@ -53,12 +64,13 @@ export default function Homepage(){
             .catch(error => {
                 console.log(error);
             });
+        }
     }, []);
 
 
 
 
-    if(courseList == null || courseList?.length === 0 ){
+    if(courseList == undefined || courseList == null || courseList?.length === 0 ){
         return (<Container className="mt-5">
             <h2>You don't have any Courses</h2>
             <h3>

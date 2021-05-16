@@ -13,6 +13,9 @@ async function main (){
     await db.connect();
     console.log("DB connection initialized.");
 
+    await db.query('DROP TABLE IF EXISTS `RefundNotification`;');
+    await db.query('DROP TABLE IF EXISTS `AnnouncementNotification`;');
+    await db.query('DROP TABLE IF EXISTS `Notification`;');
     await db.query('DROP TABLE IF EXISTS `Answer`;');
     await db.query('DROP TABLE IF EXISTS `Question`;');
     await db.query('DROP TABLE IF EXISTS `Allow`;');
@@ -164,7 +167,9 @@ async function main (){
             course_id INT NOT NULL,
             admin_id INT,
             PRIMARY KEY (id),
-            FOREIGN KEY (user_id, course_id) REFERENCES Buy(user_id, course_id), FOREIGN KEY (admin_id) REFERENCES Admin(id)
+            FOREIGN KEY (user_id) REFERENCES User(id),
+            FOREIGN KEY (course_id) REFERENCES Course(id),
+            FOREIGN KEY (admin_id) REFERENCES Admin(id)
             );`
     );
 
@@ -307,6 +312,30 @@ async function main (){
         FOREIGN KEY (user_id) REFERENCES User(id));`
     );
 
+    await db.query(
+        `CREATE TABLE Notification( id INT AUTO_INCREMENT,
+        user_id INT NOT NULL,
+        type INT NOT NULL,
+        PRIMARY KEY (id),
+        FOREIGN KEY (user_id) REFERENCES User(id));`
+    );
+
+    await db.query(
+        `CREATE TABLE AnnouncementNotification( id INT,
+        announcement_id INT NOT NULL,
+        PRIMARY KEY (id),
+        FOREIGN KEY (id) REFERENCES Notification(id) ON DELETE CASCADE,
+        FOREIGN KEY (announcement_id) REFERENCES Announcement(id));`,
+    );
+
+    await db.query(
+        `CREATE TABLE RefundNotification( id INT,
+        refund_id INT NOT NULL,
+        FOREIGN KEY (id) REFERENCES Notification(id) ON DELETE CASCADE,
+        FOREIGN KEY (refund_id) REFERENCES Refund(id));`,
+    );
+
+
     console.log("DB tables created.");
 
     await db.query(
@@ -336,6 +365,45 @@ async function main (){
          BEGIN
             IF ((SELECT COUNT(lecture_id) AS lid_cnt FROM CompleteLecture WHERE user_id = NEW.user_id AND course_id = NEW.course_id) = (SELECT COUNT(lecture_index) as lid_cnt FROM Lecture WHERE course_id = NEW.course_id AND isVisible = 1)) THEN
                 INSERT INTO HasCertificates(certificate_id, user_id) VALUES ( (SELECT DISTINCT id FROM Certificate WHERE course_id = NEW.course_id), NEW.user_id);
+            END IF;
+         END 
+         `
+    );
+
+    await db.query(
+        `CREATE TRIGGER add_announcement_notification
+         AFTER INSERT ON Announcement
+         FOR EACH ROW
+         BEGIN
+            INSERT INTO Notification(user_id, type) SELECT user_id, 1 as type FROM BUY b WHERE b.course_id = NEW.course_id;
+         END 
+         `
+    );
+
+    await db.query(
+        `CREATE TRIGGER add_refund_notification
+         AFTER UPDATE ON Refund 
+         FOR EACH ROW
+         BEGIN
+            IF (OLD.state <> NEW.state) THEN
+                INSERT INTO Notification(user_id, type) VALUES(NEW.user_id, 0);
+                INSERT INTO RefundNotification(id, refund_id) VALUES((SELECT id FROM Notification ORDER BY id DESC LIMIT 1), NEW.id);
+            END IF;
+            IF (OLD.state <> NEW.state AND NEW.state = 'ALLOWED') THEN
+                DELETE FROM Buy WHERE user_id = NEW.user_id AND course_id = NEW.course_id;
+                UPDATE User SET balance = balance + (SELECT price FROM Course WHERE id = NEW.course_id) WHERE id = NEW.user_id;
+            END IF;
+         END 
+         `
+    );
+
+    await db.query(
+        `CREATE TRIGGER add_notification
+         AFTER INSERT ON Notification 
+         FOR EACH ROW
+         BEGIN
+            IF (NEW.type = 1) THEN
+                INSERT INTO AnnouncementNotification(id, announcement_id) VALUES(NEW.id, (SELECT id as announcement_id FROM Announcement ORDER BY id DESC LIMIT 1));
             END IF;
          END 
          `

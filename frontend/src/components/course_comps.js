@@ -18,7 +18,7 @@ import {useState, useRef, useEffect} from "react";
 import axios from "axios";
 import {CgWebsite} from "react-icons/cg";
 import {AiFillLinkedin, AiFillYoutube} from "react-icons/ai";
-import {Link} from "react-router-dom";
+import {Link,useParams} from "react-router-dom";
 import {NotificationContext} from "../services/NotificationContext";
 import {AuthContext} from "../services/AuthContext";
 
@@ -72,8 +72,9 @@ function LecturesComp(props) {
 }
 
 
-function ManageDiscountsComp(props) {
-    const courseId = props.cid;
+function ManageDiscountsComp() {
+    const {cid} = useParams();
+    const courseId = cid;
     const {getCurrentUser} = useContext(AuthContext);
     const {setShow, setContent, setIntent} = useContext(NotificationContext);
     const [discounts, setDiscounts] = useState([]);
@@ -149,10 +150,11 @@ function ManageDiscountsComp(props) {
 
     return (
         <Container className="ml-auto" >
+            <h2 className="mt-5 mb-5">Manage Discounts</h2>
             <ListGroup style={{width:"75vw"}}>
                 <ListGroup.Item>
                     {
-                        discounts.map((discount, index) => {
+                        discounts.length == 0 ? (<h2>There is no available discount.</h2>) : discounts.map((discount, index) => {
                             return(
                                 <>
                                     <Row style={{marginBottom: 10}}>

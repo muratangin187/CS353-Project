@@ -23,6 +23,19 @@ router.get("/bought-courses/:id", async (req, res)=>{
     }
 });
 
+router.get("/get-created-courses/:id", async (req, res)=>{
+    console.log(JSON.stringify(req.params.id));
+    let result = await db.getCreatedCourses(
+        req.params.id,
+    );
+    if(result == null){
+        res.status(400).send({"message": "There is an error occurred in the db retrieve stage of course creation."});
+    }else{
+        console.log(result);
+        res.status(200).send(result);
+    }
+});
+
 router.get("/wishlist-courses/:id", async (req, res)=>{
     console.log(JSON.stringify(req.params.id));
     let result = await db.getCourseAddedWishlist(
@@ -70,6 +83,19 @@ router.get("/get-refunds/:uid", async(req, res)=>{
     }else{
         res.status(200).send(result);
     }
+});
+
+router.get("/get-notifications/:uid", async(req, res)=>{
+    let result = await db.getUserNotifications(req.params.uid);
+    res.status(200).send(result);
+});
+
+router.get("/remove-notification/:nid", async(req, res)=>{
+    let result = await db.removeNotification(req.params.nid);
+    if(result)
+        res.status(200).send();
+    else
+        res.status(400).send();
 });
 
 router.post("/load-balance", async(req, res)=>{

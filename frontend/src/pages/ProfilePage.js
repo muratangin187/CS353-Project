@@ -40,6 +40,16 @@ export default function ProfilePage() {
                             src="https://www.donanimhaber.com/cache-v2/?t=20210507225737&width=-1&text=0&path=https://www.donanimhaber.com/images/images/haber/133189/340x191motosiklet-oyunu-bike-baron-2-ios-icin-on-siparise-acildi.jpg"
                         />
                     </Row>
+                    {user && user.isCreator ? (
+                    <Row className="justify-content-md-center mt-2">
+                        <Button  variant="outline-secondary" type="submit" style={{width:"35vw"}} onClick={()=>{
+                            history.push("/change-profile");
+                        }}>
+                            Update profile
+                        </Button>
+                    </Row>
+                    ) : (
+                        <>
                     <Row className="justify-content-md-center mt-2">
                         <Button  variant="outline-secondary" type="submit" style={{width:"35vw"}} onClick={()=>{
                             history.push("/my-wishlist");
@@ -65,7 +75,7 @@ export default function ProfilePage() {
                         <Button  variant="outline-secondary" type="submit" style={{width:"35vw"}} onClick={()=>{
                             history.push("/change-profile");
                         }}>
-                            Change Profile Photo
+                            Update profile
                         </Button>
                     </Row>
                     <Row className="justify-content-md-center mt-2">
@@ -82,6 +92,8 @@ export default function ProfilePage() {
                         My Certificates
                     </Button>
                     </Row>
+                        </>
+                    )}
                     <Row className="justify-content-md-center mt-2">
                         <Button  variant="danger" type="submit" onClick={logout} style={{width:"35vw"}}>
                             Log out

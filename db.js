@@ -67,6 +67,23 @@ class Db{
         });
     }
 
+    getCreatedCourses(uid){
+        return new Promise(resolve=>{
+            this._db.query(
+                'SELECT * FROM Course c WHERE c.creator_id = ?',
+                [uid],
+                (error, results, fields)=>{
+                    if(error){
+                        console.log(error);
+                        resolve(null);
+                    }else{
+                        console.log(results);
+                        resolve(results);
+                    }
+                });
+        });
+
+    }
 
     getCourseBought(uid){
         return new Promise(resolve=>{
@@ -216,6 +233,43 @@ class Db{
                     }else{
                         console.log(results);
                         resolve(true);
+                    }
+                });
+        });
+    }
+
+    removeNotification(nid){
+            return new Promise(resolve => {
+                this._db.query(
+                    `DELETE FROM Notification WHERE id = ${nid}`,
+                    (error, results, fields) => {
+                        if(error){
+                            console.log(error);
+                            resolve(false);
+                        } else {
+                            resolve(true);
+                        }
+                    }
+                );
+            });
+    }
+    
+    getUserNotifications(userId){
+        return new Promise(resolve=>{
+            this._db.query(
+                `SELECT rn.id as id, r.course_title as course_title, r.refund_title as title, r.reason as content, r.state as state, r.user_id as user_id
+                FROM (SELECT c.title as course_title, r.id as rid, r.title as refund_title, r.reason as reason, r.state as state, r.user_id as user_id FROM Refund r, Course c WHERE r.course_id = c.id) as r,
+                (SELECT * FROM Notification NATURAL JOIN RefundNotification) as rn WHERE rn.refund_id = r.rid AND r.user_id = ${userId} UNION
+                SELECT an.id as id, a.course_title as course_title, a.announcement_title as title, a.content as content, Null AS state, an.user_id as user_id
+                FROM (SELECT c.title as course_title, a.id as aid, a.title as announcement_title, a.content as content FROM Announcement a, Course c WHERE a.course_id = c.id) as a,
+                (SELECT * FROM Notification NATURAL JOIN AnnouncementNotification) as an WHERE an.announcement_id = a.aid AND an.user_id = ${userId};`,
+                (error, results, fields)=>{
+                    if(error){
+                        console.log(error);
+                        resolve([]);
+                    }else{
+                        console.log(results);
+                        resolve(results);
                     }
                 });
         });
@@ -468,47 +522,27 @@ class Db{
         categoryString = categoryString.substr(0, categoryString.length-1);
         let searchString = "%" + search + "%";
         console.log(categoryString);
-        let sql = "";
+        let sql = `WITH DiscountedCourse as (SELECT Course.*, ifnull(DisPrice.percentage, 0) as discount FROM Course LEFT JOIN (SELECT d.course_id as course_id, d.percentage as percentage FROM Allow a, Discount d WHERE a.discount_id = d.id) as DisPrice ON Course.id = DisPrice.course_id )
+SELECT * FROM DiscountedCourse `;
         if(orderDirection == "ASC") orderDirection = "";
+        if(maximum == 1000) maximum = 9999;
+        if(order == "Price"){
+            sql += `WHERE (category IN (${categoryString})) AND (price*(100-discount)/100 BETWEEN ${minimum} AND ${maximum}) AND (description LIKE '${searchString}' OR title LIKE '${searchString}' OR category LIKE '${searchString}') ORDER BY price*(100-discount)/100 ${orderDirection} LIMIT ${offset}, 11;`;
+        }else if(order == "Rating"){
+            sql += `WHERE (category IN (${categoryString})) AND (price*(100-discount)/100 BETWEEN ${minimum} AND ${maximum}) AND (description LIKE '${searchString}' OR title LIKE '${searchString}' OR category LIKE '${searchString}') ORDER BY averageRating ${orderDirection} LIMIT ${offset}, 10;`;
+        }else{
+            // TODO add it when discount added
+            sql += `WHERE (category IN (${categoryString})) AND (price*(100-discount)/100 BETWEEN ${minimum} AND ${maximum}) AND (description LIKE '${searchString}' OR title LIKE '${searchString}' OR category LIKE '${searchString}') ORDER BY discount ${orderDirection} LIMIT ${offset}, 10;`;
+        }
         return new Promise(resolve=>{
-            this._db.query(
-                `SELECT d.course_id as course_id, d.percentage as percentage FROM Allow a, Discount d WHERE a.discount_id = d.id`,
-                (error, discounts, fields) => {
-                    if(error){
+            this._db.query(sql, (error, results, fields) => {
+                console.log(sql);
+                    if (error){
                         console.log(error);
                         resolve([]);
                     }else{
-                        if(order == "Price"){
-                            sql = `SELECT * FROM Course WHERE (category IN (${categoryString})) AND (price BETWEEN ${minimum} AND ${maximum}) AND (description LIKE '${searchString}' OR title LIKE '${searchString}' OR category LIKE '${searchString}') ORDER BY price ${orderDirection} LIMIT ${offset}, 11;`;
-                        }else if(order == "Rating"){
-                            sql = `SELECT * FROM Course WHERE (category IN (${categoryString})) AND (price BETWEEN ${minimum} AND ${maximum}) AND (description LIKE '${searchString}' OR title LIKE '${searchString}' OR category LIKE '${searchString}') ORDER BY averageRating ${orderDirection} LIMIT ${offset}, 10;`;
-                        }else{
-                            // TODO add it when discount added
-                            sql = `SELECT * FROM Course WHERE (category IN (${categoryString})) AND (price BETWEEN ${minimum} AND ${maximum}) AND (description LIKE '${searchString}' OR title LIKE '${searchString}' OR category LIKE '${searchString}') ORDER BY price ${orderDirection} LIMIT ${offset}, 10;`;
-                        }
-                        console.log("DISCOUNTS:", JSON.stringify(discounts, null,2));
-                        this._db.query(sql, (error, results, fields) => {
-                                if (error){
-                                    console.log(error);
-                                    resolve([]);
-                                }else{
-                                    results.forEach(r=>{
-                                        let discount = discounts.find(d=>d.course_id == r.id)
-                                        if(discount) r.discount = discount.percentage; else r.discount = 0;
-                                    });
-                                    console.log(results);
-                                    results.sort((a,b)=> {
-                                        let afinal = a.price * (100-a.discount) / 100;
-                                        let bfinal = b.price * (100-b.discount) / 100;
-                                        if(orderDirection == "")
-                                            return afinal < bfinal;
-                                        else
-                                            return afinal > bfinal;
-                                    });
-                                    resolve(results);
-                                }
-                            }
-                        );
+                        console.log(results);
+                        resolve(results);
                     }
                 }
             );

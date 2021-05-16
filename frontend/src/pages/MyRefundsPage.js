@@ -151,7 +151,7 @@ export default function MyRefundsPage(){
             </Modal>
             <Row className="justify-content-md-center mt-5 align-items-center">
                     <h1 className="mr-5">
-                        Murat ANGIN
+                        {user?.username}
                     </h1>
                     <Image
                         className="ml-5"

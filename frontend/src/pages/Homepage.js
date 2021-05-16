@@ -42,8 +42,10 @@ export default function Homepage(){
                 minimum,maximum,order,orderDirection, search,categories, pageNumber: 1
             }
         });
-        if(response.status == 200)
+        if(response.status == 200){
             setCourses(response.data);
+            console.log(response.data);
+        }
     },[]);
 
     const handleCategory = (category)=>{
@@ -139,7 +141,7 @@ export default function Homepage(){
                                         <Form.Control type="range" value={maximum} min={minimum} max={1000} step={5} onChange={(e)=>{
                                                 setMaximum(e.target.value);
                                         }}/>
-                                        <Form.Label>{maximum}</Form.Label>
+                                        <Form.Label>{maximum == "1000" ? "ALL" : maximum}</Form.Label>
                                     </Form.Group>
                                 </Card.Text>
                             </Card.Body>

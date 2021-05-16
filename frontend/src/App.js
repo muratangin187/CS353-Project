@@ -28,6 +28,8 @@ import AdminPage from "./pages/AdminPage";
 import CourseDescPage from "./pages/CourseDescPage";
 import CreateQuizPage from "./pages/CreateQuizPage";
 import MyRefundsPage from "./pages/MyRefundsPage";
+import {ManageDiscountsComp} from "./components/course_comps";
+import MyNotificationPage from "./pages/MyNotificationPage";
 import AboutUs from "./pages/AboutUsPage";
 import MyBalance from "./pages/MyBalance";
 
@@ -98,7 +100,7 @@ function App() {
                       <CustomNavbar/>
                       <Switch>
                           <Route exact path='/' component={Homepage}/>
-                          <PrivateRoute path='/my-courses' component={MyCoursesPage} role={[userRole]}/>
+                          <PrivateRoute path='/my-courses' component={MyCoursesPage} role={[userRole, creatorRole]}/>
                           <PrivateRoute path='/course/:cid/create-quiz' component={CreateQuizPage} role={[creatorRole]}/>
                           <PrivateRoute path='/course/:cid/lecture/:lid' component={LecturePage} role={[userRole]}/>
                           <PrivateRoute path='/course/:cid' component={MainCoursePage} role={[creatorRole, userRole]}/>
@@ -110,8 +112,10 @@ function App() {
                           <PrivateRoute path='/admin' component={AdminPage} role={[adminRole]}/>
                           <PrivateRoute path='/register' component={RegisterPage} role={[anonRole]}/>
                           <PrivateRoute path='/create-lecture/:cid' component={CreateLecturePage} role={[creatorRole]}/>
+                          <PrivateRoute path='/manage-discounts/:cid' component={ManageDiscountsComp} role={[creatorRole]}/>
                           <Route path='/creator-profile/:creatorId' component={CreatorProfilePage} />
                           <PrivateRoute path='/my-refunds' component={MyRefundsPage} role={[userRole]}/>
+                          <PrivateRoute path='/my-notifications' component={MyNotificationPage} role={[userRole]}/>
                           <PrivateRoute path='/my-cart' component={MyCartPage} role={[userRole]}/>
                           <PrivateRoute path='/my-wishlist' component={MyWishlistPage} role={[userRole]}/>
                           <PrivateRoute path='/my-balance' component={MyBalance} role={[userRole]}/>

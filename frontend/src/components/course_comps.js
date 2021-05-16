@@ -273,18 +273,43 @@ function QuizzesComp(props) {
             name: "test - 1",
             duration: "11:00",
             score: 5
+        },
+        {
+            name: "test - 2",
+            duration: "12:00",
+            avgScore: 2,
+            numAttend: 2,
         }
     ]);
+
+    const [isCreatorPar, setIsCreatorPar] = useState(true);
 
     let history = useHistory();
 
     useEffect(async () => {
         let user_res = await getCurrentUser;
+        let isCreator = await QuizService.isCreator(user_res.data.id);
+        console.log("isCreator\n");
+        console.log(isCreator.data);
+
+        setIsCreatorPar(isCreator.data);
+
         console.log(user_res);
 
-        let quizList_res = await QuizService.getCourseQuizzes(user_res.data.id, courseId);
-        if (quizList_res)
-            setQuizList(quizList_res);
+        let quizList_res;
+        if (isCreator.data){
+            quizList_res = await QuizService.getCourseQuizStats(courseId);
+            console.log("creator");
+            console.log(quizList_res);
+            if (quizList_res)
+                setQuizList(quizList_res);
+        } else {
+            quizList_res = await QuizService.getCourseQuizzes(user_res.data.id, courseId);
+            console.log("user");
+            console.log(quizList_res);
+            if (quizList_res)
+                setQuizList(quizList_res);
+        }
     }, []);
 
     return (
@@ -297,15 +322,37 @@ function QuizzesComp(props) {
                             <>
                                 <Row style={{marginBottom: 10}}>
                                     <Col style={{display: "flex", justifyContent: "center", alignItems: "center"}} md={1}>{index + 1}.</Col>
-                                    <Col md={9}>
+                                    <Col md={isCreatorPar ? 7 : 9}>
                                         <h4>{quiz.name}</h4>
                                         <p><strong>Duration:</strong> {quiz.duration}</p>
                                     </Col>
-                                    <Col md={2} style={{display: "flex", justifyContent: "center", alignItems: "center"}}>
-                                        <Button variant="primary" onClick={() => {history.push("/course/" + courseId.toString(10) + "/quiz/" + quiz.id.toString(10))}} style={{height: "min-content"}} disabled={quiz.isComplete}>
-                                            {(quiz.isComplete) ? (quiz.score.toString(10) + "/10") : "Take"}
-                                        </Button>
+                                    <Col md={2} style={{display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column"}}>
+                                        {isCreatorPar ?
+                                            (
+                                                <>
+                                                    <p><strong>Average Score:</strong></p>
+                                                    <p>{quiz.avgScore} / 10</p>
+                                                </>
+                                            )
+                                            :
+                                            (
+                                                <Button variant="primary" onClick={() => {history.push("/course/" + courseId.toString(10) + "/quiz/" + quiz.id.toString(10))}} style={{height: "min-content"}} disabled={quiz.isComplete}>
+                                                    {(quiz.isComplete) ? (quiz.score.toString(10) + "/10") : "Take"}
+                                                </Button>
+                                            )
+                                        }
                                     </Col>
+                                    {isCreatorPar ?
+                                        (
+                                            <Col md={2} style={{display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column"}}>
+                                                <p><strong># of Attenders</strong></p>
+                                                <p>{quiz.numAttend}</p>
+                                            </Col>
+                                        )
+                                        :
+                                        (<></>)
+                                    }
+
                                 </Row>
                                 <hr />
                             </>

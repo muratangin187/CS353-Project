@@ -187,6 +187,69 @@ class QuizService{
             score
         });
     }
+
+    async getCourseQuizStats(courseId){
+        let numOfAttArr = await axios.get("/api/quiz/retrieve_attend/" + courseId.toString(10));
+
+        if (numOfAttArr.status == 400)
+            return numOfAttArr;
+
+        console.log("Num of attr");
+        console.log(numOfAttArr);
+
+        numOfAttArr = numOfAttArr.data;
+        numOfAttArr.sort((f, s) => f.id - s.id);
+
+        let avgScoreArr = await axios.get("/api/quiz/retrieve_avg_score/" + courseId.toString(10));
+
+        if (avgScoreArr.status == 400)
+            return avgScoreArr;
+
+        avgScoreArr = avgScoreArr.data;
+        avgScoreArr.sort((f, s) => f.id - s.id);
+
+        let quizzes = await axios.get("/api/quiz/retrieve_quizzes/" + courseId.toString(10));
+
+        if (quizzes.status == 400)
+            return quizzes;
+
+        quizzes = quizzes.data;
+        quizzes.sort((f, s) => f.id - s.id);
+
+        return quizzes.map(quiz => {
+            let index = numOfAttArr.findIndex(obj => obj.id = quiz.id);
+            console.log("index");
+            console.log(index);
+            console.log(quiz.id);
+            console.log(numOfAttArr);
+            if(index != -1){
+                return {
+                    name: quiz.name,
+                    duration: quiz.duration,
+                    avgScore: avgScoreArr[index].count,
+                    numAttend: numOfAttArr[index].count
+                };
+            } else {
+                return {
+                    name: quiz.name,
+                    duration: quiz.duration,
+                    avgScore: 0,
+                    numAttend: 0
+                };
+            }
+        });
+
+    }
+
+    async isCreator(userId){
+        let result;
+        await axios.get("/api/quiz/retrieve_is_creator/" + userId.toString(10))
+            .then(response => {
+                result = response;
+            });
+
+        return result;
+    }
 }
 
 

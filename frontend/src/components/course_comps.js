@@ -24,8 +24,50 @@ import {AuthContext} from "../services/AuthContext";
 
 
 function LecturesComp(props) {
-      const cid = props.cid;
-      const [lectureData, setLectureData] = useState(null);
+    const cid = props.cid;
+    const isCreator = props.isCreator;
+    const [lectureData, setLectureData] = useState(null);
+    const context = useContext(NotificationContext);
+    const [setShowToast, setContent, setIntent] = [context.setShow, context.setContent, context.setIntent];
+    const [updatePage, setUpdatePage] = useState(false);
+
+    const deleteLecture = async (lid) => {
+        let response = await axios({
+            url: "/api/course/delete-lecture/",
+            method: "POST",
+            data: {
+                lid: lid,
+            }
+        });
+        setShowToast(true);
+        if(response.data) {
+            setContent("Success", "You successfully deleted a lecture.");
+            setIntent("success");
+        }else{
+            setContent("Failure", "There is an error occurred.");
+            setIntent("failure");
+        }
+        setUpdatePage(!updatePage);
+    }
+
+    const toggleVisibility = async (lid) => {
+        let response = await axios({
+            url: "/api/course/toggleVisibility/",
+            method: "POST",
+            data: {
+                lid: lid,
+            }
+        });
+        setShowToast(true);
+        if(response.data) {
+            setContent("Success", "You successfully toggled visibility of lecture with id: " + lid + ".");
+            setIntent("success");
+        }else{
+            setContent("Failure", "There is an error occurred.");
+            setIntent("failure");
+        }
+        setUpdatePage(!updatePage);
+    }
 
     const LectureItem = (lecture, index) => {
         const lectureLink = "/course/" + cid + "/lecture/" + lecture.lecture_index;
@@ -33,12 +75,19 @@ function LecturesComp(props) {
                 <ListGroup.Item>
                     <Row>
                         <Col>{index + 1}.</Col>
-                        <Col xs={8} className="mr-5">
+                        <Col xs={7} className="mr-5">
                             <h4>{lecture.chapterName}</h4>
                             <p>{lecture.title}</p>
                         </Col>
+                        <Col xs={2} className="ml-5">
+                            {isCreator ? <Button variant={!!lecture.isVisible ? "danger" : "success"} style={{height: "min-content"}} onClick={()=>toggleVisibility(lecture.id)}>
+                                {!!lecture.isVisible ? "Set Invisible" : "Set Visible"}
+                            </Button> : null }
+                        </Col>
                         <Col xs={1} className="ml-5">
-                            <Link to={lectureLink}>Watch</Link>
+                            {isCreator ? <Button variant="danger" style={{height: "min-content"}} onClick={()=>deleteLecture(lecture.id)}>
+                                Remove
+                            </Button> : <Link to={lectureLink}>Watch</Link> }
                         </Col>
                     </Row>
                 </ListGroup.Item>
@@ -46,13 +95,22 @@ function LecturesComp(props) {
     }
 
       useEffect( async () => {
-          let response = await axios({
-              url:"/api/course/getVisibleLectures/" + cid,
-              method: "GET",
-          });
-          if(response.status == 200)
-            setLectureData(response.data);
-      }, []);
+          if(isCreator){
+              let response = await axios({
+                  url:"/api/course/getAllLectures/" + cid,
+                  method: "GET",
+              });
+              if(response.status == 200)
+                  setLectureData(response.data);
+          } else {
+              let response = await axios({
+                  url:"/api/course/getVisibleLectures/" + cid,
+                  method: "GET",
+              });
+              if(response.status == 200)
+                  setLectureData(response.data);
+          }
+      }, [updatePage]);
 
     if(!lectureData){
         return (<Container className="mt-5">
@@ -552,39 +610,39 @@ function RatingsComp(props) {
           <Container style={{width:"75vw"}}>
           <Row style={{width:"75vw"}}>
           <ListRatingsComp cid={cid}/>
-            <Col className="mt-3">
-                <h4><strong>Rate the course</strong></h4>
-                <Form onSubmit={handleRatingSubmit} ref={formRef}>
-                    <ButtonGroup toggle className="mb-3">
-                        {radios.map((radio, idx) => (
-                            <ToggleButton 
-                                key={idx}
-                                type="radio"
-                                variant="primary"
-                                name="radio"
-                                value={radio.value}
-                                checked={radioValue === radio.value}
-                                onChange={(e) => setRadioValue(e.currentTarget.value)}>
-                            {radio.name}
-                            </ToggleButton>
-                        ))}
-                    </ButtonGroup>
-                    <Form.Group controlId="formGridDescription">
-                        <Form.Label>Your content</Form.Label>
-                        <Form.Control as="textarea" rows={5} required/>
-                    </Form.Group>
-                    <Form.Row className="ml-1 mt-3">
-                        <h6 className="ml-3">
-                            <Badge variant="info">{tooltips}</Badge>
-                        </h6>
-                        <div style={{textAlign: "center"}}>
-                            <Button variant="success" type="submit" disabled={!completedData}>
-                                {isRatedData ? "Update" : "Rate"}
-                            </Button>
-                        </div>
-                    </Form.Row>
-                </Form>
-            </Col>
+              {props.isCreator ? null : <Col className="mt-3">
+                  <h4><strong>Rate the course</strong></h4>
+                  <Form onSubmit={handleRatingSubmit} ref={formRef}>
+                      <ButtonGroup toggle className="mb-3">
+                          {radios.map((radio, idx) => (
+                              <ToggleButton
+                                  key={idx}
+                                  type="radio"
+                                  variant="primary"
+                                  name="radio"
+                                  value={radio.value}
+                                  checked={radioValue === radio.value}
+                                  onChange={(e) => setRadioValue(e.currentTarget.value)}>
+                                  {radio.name}
+                              </ToggleButton>
+                          ))}
+                      </ButtonGroup>
+                      <Form.Group controlId="formGridDescription">
+                          <Form.Label>Your content</Form.Label>
+                          <Form.Control as="textarea" rows={5} required/>
+                      </Form.Group>
+                      <Form.Row className="ml-1 mt-3">
+                          <h6 className="ml-3">
+                              <Badge variant="info">{tooltips}</Badge>
+                          </h6>
+                          <div style={{textAlign: "center"}}>
+                              <Button variant="success" type="submit" disabled={!completedData}>
+                                  {isRatedData ? "Update" : "Rate"}
+                              </Button>
+                          </div>
+                      </Form.Row>
+                  </Form>
+              </Col>}
           </Row>
           </Container>
       );
@@ -661,6 +719,28 @@ function RatingItem(rating){
 function AnnouncementsComp(props) {
     const cid = props.cid;
     const [announcementsData, setAnnouncementsData] = useState(null);
+    const [updatePage, setUpdatePage] = useState(false);
+    const context = useContext(NotificationContext);
+    const [setShowToast, setContent, setIntent] = [context.setShow, context.setContent, context.setIntent];
+
+    const deleteAnnouncement = async (aid) => {
+        let response = await axios({
+            url: "/api/course/delete-announcement/",
+            method: "POST",
+            data: {
+                aid: aid,
+            }
+        });
+        setShowToast(true);
+        if(response.data) {
+            setContent("Success", "You successfully deleted an announcement.");
+            setIntent("success");
+        }else{
+            setContent("Failure", "There is an error occurred.");
+            setIntent("failure");
+        }
+        setUpdatePage(!updatePage);
+    }
 
     useEffect(() => {
         axios.get('/api/course/allAnnouncements/' + cid)
@@ -670,23 +750,36 @@ function AnnouncementsComp(props) {
             .catch(error => {
                 console.log(error);
             });
-    }, []);
+    }, [updatePage]);
+
+
 
     const AnnouncementItem = (announcement) => {
         return (<Card style={{width:"75vw"}} className="mb-3">
             <Card.Header>{announcement.title}</Card.Header>
             <Card.Body>
-                <blockquote className="blockquote mb-0">
-                    <p>
-                        {announcement.content}
-                    </p>
-                    <footer className="text-muted" style={{fontSize:"14px"}}>
-                        {new Date(announcement.date).toLocaleDateString("tr-TR")}
-                    </footer>
-                </blockquote>
+                <Row>
+                    <Col xs={8}>
+                        <blockquote className="blockquote mb-0">
+                            <p>
+                                {announcement.content}
+                            </p>
+                            <footer className="text-muted" style={{fontSize:"14px"}}>
+                                {new Date(announcement.date).toLocaleDateString("tr-TR")}
+                            </footer>
+                        </blockquote>
+                    </Col>
+                    <Col xs={1}>
+                        {props.isCreator ? <Button variant="danger" style={{height: "min-content"}} onClick={()=>deleteAnnouncement(announcement.id)}>
+                            Delete
+                    </Button> : null }
+                    </Col>
+                </Row>
             </Card.Body>
         </Card>);
     }
+
+
 
     if(!announcementsData){
         return (<Container className="mt-5">

@@ -277,6 +277,16 @@ router.post("/disable-discount", async (req, res)=>{
     res.status(200).send(result);
 });
 
+router.post("/delete-lecture", async (req, res)=>{
+    let result = await db.deleteLecture(req.body.lid);
+    res.status(200).send(result);
+});
+
+router.post("/delete-announcement", async (req, res)=>{
+    let result = await db.deleteAnnouncement(req.body.aid);
+    res.status(200).send(result);
+});
+
 router.get("/discounts/:did", async(req, res)=>{
     let result = await db.isDiscountAllowed(req.params.did);
     res.status(200).send(result);
@@ -308,6 +318,14 @@ router.get("/maxIndex/:cid", async (req, res)=>{
 router.get("/getVisibleLectures/:cid", async (req, res)=>{
     console.log(JSON.stringify(req.params.cid));
     let result = await db.getVisibleLectures(
+        req.params.cid,
+    );
+    res.status(200).send(result);
+});
+
+router.get("/getAllLectures/:cid", async (req, res)=>{
+    console.log(JSON.stringify(req.params.cid));
+    let result = await db.getAllLectures(
         req.params.cid,
     );
     res.status(200).send(result);
@@ -369,6 +387,16 @@ router.post("/updateRating", async (req, res) => {
     }
 });
 
+router.post("/toggleVisibility", async (req, res) => {
+    let response = await db.toggleVisibility(
+        req.body.lid
+    );
+    if(!response){
+        res.status(400).send({"message": "There is an error occured in the db update stage of visibility."});
+    }else {
+        res.status(200).send({"message": "Successfully toggled visibility."});
+    }
+});
 
 router.get("/isCourseRated/:cid/:uid", async (req, res) => {
     console.log(JSON.stringify(req.params.cid));

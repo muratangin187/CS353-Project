@@ -178,8 +178,8 @@ async function main (){
         user_id INT NOT NULL,
         course_id INT NOT NULL,
         PRIMARY KEY (lecture_id, user_id, course_id),
-        FOREIGN KEY (lecture_id) REFERENCES Lecture(id),
-        FOREIGN KEY (user_id, course_id) REFERENCES Buy(user_id, course_id));`
+        FOREIGN KEY (lecture_id) REFERENCES Lecture(id) ON DELETE CASCADE,
+        FOREIGN KEY (user_id, course_id) REFERENCES Buy(user_id, course_id) ON DELETE CASCADE);`
     );
 
     await db.query(

@@ -355,6 +355,38 @@ class Db{
         });
     }
 
+    deleteLecture(lid){
+        return new Promise(resolve => {
+            this._db.query(
+                `DELETE FROM Lecture WHERE id = ${lid}`,
+                (error, results, fields) => {
+                    if(error){
+                        console.log(error);
+                        resolve(false);
+                    } else {
+                        resolve(true);
+                    }
+                }
+            );
+        });
+    }
+
+    deleteAnnouncement(aid){
+        return new Promise(resolve => {
+            this._db.query(
+                `DELETE FROM Announcement WHERE id = ${aid}`,
+                (error, results, fields) => {
+                    if(error){
+                        console.log(error);
+                        resolve(false);
+                    } else {
+                        resolve(true);
+                    }
+                }
+            );
+        });
+    }
+
     isDiscountAllowed(did){
         return new Promise(resolve=>{
             this._db.query(
@@ -814,6 +846,22 @@ SELECT * FROM DiscountedCourse `;
         });
     }
 
+    getAllLectures(cid){
+        return new Promise(resolve => {
+            this._db.query(
+                `SELECT * FROM Lecture WHERE course_id = ${cid}`,
+                (error, results, fields) => {
+                    if(error){
+                        console.log(error);
+                        resolve(null);
+                    } else {
+                        resolve(results);
+                    }
+                }
+            )
+        })
+    }
+
     getVisibleLectures(cid){
         return new Promise(resolve => {
             this._db.query(
@@ -988,6 +1036,24 @@ SELECT * FROM DiscountedCourse `;
                 `UPDATE Rating
                  SET ratingScore = ${ratingScore}, content = '${content}'
                  WHERE user_id = ${user_id} AND course_id = ${course_id};`,
+                (error, results, fields) => {
+                    if(error) {
+                        console.log(error);
+                        resolve(null);
+                    } else {
+                        resolve(true);
+                    }
+                }
+            );
+        });
+    }
+
+    toggleVisibility(lid) {
+        return new Promise( resolve => {
+            this._db.query(
+                `UPDATE Lecture
+                 SET isVisible = 1 - isVisible
+                 WHERE id = ${lid};`,
                 (error, results, fields) => {
                     if(error) {
                         console.log(error);

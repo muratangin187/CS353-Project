@@ -217,7 +217,7 @@ class QuizService{
         quizzes.sort((f, s) => f.id - s.id);
 
         return quizzes.map(quiz => {
-            let index = numOfAttArr.findIndex(obj => obj.id = quiz.id);
+            let index = numOfAttArr.findIndex(obj => obj.id == quiz.id);
             console.log("index");
             console.log(index);
             console.log(quiz.id);

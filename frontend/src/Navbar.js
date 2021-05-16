@@ -14,7 +14,7 @@ function CustomNavbar(){
     useEffect(async ()=>{
         let userResponse = await getCurrentUser;
         setUser(userResponse?.data);
-        if(userResponse.data && userResponse.data.id){
+        if(userResponse && userResponse.data && userResponse.data.id){
             let response = await axios({
                 url: "/api/user/get-notifications/"+userResponse?.data.id,
                 method: "GET"
@@ -44,7 +44,7 @@ function CustomNavbar(){
                 ) : (
                 <>
                     <InputGroup.Text id="basic-addon1">{notifications ? notifications.length : "0"}</InputGroup.Text>
-                    <Link to="/my-notifications"><Button className="mr-4" variant="outline-secondary">Notifications</Button></Link>
+                    <Link to="/my-notifications"><Button className="mr-4" variant={(notifications && notifications.length == 0) ? "outline-secondary" : "danger"}>Notifications</Button></Link>
                 <Link to="/profile"><Button style={{marginRight: 20}} variant="outline-dark">Profile of {user.name}</Button></Link>
                     <Nav.Link href="/my-cart">My Cart</Nav.Link>
                     <Nav.Link href="/my-wishlist">My Wishlist</Nav.Link>

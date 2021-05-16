@@ -26,7 +26,7 @@ export default function LoginPage() {
         if(response.status == 200){
             setIntent("success");
             setContent("Success", response.data.message);
-            window.location = window.location.origin;
+            history.push("/");
         }else{
             setIntent("failure");
             setContent("Login failed", response.data.message);

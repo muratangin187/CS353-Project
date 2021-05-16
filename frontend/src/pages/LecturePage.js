@@ -273,6 +273,7 @@ export default function LecturePage(){
             setIntent("success");
             setContent("Success", response.data.message);
             setButtonDisableData(true);
+            await goToNextLecture();
         } else {
             setIntent("failure");
             setContent("Transaction cannot be processed", response.data.message);

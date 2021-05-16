@@ -80,7 +80,7 @@ export default function CreateLecturePage(){
         setResult({status: submitResponse.status, message: submitResponse.data.message});
         setToastStyle({backgroundColor: submitResponse.status == 200 ? "rgb(200,255,200)" : "rgb(255,200,200)"});
         setTimeout(()=>{
-            history.push("/");
+            history.goBack();
         },1000);
     }
 

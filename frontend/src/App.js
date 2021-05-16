@@ -25,6 +25,7 @@ import Homepage from "./pages/Homepage";
 import CreateLecturePage from "./pages/CreateLecturePage";
 import LecturePage from "./pages/LecturePage";
 import AdminPage from "./pages/AdminPage";
+import ChangeProfilePage from "./pages/ChangeProfile";
 import CourseDescPage from "./pages/CourseDescPage";
 import CreateQuizPage from "./pages/CreateQuizPage";
 import MyRefundsPage from "./pages/MyRefundsPage";
@@ -115,6 +116,7 @@ function App() {
                           <PrivateRoute path='/manage-discounts/:cid' component={ManageDiscountsComp} role={[creatorRole]}/>
                           <Route path='/creator-profile/:creatorId' component={CreatorProfilePage} />
                           <PrivateRoute path='/my-refunds' component={MyRefundsPage} role={[userRole]}/>
+                          <PrivateRoute path='/change-profile' component={ChangeProfilePage} role={[userRole, creatorRole]}/>
                           <PrivateRoute path='/my-notifications' component={MyNotificationPage} role={[userRole]}/>
                           <PrivateRoute path='/my-cart' component={MyCartPage} role={[userRole]}/>
                           <PrivateRoute path='/my-wishlist' component={MyWishlistPage} role={[userRole]}/>

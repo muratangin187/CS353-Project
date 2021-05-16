@@ -75,7 +75,7 @@ function LecturesComp(props) {
                 <ListGroup.Item>
                     <Row>
                         <Col>{index + 1}.</Col>
-                        <Col xs={7} className="mr-5">
+                        <Col xs={6} className="mr-5">
                             <h4>{lecture.chapterName}</h4>
                             <p>{lecture.title}</p>
                         </Col>
@@ -563,7 +563,6 @@ function RatingsComp(props) {
                 if(response.status == 200){
                     setIntent("success");
                     setContent("Success", response.data.message);
-                    window.location = window.location.origin;
                 } else{
                     setIntent("failure");
                     setContent("Rating cannot be updated", response.data.message);
@@ -585,7 +584,6 @@ function RatingsComp(props) {
                 if(response.status == 200){
                     setIntent("success");
                     setContent("Success", response.data.message);
-                    window.location = window.location.origin;
                 } else{
                     setIntent("failure");
                     setContent("Rating cannot be added", response.data.message);

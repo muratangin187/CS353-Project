@@ -238,6 +238,39 @@ class Db{
         });
     }
 
+    changePhoto(uid, photo){
+        return new Promise(resolve => {
+            this._db.query(
+                `UPDATE Person SET photo= '${photo}' WHERE id=${uid}`,
+                (error, results, fields) => {
+                    if (error){
+                        console.log(error);
+                        resolve(false);
+                    }else{
+                        resolve(true);
+                    }
+                }
+            );
+        });
+    }
+
+    changePassword(uid, newPassword){
+        return new Promise(resolve => {
+            let hash = crypto.createHash('md5').update(newPassword).digest('hex');
+            this._db.query(
+                `UPDATE Person SET password = '${hash}' WHERE id=${uid}`,
+                (error, results, fields) => {
+                    if (error){
+                        console.log(error);
+                        resolve(false);
+                    }else{
+                        resolve(true);
+                    }
+                }
+            );
+        });
+    }
+
     removeNotification(nid){
             return new Promise(resolve => {
                 this._db.query(

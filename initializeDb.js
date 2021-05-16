@@ -325,7 +325,7 @@ async function main (){
         announcement_id INT NOT NULL,
         PRIMARY KEY (id),
         FOREIGN KEY (id) REFERENCES Notification(id) ON DELETE CASCADE,
-        FOREIGN KEY (announcement_id) REFERENCES Announcement(id));`,
+        FOREIGN KEY (announcement_id) REFERENCES Announcement(id) ON DELETE CASCADE );`,
     );
 
     await db.query(
@@ -337,6 +337,39 @@ async function main (){
 
 
     console.log("DB tables created.");
+
+    await db.query(
+        `CREATE INDEX announcement_cid ON Announcement(course_id)`
+    );
+    await db.query(
+        `CREATE INDEX answer_qid ON Answer(question_id)`
+    );
+    await db.query(
+        `CREATE INDEX discount_cid ON Discount(course_id)`
+    );
+    await db.query(
+        `CREATE INDEX lecture_cid ON Lecture(course_id)`
+    );
+    await db.query(
+        `CREATE INDEX note_uid ON Note(user_id)`
+    );
+    await db.query(
+        `CREATE INDEX notification_uid ON Notification(user_id)`
+    );
+    await db.query(
+        `CREATE INDEX question_cid ON Question(course_id)`
+    );
+    await db.query(
+        `CREATE INDEX person_email ON Person(email)`
+    );
+    await db.query(
+        `CREATE INDEX refund_uid ON Refund(user_id)`
+    );
+    await db.query(
+        `CREATE INDEX complete_uid ON CompleteLecture(user_id)`
+    );
+
+    console.log("DB secondary indices initialized.");
 
     await db.query(
         `CREATE TRIGGER rating_update

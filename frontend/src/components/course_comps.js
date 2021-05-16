@@ -16,7 +16,7 @@ import {useState, useRef, useEffect} from "react";
 import axios from "axios";
 import {CgWebsite} from "react-icons/cg";
 import {AiFillLinkedin, AiFillYoutube} from "react-icons/ai";
-import {Link} from "react-router-dom";
+import {Link, useHistory} from "react-router-dom";
 import {AuthContext} from "../services/AuthContext";
 import QuizService from "../services/QuizService";
 
@@ -81,12 +81,12 @@ function QuizzesComp(props) {
             score: 5
         }
     ]);
-    const [user, setUser] = useState(null);
+
+    let history = useHistory();
 
     useEffect(async () => {
         let user_res = await getCurrentUser;
         console.log(user_res);
-        setUser(user_res?.data);
 
         let quizList_res = await QuizService.getCourseQuizzes(user_res.data.id, courseId);
         if (quizList_res)
@@ -108,7 +108,7 @@ function QuizzesComp(props) {
                                         <p><strong>Duration:</strong> {quiz.duration}</p>
                                     </Col>
                                     <Col md={2} style={{display: "flex", justifyContent: "center", alignItems: "center"}}>
-                                        <Button variant="primary" style={{height: "min-content"}} disabled={quiz.isComplete}>
+                                        <Button variant="primary" onClick={() => {history.push("/course/" + courseId.toString(10) + "/quiz/" + quiz.id.toString(10))}} style={{height: "min-content"}} disabled={quiz.isComplete}>
                                             {(quiz.isComplete) ? (quiz.score.toString(10) + "/10") : "Take"}
                                         </Button>
                                     </Col>

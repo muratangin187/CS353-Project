@@ -88,4 +88,58 @@ router.get("/retrieve_completed_quizzes/:course_id/:user_id", async (req, res) =
     }
 });
 
+router.get("/retrieve_quiz_inf/:quiz_id", async (req, res) => {
+    let quizId = req.params["quiz_id"];
+
+    let result = await db.getQuizInf(quizId);
+    console.log("Retrieve Quiz Inf");
+    console.log(result);
+    if (!result){
+        res.status(400).send({message: "Retrieve quiz information operation failed"});
+    } else {
+        res.status(200).send(result);
+    }
+});
+
+router.get("/retrieve_quiz_qa_tf/:quiz_id", async (req, res) => {
+    let quizId = req.params["quiz_id"];
+
+    let result = await db.getQuizQATF(quizId);
+    console.log("Retrieve True-False");
+    console.log(result);
+    if (!result){
+        res.status(400).send({message: "Retrieve true-false operation failed"});
+    } else {
+        res.status(200).send(result);
+    }
+});
+
+router.get("/retrieve_quiz_qa_m/:quiz_id", async (req, res) => {
+    let quizId = req.params["quiz_id"];
+
+    let result = await db.getQuizQAM(quizId);
+    console.log("Retrieve Multiple Choice");
+    console.log(result);
+    if (!result){
+        res.status(400).send({message: "Retrieve multiple choice operation failed"});
+    } else {
+        res.status(200).send(result);
+    }
+});
+
+router.post("/insert_completed_quiz", async (req, res) => {
+    if (!req.body.quizId && !req.body.userId && !req.body.score){
+        res.status(400).send({message: "Completed quiz can not be inserted."});
+        return;
+    }
+
+    let result = await db.insertCompletedQuiz(req.body.quizId, req.body.userId, req.body.score);
+
+    if (!result){
+        res.status(400).send({message: "Completed quiz can not be inserted."});
+    } else {
+        res.status(200).send({message: "This quiz inserted to the completed quizzes."});
+    }
+});
+
 module.exports = router;

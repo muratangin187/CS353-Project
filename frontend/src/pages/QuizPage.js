@@ -1,8 +1,18 @@
-import {useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import {Card, Container, Row, Col, Form, Button} from "react-bootstrap";
 import "../style/quiz.css";
+import {useHistory, useParams} from "react-router-dom";
+import QuizService from "../services/QuizService";
+import {AuthContext} from "../services/AuthContext";
+import {NotificationContext} from "../services/NotificationContext";
 
 export default function QuizPage(){
+    const {cid, qid} = useParams();
+    const {getCurrentUser} = useContext(AuthContext);
+    const {setShow, setContent, setIntent} = useContext(NotificationContext);
+    const [user, setUser] = useState(null);
+    let history = useHistory();
+
     const [quizInf, setQuizInf] = useState({
         name: "Quiz Test",
         duration: "11:00"
@@ -39,6 +49,17 @@ export default function QuizPage(){
         }
     ]);
 
+    useEffect(async () => {
+        let inf = await QuizService.getQuizInf(qid);
+        setQuizInf(inf ? inf : null);
+
+        let qList = await QuizService.getQuizQA(qid);
+        setQuizList(qList ? qList : null);
+
+        let userTmp = await getCurrentUser;
+        setUser(userTmp?.data);
+    }, []);
+
     const handleOnChange = (event) => {
         let target = event.target;
         setQuizList(prevState => {
@@ -51,7 +72,32 @@ export default function QuizPage(){
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        alert(JSON.stringify(quizList));
+        setIntent("normal");
+        setContent("Processing", "Please wait");
+        setShow(true);
+        let score = 0;
+        for (let i = 0; i < quizList.length; i++){
+            if (quizList[i].selectedAnswer === quizList[i].answer)
+                score++;
+        }
+
+        score = (10 * score) / quizList.length;
+        alert("Score: " + score.toString(10) + "/10");
+
+        let response = await QuizService.insertCompletedQuiz(qid, user.id, score);
+        setShow(true);
+
+        if (response.status == 400){
+            setIntent("failure");
+            setContent("Failure", response.data.message);
+        } else if (response.status == 200){
+            setIntent("success");
+            setContent("Success", response.data.message);
+        }
+
+        setTimeout(() => {
+            history.push("/course/" + cid.toString(10));
+        }, 2000);
     };
 
     return(

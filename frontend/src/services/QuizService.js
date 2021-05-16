@@ -98,6 +98,7 @@ class QuizService{
             if (idArr.includes(quizzes[i].id)){
                 let index = idArr.findIndex(id => id === quizzes[i].id);
                 result[i] = {
+                    id: quizzes[i].id,
                     isComplete: true,
                     name: quizzes[i].name,
                     duration: quizzes[i].duration,
@@ -105,6 +106,7 @@ class QuizService{
                 };
             } else {
                 result[i] = {
+                    id: quizzes[i].id,
                     isComplete: false,
                     name: quizzes[i].name,
                     duration: quizzes[i].duration,
@@ -114,6 +116,78 @@ class QuizService{
         console.log(result);
         return result;
     }
+
+    async getQuizInf(qid){
+        let inf;
+        await axios.get("/api/quiz/retrieve_quiz_inf/" + qid.toString(10))
+            .then(response => {
+                inf = response
+            });
+
+        if (inf.status == 400)
+            return null;
+
+        inf = inf.data[0];
+        console.log(inf);
+
+        return inf;
+    }
+
+    async getQuizQA(qid){
+        let trueFalseQuestions;
+        await axios.get("/api/quiz/retrieve_quiz_qa_tf/" + qid.toString(10))
+            .then(response => {
+                trueFalseQuestions = response;
+            });
+
+        if (trueFalseQuestions.status == 400)
+            return null;
+
+        trueFalseQuestions = trueFalseQuestions.data;
+        console.log(trueFalseQuestions);
+
+        let tfConfQuestions = trueFalseQuestions.map((obj) => {
+            obj.mode = true;
+            return obj;
+        });
+
+        let multipleChoiceQuestions;
+        await axios.get("/api/quiz/retrieve_quiz_qa_m/" + qid.toString(10))
+            .then(response => {
+                multipleChoiceQuestions = response;
+            });
+
+        if (multipleChoiceQuestions.status == 400)
+            return null;
+
+        multipleChoiceQuestions = multipleChoiceQuestions.data;
+        console.log(multipleChoiceQuestions);
+
+        let mConfQuestions = multipleChoiceQuestions.map((obj) => {
+            obj.mode = false;
+            let arr = [obj.choice1, obj.choice2, obj.choice3, obj.choice4];
+
+            delete obj.choice1;
+            delete obj.choice2;
+            delete obj.choice3;
+            delete obj.choice4;
+
+            obj.answers = arr;
+            return obj;
+        });
+
+        let mergedArr = [...tfConfQuestions, ...mConfQuestions];
+        return mergedArr.sort((f, s) => f.id - s.id);
+    }
+
+    async insertCompletedQuiz(quizId, userId, score){
+        return await axios.post("/api/quiz/insert_completed_quiz", {
+            quizId,
+            userId,
+            score
+        });
+    }
 }
+
 
 export default new QuizService();

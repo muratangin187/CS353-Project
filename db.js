@@ -687,6 +687,77 @@ class Db{
             );
         });
     }
+
+    getQuizInf(quiz_id){
+        return new Promise(resolve => {
+           this._db.query(
+               `SELECT name, duration
+               FROM Quiz
+               WHERE id = \'${quiz_id}\';`,
+               (error, result, fields) => {
+                   if (error){
+                       console.log(error);
+                       resolve(null);
+                   } else {
+                       resolve(result);
+                   }
+               }
+           );
+        });
+    }
+
+    getQuizQATF(quiz_id){
+        return new Promise(resolve => {
+            this._db.query(
+                `SELECT id, question, answer 
+                FROM FlashCard NATURAL JOIN TrueFalse
+                WHERE quiz_id = \'${quiz_id}\';`,
+                (error, results, fields) => {
+                    if (error){
+                        console.log(error);
+                        resolve(null);
+                    } else {
+                        resolve(results);
+                    }
+                }
+            );
+        });
+    }
+
+    getQuizQAM(quiz_id){
+        return new Promise(resolve => {
+            this._db.query(
+                `SELECT id, question, choice1, choice2, choice3, choice4, answer
+                FROM FlashCard f NATURAL JOIN MultipleChoice m
+                WHERE f.quiz_id = \'${quiz_id}\';`,
+                (error, results, fields) => {
+                    if (error){
+                        console.log(error);
+                        resolve(null);
+                    } else {
+                        resolve(results);
+                    }
+                }
+            );
+        });
+    }
+
+    insertCompletedQuiz(quiz_id, user_id, score){
+        return new Promise(resolve => {
+            this._db.query(
+                `INSERT INTO CompletedQuizzes(quiz_id, user_id, score)
+                VALUES (\'${quiz_id}\', \'${user_id}\', \'${score}\');`,
+                (error, results, fields) => {
+                    if (error){
+                        console.log(error);
+                        resolve(null);
+                    } else {
+                        resolve(true);
+                    }
+                }
+            );
+        });
+    }
 }
 
 module.exports = new Db();

@@ -64,6 +64,22 @@ export default function MyRefundsPage(){
 
     }, [updatePage]);
 
+    const cancelRefund = async(refundId)=>{
+        let response = await axios({
+            url: "/api/user/cancel-refund/" + refundId,
+            method: "GET"
+        });
+        setShow(true);
+        if(response.status == 200){
+            setContent("Success", "Successfully cancelled refund.");
+            setIntent("success");
+            setUpdatePage(!updatePage);
+        }else{
+            setContent("Failure", "An error occured while cancelling refund.");
+            setIntent("failure");
+        }
+    }
+
     const refundBox = (refund) => {
         return(
             <ListGroup className="m-3" style={{width:"65vw"}}>
@@ -77,6 +93,9 @@ export default function MyRefundsPage(){
                         <Col className="ml-5 mr-4">
                             <Button className="ml-auto mr-2" variant={refund.state == "PENDING" ? "secondary" : (refund.state == "REJECTED" ? "danger" : "success")} disabled type="submit">
                                 {refund.state}
+                            </Button>
+                            <Button className="ml-auto mr-2" variant="danger" type="submit" onClick={()=>cancelRefund(refund.id)} disabled={refund.state != "PENDING"}>
+                                Cancel
                             </Button>
                         </Col>
                     </Row>

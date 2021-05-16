@@ -8,7 +8,8 @@ class Db{
             host     : config.HOST,
             user     : config.USER,
             password : config.PASSWORD,
-            database : config.DB
+            database : config.DB,
+            multipleStatements: true
         });
         this._db.connect();
     }
@@ -305,6 +306,22 @@ class Db{
                         resolve(results);
                     }
                 });
+        });
+    }
+
+    cancelRefund(rid){
+        return new Promise(resolve=>{
+            this._db.query(
+                `DELETE FROM Refund WHERE id = ${rid}`,
+                (error, results, fields) => {
+                    if(error){
+                        console.log(error);
+                        resolve(false);
+                    } else {
+                        resolve(true);
+                    }
+                }
+            );
         });
     }
 
@@ -877,6 +894,25 @@ SELECT * FROM DiscountedCourse `;
                }
            );
         });
+    }
+
+    getLectureInfo(cid, uid){
+        return new Promise(resolve => {
+            this._db.query(
+                `SELECT COUNT(*) as totalLectureCount FROM Lecture WHERE course_id = ${cid} AND isVisible = 1; SELECT COUNT(*) as completedCount FROM CompleteLecture WHERE course_id = ${cid} AND user_id = ${uid}`,
+                (error, results, fields) => {
+                    if(error){
+                        console.log(error);
+                        resolve(null);
+                    } else {
+                        console.log("-------------");
+                        console.log(JSON.stringify(results,null,2));
+                        console.log("-------------");
+                        resolve([results[0][0].totalLectureCount, results[1][0].completedCount]);
+                    }
+                }
+            )
+        })
     }
 
     getAllLectures(cid){

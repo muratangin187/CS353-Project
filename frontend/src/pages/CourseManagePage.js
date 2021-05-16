@@ -37,7 +37,7 @@ export default function CourseManagePage(props) {
                     </Row>
                     <Row className="justify-content-md-center mt-2">
                         <Button  variant="outline-secondary" type="submit" style={{width:"35vw"}} onClick={()=>{
-                            history.push("/create-quiz/" + props.courseData.id);
+                            history.push("/course/" + props.courseData.id + "/create-quiz");
                         }}>
                             Create Quiz
                         </Button>

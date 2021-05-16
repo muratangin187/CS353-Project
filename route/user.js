@@ -76,6 +76,15 @@ router.delete("/remove-wishlist/:cid", async (req, res)=>{
     }
 });
 
+router.get("/cancel-refund/:rid", async(req, res)=>{
+    let result = await db.cancelRefund(req.params.rid);
+    if(result){
+        res.status(200).send();
+    }else{
+        res.status(400).send({"message": "There is an error occured in the db read stage of refund creation."});
+    }
+});
+
 router.get("/get-refunds/:uid", async(req, res)=>{
     let result = await db.getUserRefunds(req.params.uid);
     if(result == null){

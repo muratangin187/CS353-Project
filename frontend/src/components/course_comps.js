@@ -26,11 +26,14 @@ import {NotificationContext} from "../services/NotificationContext";
 
 function LecturesComp(props) {
     const cid = props.cid;
+    const uid = props.uid;
     const isCreator = props.isCreator;
     const [lectureData, setLectureData] = useState(null);
+    const [lectureInfo, setLectureInfo] = useState(null);
     const context = useContext(NotificationContext);
     const [setShowToast, setContent, setIntent] = [context.setShow, context.setContent, context.setIntent];
     const [updatePage, setUpdatePage] = useState(false);
+
 
     const deleteLecture = async (lid) => {
         let response = await axios({
@@ -110,6 +113,14 @@ function LecturesComp(props) {
               });
               if(response.status == 200)
                   setLectureData(response.data);
+
+              let response2 = await axios({
+                  url: "/api/course/getLectureInfo/" + cid + "/" + uid,
+                  method: "GET"
+              });
+              console.log(response2);
+              if(response2.status == 200)
+                setLectureInfo(response2.data);
           }
       }, [updatePage]);
 
@@ -123,6 +134,9 @@ function LecturesComp(props) {
      */
     return (
           <Container >
+              {lectureInfo && !isCreator ? (
+                  <h4 className="mt-2 mb-2">Your Progress: {lectureInfo[1]} / {lectureInfo[0]}</h4>
+              ) : (<></>)}
             <ListGroup style={{width:"75vw"}}>
                 {lectureData.map((lecture, index) => LectureItem(lecture, index))}
             </ListGroup>
@@ -796,10 +810,10 @@ function AnnouncementsComp(props) {
 
 function AboutComp(props) {
     const [courseCreator, setCourseCreator] = useState({}); // course creator JSON object
+    const [creatorLink, setCreatorLink] = useState({}); // course creator JSON object
 
     useEffect(() => {
-        // /creator-profile/:creatorId - frontend
-        // /api/creator/:creatorId - backend
+        setCreatorLink("/creator-profile/" + props.courseData.creator_id);
         axios.get('/api/creator/' + props.courseData.creator_id)
             .then(response => {
                 setCourseCreator(response.data);
@@ -825,10 +839,9 @@ function AboutComp(props) {
                     >
                         <Card.Img variant="top" src={(courseCreator.photo != "placeholder.jpg") ? courseCreator.photo : "profile.png"} className="creator-img" />
                         <Card.Body style={{alignItems: "center"}}>
-                            <Card.Title style={{textAlign: "center"}}> {courseCreator.name} {courseCreator.surname} </Card.Title>
-                            <Card.Text style={{textAlign: "center"}}>
-                                Job Of Creator
-                            </Card.Text>
+                            <Link to={creatorLink}>
+                                <Card.Title style={{textAlign: "center"}}> {courseCreator.name} {courseCreator.surname} </Card.Title>
+                            </Link>
                         </Card.Body>
                         <Card.Body>
                             <div id="links">

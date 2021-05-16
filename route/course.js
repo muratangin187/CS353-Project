@@ -323,6 +323,15 @@ router.get("/getVisibleLectures/:cid", async (req, res)=>{
     res.status(200).send(result);
 });
 
+router.get("/getLectureInfo/:cid/:uid", async (req, res)=>{
+    console.log(JSON.stringify(req.params.cid));
+    let result = await db.getLectureInfo(
+        req.params.cid,
+        req.params.uid,
+    );
+    res.status(200).send(result);
+});
+
 router.get("/getAllLectures/:cid", async (req, res)=>{
     console.log(JSON.stringify(req.params.cid));
     let result = await db.getAllLectures(

@@ -9,7 +9,8 @@ import {AuthContext} from "../services/AuthContext";
 function CourseCard(course){
     let link = "/course/" + course.id;
     return (
-        <Link to={link} key={course.id} style={{ textDecoration: 'none', color: "black" }}>
+        <Col>
+            <Link to={link} key={course.id} style={{ textDecoration: 'none', color: "black" }}>
             <Card className="m-3" style={{ width: '18rem'}}>
                 <Card.Img variant="top" src={course.thumbnail}/>
                 <Card.Body>
@@ -21,6 +22,7 @@ function CourseCard(course){
                 </Card.Body>
             </Card>
         </Link>
+        </Col>
     );
 }
 
@@ -70,7 +72,7 @@ export default function Homepage(){
 
 
 
-    if(courseList == undefined || courseList == null || courseList?.length === 0 ){
+    if(courseList == undefined || courseList?.length === 0 ){
         return (<Container className="mt-5">
             <h2>You don't have any Courses</h2>
             <h3>

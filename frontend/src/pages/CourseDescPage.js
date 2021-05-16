@@ -115,7 +115,7 @@ export default function CourseDescPage() {
             if(response2.status == 200){
                 setIntent("success");
                 setContent("Success", response.data.message);
-                window.location = window.location.origin;
+                history.push("/course/" + courseData.id);
             }else{
                 setIntent("failure");
                 setContent("Transaction cannot be processed(balance error)", response.data.message);

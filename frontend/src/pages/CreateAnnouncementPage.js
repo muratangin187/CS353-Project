@@ -9,6 +9,7 @@ import {Categories} from "../constants/constants";
 export default function CreateAnnouncementPage(){
     const {cid} = useParams();
     const formRef = useRef(null);
+    let history = useHistory();
     const {getCurrentUser} = useContext(AuthContext);
     const [userData, setUserData] = useState(null);
     const [courseNames, setCourseNames] = useState(null);
@@ -57,7 +58,7 @@ export default function CreateAnnouncementPage(){
         if (response.status == 200) {
             setIntent("success");
             setContent("Success", response.data.message);
-            window.location = window.location.origin;
+            history.goBack();
         } else {
             setIntent("failure");
             setContent("Announcement cannot be added", response.data.message);

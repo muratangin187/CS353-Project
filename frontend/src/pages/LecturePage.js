@@ -273,6 +273,7 @@ export default function LecturePage(){
             setIntent("success");
             setContent("Success", response.data.message);
             setButtonDisableData(true);
+            await goToNextLecture();
         } else {
             setIntent("failure");
             setContent("Transaction cannot be processed", response.data.message);
@@ -366,7 +367,9 @@ export default function LecturePage(){
                             <Card>
                                 <Card.Header>Additional Material</Card.Header>
                                 <Card.Body>
-                                    <Link to={"/" + lectureData.additionalMaterial}>Additional Material Link</Link>
+                                    <Link to={{ pathname: "https://" + lectureData.additionalMaterial }} target="_blank" >
+                                        Additional Material Link
+                                    </Link>
                                 </Card.Body>
                             </Card>
                         </Form>

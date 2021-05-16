@@ -76,6 +76,15 @@ router.delete("/remove-wishlist/:cid", async (req, res)=>{
     }
 });
 
+router.get("/cancel-refund/:rid", async(req, res)=>{
+    let result = await db.cancelRefund(req.params.rid);
+    if(result){
+        res.status(200).send();
+    }else{
+        res.status(400).send({"message": "There is an error occured in the db read stage of refund creation."});
+    }
+});
+
 router.get("/get-refunds/:uid", async(req, res)=>{
     let result = await db.getUserRefunds(req.params.uid);
     if(result == null){
@@ -96,6 +105,24 @@ router.get("/remove-notification/:nid", async(req, res)=>{
         res.status(200).send();
     else
         res.status(400).send();
+});
+
+router.post("/change-password", async(req, res)=>{
+    let result = await db.changePassword(req.body.uid, req.body.newPassword);
+    if(result){
+        res.status(200).send({"message": "Successfully loaded balance."});
+    }else{
+        res.status(400).send({"message": "There is an error occured in password change process."});
+    }
+});
+
+router.post("/change-photo", async(req, res)=>{
+    let result = await db.changePhoto(req.body.uid, req.body.photo);
+    if(result){
+        res.status(200).send({"message": "Successfully loaded balance."});
+    }else{
+        res.status(400).send({"message": "There is an error occured in photo change process."});
+    }
 });
 
 router.post("/load-balance", async(req, res)=>{

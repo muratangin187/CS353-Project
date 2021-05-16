@@ -92,7 +92,7 @@ export default function MainCoursePage() {
       onSelect={(k) => setKey(k)}
     >
       <Tab eventKey="lectures" title="Lectures">
-        <LecturesComp cid={params.cid} isCreator={userData.id === courseData.creator_id}/>
+        <LecturesComp cid={params.cid} isCreator={userData.id === courseData.creator_id} uid={userData.id}/>
       </Tab>
       <Tab eventKey="quizzes" title="Quizzes">
       <QuizzesComp cid={params.cid}/>

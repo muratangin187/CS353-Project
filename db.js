@@ -8,7 +8,8 @@ class Db{
             host     : config.HOST,
             user     : config.USER,
             password : config.PASSWORD,
-            database : config.DB
+            database : config.DB,
+            multipleStatements: true
         });
         this._db.connect();
     }
@@ -238,6 +239,39 @@ class Db{
         });
     }
 
+    changePhoto(uid, photo){
+        return new Promise(resolve => {
+            this._db.query(
+                `UPDATE Person SET photo= '${photo}' WHERE id=${uid}`,
+                (error, results, fields) => {
+                    if (error){
+                        console.log(error);
+                        resolve(false);
+                    }else{
+                        resolve(true);
+                    }
+                }
+            );
+        });
+    }
+
+    changePassword(uid, newPassword){
+        return new Promise(resolve => {
+            let hash = crypto.createHash('md5').update(newPassword).digest('hex');
+            this._db.query(
+                `UPDATE Person SET password = '${hash}' WHERE id=${uid}`,
+                (error, results, fields) => {
+                    if (error){
+                        console.log(error);
+                        resolve(false);
+                    }else{
+                        resolve(true);
+                    }
+                }
+            );
+        });
+    }
+
     removeNotification(nid){
             return new Promise(resolve => {
                 this._db.query(
@@ -252,6 +286,22 @@ class Db{
                     }
                 );
             });
+    }
+
+    deleteCourse(id){
+        return new Promise(resolve => {
+            this._db.query(
+                `DELETE FROM Course WHERE id = ${id}`,
+                (error, results, fields) => {
+                    if(error){
+                        console.log(error);
+                        resolve(false);
+                    } else {
+                        resolve(true);
+                    }
+                }
+            );
+        });
     }
 
     getUserNotifications(userId){
@@ -272,6 +322,22 @@ class Db{
                         resolve(results);
                     }
                 });
+        });
+    }
+
+    cancelRefund(rid){
+        return new Promise(resolve=>{
+            this._db.query(
+                `DELETE FROM Refund WHERE id = ${rid}`,
+                (error, results, fields) => {
+                    if(error){
+                        console.log(error);
+                        resolve(false);
+                    } else {
+                        resolve(true);
+                    }
+                }
+            );
         });
     }
 
@@ -846,6 +912,25 @@ SELECT * FROM DiscountedCourse `;
         });
     }
 
+    getLectureInfo(cid, uid){
+        return new Promise(resolve => {
+            this._db.query(
+                `SELECT COUNT(*) as totalLectureCount FROM Lecture WHERE course_id = ${cid} AND isVisible = 1; SELECT COUNT(*) as completedCount FROM CompleteLecture WHERE course_id = ${cid} AND user_id = ${uid}`,
+                (error, results, fields) => {
+                    if(error){
+                        console.log(error);
+                        resolve(null);
+                    } else {
+                        console.log("-------------");
+                        console.log(JSON.stringify(results,null,2));
+                        console.log("-------------");
+                        resolve([results[0][0].totalLectureCount, results[1][0].completedCount]);
+                    }
+                }
+            )
+        })
+    }
+
     getAllLectures(cid){
         return new Promise(resolve => {
             this._db.query(
@@ -1036,6 +1121,70 @@ SELECT * FROM DiscountedCourse `;
                 `UPDATE Rating
                  SET ratingScore = ${ratingScore}, content = '${content}'
                  WHERE user_id = ${user_id} AND course_id = ${course_id};`,
+                (error, results, fields) => {
+                    if(error) {
+                        console.log(error);
+                        resolve(null);
+                    } else {
+                        resolve(true);
+                    }
+                }
+            );
+        });
+    }
+
+    updateTitle(id, title) {
+        return new Promise( resolve => {
+            this._db.query(
+                `UPDATE Course SET title = '${title}' WHERE id = ${id};`,
+                (error, results, fields) => {
+                    if(error) {
+                        console.log(error);
+                        resolve(null);
+                    } else {
+                        resolve(true);
+                    }
+                }
+            );
+        });
+    }
+
+    updateDescription(id, description) {
+        return new Promise( resolve => {
+            this._db.query(
+                `UPDATE Course SET description = '${description}' WHERE id = ${id};`,
+                (error, results, fields) => {
+                    if(error) {
+                        console.log(error);
+                        resolve(null);
+                    } else {
+                        resolve(true);
+                    }
+                }
+            );
+        });
+    }
+
+    updatePrice(id, price) {
+        return new Promise( resolve => {
+            this._db.query(
+                `UPDATE Course SET price = ${price} WHERE id = ${id};`,
+                (error, results, fields) => {
+                    if(error) {
+                        console.log(error);
+                        resolve(null);
+                    } else {
+                        resolve(true);
+                    }
+                }
+            );
+        });
+    }
+
+    updateThumbnail(id, thumbnail) {
+        return new Promise( resolve => {
+            this._db.query(
+                `UPDATE Course SET thumbnail = '${thumbnail}' WHERE id = ${id};`,
                 (error, results, fields) => {
                     if(error) {
                         console.log(error);

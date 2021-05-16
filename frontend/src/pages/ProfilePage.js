@@ -37,7 +37,7 @@ export default function ProfilePage() {
                             width="200"
                             height="200"
                             style={{float:"right"}}
-                            src="https://www.donanimhaber.com/cache-v2/?t=20210507225737&width=-1&text=0&path=https://www.donanimhaber.com/images/images/haber/133189/340x191motosiklet-oyunu-bike-baron-2-ios-icin-on-siparise-acildi.jpg"
+                            src={user?.photo}
                         />
                     </Row>
                     {user && user.isCreator ? (

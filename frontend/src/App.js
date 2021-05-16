@@ -25,6 +25,7 @@ import Homepage from "./pages/Homepage";
 import CreateLecturePage from "./pages/CreateLecturePage";
 import LecturePage from "./pages/LecturePage";
 import AdminPage from "./pages/AdminPage";
+import ChangeProfilePage from "./pages/ChangeProfile";
 import CourseDescPage from "./pages/CourseDescPage";
 import CreateQuizPage from "./pages/CreateQuizPage";
 import MyRefundsPage from "./pages/MyRefundsPage";
@@ -33,6 +34,7 @@ import {ManageDiscountsComp} from "./components/course_comps";
 import MyNotificationPage from "./pages/MyNotificationPage";
 import AboutUs from "./pages/AboutUsPage";
 import MyBalance from "./pages/MyBalance";
+import UpdateCoursePage from "./pages/UpdateCoursePage";
 
 let timer = null;
 
@@ -107,6 +109,7 @@ function App() {
                           <PrivateRoute path='/course/:cid/lecture/:lid' component={LecturePage} role={[userRole]}/>
                           <PrivateRoute path='/course/:cid' component={MainCoursePage} role={[creatorRole, userRole]}/>
                           <PrivateRoute path='/create-course' component={CreateCoursePage} role={[creatorRole]}/>
+                          <PrivateRoute path='/update-course/:cid' component={UpdateCoursePage} role={[creatorRole]}/>
                           <Route path='/course-desc/:cid' component={CourseDescPage} />
                           <Route path='/about' component={AboutUs}/>
                           <PrivateRoute path='/login' component={LoginPage} role={[anonRole]}/>
@@ -117,6 +120,7 @@ function App() {
                           <PrivateRoute path='/manage-discounts/:cid' component={ManageDiscountsComp} role={[creatorRole]}/>
                           <Route path='/creator-profile/:creatorId' component={CreatorProfilePage} />
                           <PrivateRoute path='/my-refunds' component={MyRefundsPage} role={[userRole]}/>
+                          <PrivateRoute path='/change-profile' component={ChangeProfilePage} role={[userRole, creatorRole]}/>
                           <PrivateRoute path='/my-notifications' component={MyNotificationPage} role={[userRole]}/>
                           <PrivateRoute path='/my-cart' component={MyCartPage} role={[userRole]}/>
                           <PrivateRoute path='/my-wishlist' component={MyWishlistPage} role={[userRole]}/>

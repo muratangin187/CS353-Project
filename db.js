@@ -1512,5 +1512,43 @@ SELECT * FROM DiscountedCourse `;
             }
         );
     }
+
+    getNumberOfAttenders(courseId){
+        return new Promise(resolve => {
+            this._db.query(
+                `SELECT q.id, COUNT(*) AS count
+                FROM Quiz q, CompletedQuizzes c
+                WHERE q.id = c.quiz_id AND q.course_id = \'${courseId}\'
+                GROUP BY q.id;`,
+                (error, results, fields) => {
+                    if (error){
+                        console.log(error);
+                        resolve(null);
+                    } else {
+                        resolve(results);
+                    }
+                }
+            );
+        });
+    }
+
+    getScoreAvg(courseId){
+        return new Promise(resolve => {
+            this._db.query(
+                `SELECT q.id, AVG(c.score) AS count
+                FROM Quiz q, CompletedQuizzes c
+                WHERE q.id = c.quiz_id AND q.course_id = \'${courseId}\'
+                GROUP BY q.id;`,
+                (error, results, fields) => {
+                    if (error){
+                        console.log(error);
+                        resolve(null);
+                    } else {
+                        resolve(results);
+                    }
+                }
+            );
+        });
+    }
 }
 module.exports = new Db();

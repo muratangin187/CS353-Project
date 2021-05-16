@@ -142,4 +142,40 @@ router.post("/insert_completed_quiz", async (req, res) => {
     }
 });
 
+router.get("/retrieve_attend/:course_id", async (req, res) => {
+    let courseId = req.params["course_id"];
+
+    let result = await db.getNumberOfAttenders(courseId);
+
+    console.log("Attend");
+    console.log(result);
+
+    if (!result){
+        res.status(400).send({message: "Can not retrieve number of attenders"});
+    } else {
+        res.status(200).send(result);
+    }
+});
+
+router.get("/retrieve_avg_score/:course_id", async (req, res) => {
+    let courseId = req.params["course_id"];
+
+    let result = await db.getScoreAvg(courseId);
+
+    console.log("Avg Score");
+    console.log(result);
+
+    if (!result){
+        res.status(400).send({message: "Can not retrieve average of score"});
+    } else {
+        res.status(200).send(result);
+    }
+});
+
+router.get("/retrieve_is_creator/:user_id", async (req, res) => {
+    let userId = req.params["user_id"];
+    let result = await db.isCreator(userId);
+    res.send(result);
+});
+
 module.exports = router;

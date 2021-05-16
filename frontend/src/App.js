@@ -34,6 +34,7 @@ import {ManageDiscountsComp} from "./components/course_comps";
 import MyNotificationPage from "./pages/MyNotificationPage";
 import AboutUs from "./pages/AboutUsPage";
 import MyBalance from "./pages/MyBalance";
+import UpdateCoursePage from "./pages/UpdateCoursePage";
 
 let timer = null;
 
@@ -108,6 +109,7 @@ function App() {
                           <PrivateRoute path='/course/:cid/lecture/:lid' component={LecturePage} role={[userRole]}/>
                           <PrivateRoute path='/course/:cid' component={MainCoursePage} role={[creatorRole, userRole]}/>
                           <PrivateRoute path='/create-course' component={CreateCoursePage} role={[creatorRole]}/>
+                          <PrivateRoute path='/update-course/:cid' component={UpdateCoursePage} role={[creatorRole]}/>
                           <Route path='/course-desc/:cid' component={CourseDescPage} />
                           <Route path='/about' component={AboutUs}/>
                           <PrivateRoute path='/login' component={LoginPage} role={[anonRole]}/>

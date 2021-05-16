@@ -288,6 +288,22 @@ class Db{
             });
     }
 
+    deleteCourse(id){
+        return new Promise(resolve => {
+            this._db.query(
+                `DELETE FROM Course WHERE id = ${id}`,
+                (error, results, fields) => {
+                    if(error){
+                        console.log(error);
+                        resolve(false);
+                    } else {
+                        resolve(true);
+                    }
+                }
+            );
+        });
+    }
+
     getUserNotifications(userId){
         return new Promise(resolve=>{
             this._db.query(
@@ -1105,6 +1121,70 @@ SELECT * FROM DiscountedCourse `;
                 `UPDATE Rating
                  SET ratingScore = ${ratingScore}, content = '${content}'
                  WHERE user_id = ${user_id} AND course_id = ${course_id};`,
+                (error, results, fields) => {
+                    if(error) {
+                        console.log(error);
+                        resolve(null);
+                    } else {
+                        resolve(true);
+                    }
+                }
+            );
+        });
+    }
+
+    updateTitle(id, title) {
+        return new Promise( resolve => {
+            this._db.query(
+                `UPDATE Course SET title = '${title}' WHERE id = ${id};`,
+                (error, results, fields) => {
+                    if(error) {
+                        console.log(error);
+                        resolve(null);
+                    } else {
+                        resolve(true);
+                    }
+                }
+            );
+        });
+    }
+
+    updateDescription(id, description) {
+        return new Promise( resolve => {
+            this._db.query(
+                `UPDATE Course SET description = '${description}' WHERE id = ${id};`,
+                (error, results, fields) => {
+                    if(error) {
+                        console.log(error);
+                        resolve(null);
+                    } else {
+                        resolve(true);
+                    }
+                }
+            );
+        });
+    }
+
+    updatePrice(id, price) {
+        return new Promise( resolve => {
+            this._db.query(
+                `UPDATE Course SET price = ${price} WHERE id = ${id};`,
+                (error, results, fields) => {
+                    if(error) {
+                        console.log(error);
+                        resolve(null);
+                    } else {
+                        resolve(true);
+                    }
+                }
+            );
+        });
+    }
+
+    updateThumbnail(id, thumbnail) {
+        return new Promise( resolve => {
+            this._db.query(
+                `UPDATE Course SET thumbnail = '${thumbnail}' WHERE id = ${id};`,
                 (error, results, fields) => {
                     if(error) {
                         console.log(error);

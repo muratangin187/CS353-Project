@@ -252,7 +252,7 @@ router.post("/close-refund", async (req, res)=>{
 router.get("/get-all-refunds", async(req, res)=>{
     let result = await db.getAllRefunds();
     if(result == null){
-        res.status(400).send({"message": "There is an error occured in the db read stage of refund creation."});
+        res.status(400).send({"message": "There is an error occured in the db read stage of refund retrieval."});
     }else{
         res.status(200).send(result);
     }
@@ -261,7 +261,7 @@ router.get("/get-all-refunds", async(req, res)=>{
 router.get("/get-discounts/:cid", async(req, res)=>{
     let result = await db.getAllDiscounts(req.params.cid);
     if(result == null){
-        res.status(400).send({"message": "There is an error occured in the db read stage of discount creation."});
+        res.status(400).send({"message": "There is an error occured in the db read stage of discount retrieval."});
     }else{
         res.status(200).send(result);
     }
@@ -279,6 +279,11 @@ router.post("/disable-discount", async (req, res)=>{
 
 router.post("/delete-lecture", async (req, res)=>{
     let result = await db.deleteLecture(req.body.lid);
+    res.status(200).send(result);
+});
+
+router.post("/delete-course", async (req, res)=>{
+    let result = await db.deleteCourse(req.body.id);
     res.status(200).send(result);
 });
 
@@ -393,6 +398,54 @@ router.post("/updateRating", async (req, res) => {
         res.status(400).send({"message": "There is an error occured in the db update stage of rating."});
     }else {
         res.status(200).send({"message": "Successfully updated rating."});
+    }
+});
+
+router.post("/updateTitle", async (req, res) => {
+    let response = await db.updateTitle(
+        req.body.id,
+        req.body.title
+    );
+    if(!response){
+        res.status(400).send({"message": "There is an error occured in the db update stage of title."});
+    }else {
+        res.status(200).send({"message": "Successfully updated course (title)."});
+    }
+});
+
+router.post("/updateThumbnail", async (req, res) => {
+    let response = await db.updateThumbnail(
+        req.body.id,
+        req.body.thumbnail
+    );
+    if(!response){
+        res.status(400).send({"message": "There is an error occured in the db update stage of thumbnail."});
+    }else {
+        res.status(200).send({"message": "Successfully updated course (thumbnail)."});
+    }
+});
+
+router.post("/updatePrice", async (req, res) => {
+    let response = await db.updatePrice(
+        req.body.id,
+        req.body.price
+    );
+    if(!response){
+        res.status(400).send({"message": "There is an error occured in the db update stage of price."});
+    }else {
+        res.status(200).send({"message": "Successfully updated course (price)."});
+    }
+});
+
+router.post("/updateDescription", async (req, res) => {
+    let response = await db.updateDescription(
+        req.body.id,
+        req.body.description
+    );
+    if(!response){
+        res.status(400).send({"message": "There is an error occured in the db update stage of description."});
+    }else {
+        res.status(200).send({"message": "Successfully updated course (description)."});
     }
 });
 

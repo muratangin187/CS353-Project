@@ -57,6 +57,13 @@ export default function CourseManagePage(props) {
                         </Button>
                     </Row>
                     <Row className="justify-content-md-center mt-2">
+                        <Button  variant="outline-secondary" type="submit" style={{width:"35vw"}} onClick={()=>{
+                            history.push("/update-course/" + props.courseData.id);
+                        }}>
+                            Update Course
+                        </Button>
+                    </Row>
+                    <Row className="justify-content-md-center mt-2">
                         <Button  variant="danger" type="submit" style={{width:"35vw"}} onClick={()=>{
                             deleteCourse(props.courseData.id);
                         }}>

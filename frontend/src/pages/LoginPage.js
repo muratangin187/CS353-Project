@@ -7,7 +7,6 @@ import {NotificationContext} from "../services/NotificationContext";
 import {AuthContext} from "../services/AuthContext";
 
 export default function LoginPage() {
-    const [signedIn, setSignedIn] = useState(false);
     const {setShow, setContent, setIntent} = useContext(NotificationContext);
     const formRef = useRef(null);
     const history = useHistory();
@@ -33,11 +32,6 @@ export default function LoginPage() {
         }
     }
 
-    const handleCheckBoxChange = (event) => {
-        // console.log(signedIn);
-        setSignedIn(!signedIn);
-    }
-
     return (
         <Container style={{marginTop: 20}}>
             <Card>
@@ -60,10 +54,6 @@ export default function LoginPage() {
                             <Form.Group controlId="formGridPassword">
                                 <Form.Label>Password</Form.Label>
                                 <Form.Control type="password" placeholder="Password" required/>
-                            </Form.Group>
-                            
-                            <Form.Group controlId="formGridKeepSignedIn">
-                                <Form.Check type="checkbox" onChange={handleCheckBoxChange} label="Keep me signed in" />
                             </Form.Group>
 
                             <Form.Row>

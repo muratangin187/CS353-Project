@@ -159,7 +159,39 @@ class Db{
     getMostBoughtCourses(){
         return new Promise(resolve=> {
             this._db.query(
-                `SELECT c.id, c.title, t.user_count FROM Course c, (SELECT b.course_id as id, COUNT(user_id) as user_count FROM Buy b GROUP BY b.course_id) as t WHERE t.id = c.id ORDER BY user_count LIMIT 6`,
+                `SELECT c.id, c.title, t.user_count FROM Course c, (SELECT b.course_id as id, COUNT(user_id) as user_count FROM Buy b GROUP BY b.course_id) as t WHERE t.id = c.id ORDER BY user_count DESC LIMIT 6`,
+                (error, results, fields) => {
+                    if (error){
+                        console.log(error);
+                        resolve(null);
+                    }else{
+                        resolve(results);
+                    }
+                }
+            );
+        });
+    }
+
+    distributionOfCourses(){
+        return new Promise(resolve=> {
+            this._db.query(
+                `SELECT c.category, COUNT(*) as counts FROM Course c GROUP BY c.category`,
+                (error, results, fields) => {
+                    if (error){
+                        console.log(error);
+                        resolve(null);
+                    }else{
+                        resolve(results);
+                    }
+                }
+            );
+        });
+    }
+
+    getMostRatedCourses(){
+        return new Promise(resolve=> {
+            this._db.query(
+                `SELECT c.id, c.title, t.ratingAvg FROM Course c, (SELECT r.course_id as id, AVG(r.ratingScore) as ratingAvg FROM Rating r GROUP BY r.course_id) as t WHERE t.id = c.id ORDER BY ratingAvg DESC LIMIT 6`,
                 (error, results, fields) => {
                     if (error){
                         console.log(error);

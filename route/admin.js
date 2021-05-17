@@ -13,4 +13,20 @@ router.get("/most-bought", async (req, res) => {
         res.status(400).send();
 });
 
+router.get("/most-rated", async (req, res) => {
+    let result = await db.getMostRatedCourses();
+    if(result)
+        res.status(200).send(result);
+    else
+        res.status(400).send();
+});
+
+router.get("/dist-courses", async (req, res) => {
+    let result = await db.distributionOfCourses();
+    if(result)
+        res.status(200).send(result);
+    else
+        res.status(400).send();
+});
+
 module.exports = router;

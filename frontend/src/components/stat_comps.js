@@ -31,11 +31,67 @@ function MostBoughtCourses(){
         console.log(response);
         if(response.status == 200){
             setData({
-              labels: [...response.data.map(r=>r.title),"a","b","c","d","e"],
+              labels: response.data.map(r=>r.title),
               datasets: [
                 {
                   label: 'Best selling courses',
-                  data: [...response.data.map(r=>r.user_count), 1,2,3,4,5],
+                  data: response.data.map(r=>r.user_count),
+                  backgroundColor: lightColors.slice(0, 6),
+                  borderColor: darkColors.slice(0, 6),
+                  borderWidth: 1,
+                },
+              ],
+            });
+        }
+    }, []);
+    if(!data)
+        return (<>Error</>);
+    return (<Bar data={data} width={1000} height={500}/>);
+}
+
+function DistributionCourses(){
+    const [data, setData] = useState(null);
+
+    useEffect(async()=>{
+        let response = await axios({
+            url: "/api/admin/dist-courses"
+        });
+        console.log(response);
+        if(response.status == 200){
+            setData({
+              labels: response.data.map(r=>r.category),
+              datasets: [
+                {
+                  label: 'Distribution of courses',
+                  data: response.data.map(r=>r.counts),
+                  backgroundColor: lightColors.slice(0, 6),
+                  borderColor: darkColors.slice(0, 6),
+                  borderWidth: 1,
+                },
+              ],
+            });
+        }
+    }, []);
+    if(!data)
+        return (<>Error</>);
+    return (<Bar data={data} width={1000} height={500}/>);
+}
+
+function MostRatedCourses(){
+    const [data, setData] = useState(null);
+
+    useEffect(async()=>{
+        let response = await axios({
+            url: "/api/admin/most-rated"
+        });
+        console.log(response);
+        if(response.status == 200){
+            setData({
+              labels: response.data.map(r=>r.title),
+              datasets: [
+                {
+                  label: 'Best rated courses',
+                  data: response.data.map(r=>r.ratingAvg),
                   backgroundColor: lightColors.slice(0, 6),
                   borderColor: darkColors.slice(0, 6),
                   borderWidth: 1,
@@ -50,4 +106,5 @@ function MostBoughtCourses(){
 }
 
 
-export {MostBoughtCourses}
+
+export {MostBoughtCourses, MostRatedCourses,DistributionCourses}

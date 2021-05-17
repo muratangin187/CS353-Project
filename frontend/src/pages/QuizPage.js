@@ -68,10 +68,12 @@ export default function QuizPage(){
     }, []);
 
     const timer = ()=>{
-        setInterval(()=>{
+        let interval = setInterval(()=>{
             setDuration(duration => {
                 if(duration <= 0){
                     handleSubmit();
+                    clearInterval(interval);
+                    setTimeout(()=>history.push("/course/" + cid.toString(10)), 1000);
                 }
                 return duration-1;
             });
@@ -103,7 +105,11 @@ export default function QuizPage(){
         score = (10 * score) / quizList.length;
         alert("Score: " + score.toString(10) + "/10");
 
+        console.log("BAK1", qid, " - ", user.id , " - ", score);
         let response = await QuizService.insertCompletedQuiz(qid, user.id, score);
+        console.log("BAK2");
+        console.log(response);
+        console.log("BAK3");
         setShow(true);
 
         if (response.status == 400){

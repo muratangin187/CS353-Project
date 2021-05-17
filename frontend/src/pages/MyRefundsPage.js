@@ -170,14 +170,14 @@ export default function MyRefundsPage(){
             </Modal>
             <Row className="justify-content-md-center mt-5 align-items-center">
                     <h1 className="mr-5">
-                        {user?.username}
+                        {user?.name}
                     </h1>
                     <Image
                         className="ml-5"
                         roundedCircle
                         width="200"
                         height="200"
-                        src="https://www.donanimhaber.com/cache-v2/?t=20210507225737&width=-1&text=0&path=https://www.donanimhaber.com/images/images/haber/133189/340x191motosiklet-oyunu-bike-baron-2-ios-icin-on-siparise-acildi.jpg"
+                        src={user?.photo}
                     />
             </Row>
             <Row className="justify-content-md-center mt-5 align-items-center">

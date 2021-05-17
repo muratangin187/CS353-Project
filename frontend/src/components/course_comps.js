@@ -152,6 +152,7 @@ function ManageDiscountsComp() {
     const {setShow, setContent, setIntent} = useContext(NotificationContext);
     const [discounts, setDiscounts] = useState([]);
     const [updatePage, setUpdatePage] = useState(false);
+    const [isDiscountEnabled, setIsDiscountEnabled] = useState(false); 
 
     useEffect(async()=>{
         let response = await axios({
@@ -171,6 +172,9 @@ function ManageDiscountsComp() {
                     method: "GET"
                 });
                 console.log("Result discount " + response2.data);
+                if(response2.data){
+                    setIsDiscountEnabled(true);
+                }
                 temp[i].allowed = response2.data;
             }
             console.log(temp);
@@ -192,6 +196,9 @@ function ManageDiscountsComp() {
         });
         setShow(true);
         if(response.data) {
+            if(!isAllowed){
+                setIsDiscountEnabled(false);
+            }
             setContent("Success", "You successfully " + (isAllowed ? "allowed a discount." : "removed a discount."));
             setIntent("success");
         }else{
@@ -242,7 +249,7 @@ function ManageDiscountsComp() {
                                                         Disable
                                                     </Button>
                                                 </Col>
-                                            ) : (
+                                            ) : isDiscountEnabled ? (<></>) : (
                                                 <Col md={2} style={{display: "flex", justifyContent: "center", alignItems: "center"}}>
                                                     <Button variant="primary" style={{height: "min-content"}} onClick={()=>allowDiscount(discount.id, true)}>
                                                         Allow
@@ -331,7 +338,7 @@ function QuizzesComp(props) {
                                             (
                                                 <>
                                                     <p><strong>Average Score:</strong></p>
-                                                    <p>{quiz.avgScore} / 10</p>
+                                                    <p>{parseFloat(quiz.avgScore).toPrecision(2)} / 10</p>
                                                 </>
                                             )
                                             :

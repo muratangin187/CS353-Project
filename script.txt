@@ -1,0 +1,41 @@
+Filter menusunu goster, About US'u goster bir Coursea gir sonra oradaki ratingi aciklamayi falan anlat bitir
+
+Uye ol new_user olarak. Sonra bir kursa tikla(Guitar olur). Wishliste ekle. Sonra paran oldugunu farket ve Carta ekle, Sonra carta gec.
+
+Buya bas, sonra almaya calis. Insufficent fund dicek, Profilinden para yukle. Sonra tekrar coursa git
+
+Tekrar satin almayi dene ve satin al. Sonrasinda artik course sayfasini anlatacagiz.
+
+Lecturalari izleyebiliriz, progressimiz gozukuyor. Sonra tikla lectura.
+
+Lectureda once note ekle sonra bookmark ekle ve complete yap.
+
+Ikinci dersi de Complete yap.
+
+Sonra tekrar coursa gir, QA sor, sonra kendi ratingini ekle. Sonra Abouta gel, creator profini incele.
+
+My Certificatese girip bitme sertifikasini goster.
+
+user 123 accountuna gir.
+
+Notification oldugunu gor ve ona bakip dissmissle.
+
+SOnra My Courses'a gir Python aramasi yap ve Python Coursuna gir. SOnra tum tableri seri anlat gene. Bitince Quizlere gel.
+
+Ilk Quizi coz, sonra tekrar quizlere gel skorunu gor.
+
+Javascript Course'una gel ve Q/A Kismindaki nested yapiyi goster, ortaya sen de ekle.
+
+Profile girip Update Profile goster, Sonra Status of Refunds kismina gir.
+
+Make refund reqest yap Guitar kursu iade et. Iade kabul olunca bildirim geldigini soyle.
+
+creator  123 gir. Javascripte gir, QA gir. Kisa cevap yaz(<5) sonra uzun yaz.
+
+Sonra settingse gir ve create sayfalarini goster. Discount ve Update, Discountu gostercez simdi.
+
+admine gir, Pythona discount olustur, sonra refund kabul et. Refundu goster user 123'ten.
+
+Sonra creator 123'e gir Pythona gir ve discountu enable et. Anasayfada goster discountun calistigini.
+
+Admin statistics goster, Osmanin attigi Queryi Goster.

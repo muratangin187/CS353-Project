@@ -14,7 +14,7 @@ function CourseCard(course){
             <Card className="m-3" style={{ width: '18rem'}}>
                 <Card.Img variant="top" src={course.thumbnail}/>
                 <Card.Body>
-                    <Card.Subtitle className="mb-2" style={{fontSize:12}}>{course.category} | {course.averageRating}/5 | -5% Discount | {course.price}TL</Card.Subtitle> {/*TODO change discount to dynamic*/}
+                    <Card.Subtitle className="mb-2" style={{fontSize:12}}>{course.category} | {course.averageRating}/5</Card.Subtitle>
                     <Card.Title>{course.title}</Card.Title>
                     <Card.Text>
                         {course.description}

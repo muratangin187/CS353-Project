@@ -507,15 +507,52 @@ async function main (){
 
     await db.query(`INSERT INTO Admin (id) VALUES (9);`);
 
-    await db.query(`INSERT INTO Course(title, price, description, thumbnail, category, creator_id) VALUES ('Python Course', 120, 'This course is aimed at complete beginners who have never programmed before, as well as existing programmers who want to increase their career options by learning Python.', 'https://i1.wp.com/stickker.net/wp-content/uploads/2015/09/python.png?fit=600,600&ssl=1', 'Technology', 6)`);
-    await db.query(`INSERT INTO Course(title, price, description, thumbnail, category, creator_id) VALUES ('Bakery Course ', 140, 'Save yourself a TON of time and energy as your business grows, by making sure the first few steps you take while building your bakery business, are wise and knowledgeable.', 'https://www.deciccoandsons.com/wp-content/uploads/2019/06/somers_bakery-department-header.jpg', 'Cooking', 6)`);
-    await db.query(`INSERT INTO Course(title,price,description,thumbnail,category,creator_id) VALUES ('JavaScript: Understanding the Weird Parts', 100, 'In this course you will gain a deep understanding of Javascript, learn how Javascript works under the hood, and how that knowledge helps you avoid common pitfalls and drastically improve your ability to debug problems.', 'https://www.setxrm.com/wp-content/uploads/2019/11/Javascript-programming-language.jpg', 'Technology', 6)`);
+    await db.query(`INSERT INTO Course(title, price, description, thumbnail, category, creator_id) VALUES ('Python Course', 120, 'This course is aimed at complete beginners who have never programmed before, as well as existing programmers who want to increase their career options by learning Python.', 'https://i1.wp.com/stickker.net/wp-content/uploads/2015/09/python.png?fit=600,600&ssl=1', 'Technology', 6);`);
+    await db.query(`INSERT INTO Course(title, price, description, thumbnail, category, creator_id) VALUES ('Bakery Course ', 140, 'Save yourself a TON of time and energy as your business grows, by making sure the first few steps you take while building your bakery business, are wise and knowledgeable.', 'https://www.deciccoandsons.com/wp-content/uploads/2019/06/somers_bakery-department-header.jpg', 'Cooking', 6);`);
+    await db.query(`INSERT INTO Course(title,price,description,thumbnail,category,creator_id) VALUES ('JavaScript: Understanding the Weird Parts', 100, 'In this course you will gain a deep understanding of Javascript, learn how Javascript works under the hood, and how that knowledge helps you avoid common pitfalls and drastically improve your ability to debug problems.', 'https://www.setxrm.com/wp-content/uploads/2019/11/Javascript-programming-language.jpg', 'Technology', 6);`);
 
-    await db.query(`INSERT INTO Course(title, price, description, thumbnail, category, creator_id) VALUES ('Guitar Course', 80, 'Pep teachings are different than all of the other online teachers.  He has made it super easy to be successful at playing guitar.  All you have to do is follow the videos in order and put together some good practice habits.', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTu7Y_9NMtc8RFWs2Oj1vozuxvj87lFMH9P5w&usqp=CAU', 'Music', 7)`);
-    await db.query(`INSERT INTO Course(title, price, description, thumbnail, category, creator_id) VALUES ('Game Theory Course', 200, 'Game Theory and Decision Theory, model and analyze Interdependence, Cooperation, Competition and Conflict Management. This has given rise to powerful concepts and Strategies.', 'https://onlinecourses.one/wp-content/uploads/2019/08/6-Best-Game-Theory-Course-Certification-2019.jpg', 'Economy', 7)`);
+    await db.query(`INSERT INTO Course(title, price, description, thumbnail, category, creator_id) VALUES ('Guitar Course', 80, 'Pep teachings are different than all of the other online teachers.  He has made it super easy to be successful at playing guitar.  All you have to do is follow the videos in order and put together some good practice habits.', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTu7Y_9NMtc8RFWs2Oj1vozuxvj87lFMH9P5w&usqp=CAU', 'Music', 7);`);
+    await db.query(`INSERT INTO Course(title, price, description, thumbnail, category, creator_id) VALUES ('Game Theory Course', 200, 'Game Theory and Decision Theory, model and analyze Interdependence, Cooperation, Competition and Conflict Management. This has given rise to powerful concepts and Strategies.', 'https://onlinecourses.one/wp-content/uploads/2019/08/6-Best-Game-Theory-Course-Certification-2019.jpg', 'Economy', 7);`);
 
-    await db.query(`INSERT INTO Course(title, price, description, thumbnail, category, creator_id) VALUES ('Socialize with Jurgen Klopp', 40, 'DONT HESITATE, JUST RELAX WITH ME', 'https://e0.365dm.com/21/02/2048x1152/skysports-jurgen-klopp-liverpool_5262850.jpg', 'Social', 8)`);
-    await db.query(`INSERT INTO Course(title, price, description, thumbnail, category, creator_id) VALUES ('Life in Liverpool', 150, 'Liverpool is the 6th most visited city in the UK thanks to its rich history, beautiful architecture and diverse nightlife. Although Liverpool is a thriving city, property prices and the cost of living remain low compared to other UK cities', 'https://i2-prod.liverpoolecho.co.uk/incoming/article16153189.ece/ALTERNATES/s615b/0_JS176643503.jpg', 'Life', 8)`);
+    await db.query(`INSERT INTO Course(title, price, description, thumbnail, category, creator_id) VALUES ('Socialize with Jurgen Klopp', 40, 'DONT HESITATE, JUST RELAX WITH ME', 'https://e0.365dm.com/21/02/2048x1152/skysports-jurgen-klopp-liverpool_5262850.jpg', 'Social', 8);`);
+    await db.query(`INSERT INTO Course(title, price, description, thumbnail, category, creator_id) VALUES ('Life in Liverpool', 150, 'Liverpool is the 6th most visited city in the UK thanks to its rich history, beautiful architecture and diverse nightlife. Although Liverpool is a thriving city, property prices and the cost of living remain low compared to other UK cities', 'https://i2-prod.liverpoolecho.co.uk/incoming/article16153189.ece/ALTERNATES/s615b/0_JS176643503.jpg', 'Life', 8);`);
+
+    await db.query(`INSERT INTO Lecture(chapterName, title, duration, date, isVisible, additionalMaterial, video, course_id, lecture_index) VALUES ('Chapter - 1', 'Python Introduction', '11:00', '17.05.2021', 1, 'www.drive.google.com', 'https://www.youtube.com/watch?v=g6G_MSdj_xs', 1, 1);`);
+    await db.query(`INSERT INTO Lecture(chapterName, title, duration, date, isVisible, additionalMaterial, video, course_id, lecture_index) VALUES ('Chapter - 2', 'Python Primitive Types', '11:00', '17.05.2021', 1, 'www.drive.google.com', 'https://www.youtube.com/watch?v=g6G_MSdj_xs', 1, 2);`);
+    await db.query(`INSERT INTO Lecture(chapterName, title, duration, date, isVisible, additionalMaterial, video, course_id, lecture_index) VALUES ('Chapter - 1', 'Bakery Introduction', '11:00', '17.05.2021', 1, 'www.drive.google.com', 'https://www.youtube.com/watch?v=g6G_MSdj_xs', 2, 1);`);
+    await db.query(`INSERT INTO Lecture(chapterName, title, duration, date, isVisible, additionalMaterial, video, course_id, lecture_index) VALUES ('Chapter - 2', 'How to Cook', '11:00', '17.05.2021', 1, 'www.drive.google.com', 'https://www.youtube.com/watch?v=g6G_MSdj_xs', 2, 2);`);
+    await db.query(`INSERT INTO Lecture(chapterName, title, duration, date, isVisible, additionalMaterial, video, course_id, lecture_index) VALUES ('Chapter - 1', 'JS Introduction', '11:00', '17.05.2021', 1, 'www.drive.google.com', 'https://www.youtube.com/watch?v=g6G_MSdj_xs', 3, 1);`);
+    await db.query(`INSERT INTO Lecture(chapterName, title, duration, date, isVisible, additionalMaterial, video, course_id, lecture_index) VALUES ('Chapter - 2', 'JS Primitive Types', '11:00', '17.05.2021', 1, 'www.drive.google.com', 'https://www.youtube.com/watch?v=g6G_MSdj_xs', 3, 2);`);
+
+    await db.query(`INSERT INTO Lecture(chapterName, title, duration, date, isVisible, additionalMaterial, video, course_id, lecture_index) VALUES ('Chapter - 1', 'Guitar Introduction', '11:00', '17.05.2021', 1, 'www.drive.google.com', 'https://www.youtube.com/watch?v=g6G_MSdj_xs', 4, 1);`);
+    await db.query(`INSERT INTO Lecture(chapterName, title, duration, date, isVisible, additionalMaterial, video, course_id, lecture_index) VALUES ('Chapter - 2', 'Selecting the Best Guitar', '11:00', '17.05.2021', 1, 'www.drive.google.com', 'https://www.youtube.com/watch?v=g6G_MSdj_xs', 4, 2);`);
+    await db.query(`INSERT INTO Lecture(chapterName, title, duration, date, isVisible, additionalMaterial, video, course_id, lecture_index) VALUES ('Chapter - 1', 'Game Theory Introduction', '11:00', '17.05.2021', 1, 'www.drive.google.com', 'https://www.youtube.com/watch?v=g6G_MSdj_xs', 5, 1);`);
+    await db.query(`INSERT INTO Lecture(chapterName, title, duration, date, isVisible, additionalMaterial, video, course_id, lecture_index) VALUES ('Chapter - 2', 'Fundamentals', '11:00', '17.05.2021', 1, 'www.drive.google.com', 'https://www.youtube.com/watch?v=g6G_MSdj_xs', 5, 2);`);
+
+    await db.query(`INSERT INTO Lecture(chapterName, title, duration, date, isVisible, additionalMaterial, video, course_id, lecture_index) VALUES ('Chapter - 1', 'Who am I', '11:00', '17.05.2021', 1, 'www.drive.google.com', 'https://www.youtube.com/watch?v=g6G_MSdj_xs', 6, 1);`);
+    await db.query(`INSERT INTO Lecture(chapterName, title, duration, date, isVisible, additionalMaterial, video, course_id, lecture_index) VALUES ('Chapter - 2', 'General Structure of the Course', '11:00', '17.05.2021', 1, 'www.drive.google.com', 'https://www.youtube.com/watch?v=g6G_MSdj_xs', 6, 2);`);
+    await db.query(`INSERT INTO Lecture(chapterName, title, duration, date, isVisible, additionalMaterial, video, course_id, lecture_index) VALUES ('Chapter - 1', 'Quick Tour of the Course', '11:00', '17.05.2021', 1, 'www.drive.google.com', 'https://www.youtube.com/watch?v=g6G_MSdj_xs', 7, 1);`);
+    await db.query(`INSERT INTO Lecture(chapterName, title, duration, date, isVisible, additionalMaterial, video, course_id, lecture_index) VALUES ('Chapter - 2', 'Loving Liverpool - You will never walk alone', '11:00', '17.05.2021', 1, 'www.drive.google.com', 'https://www.youtube.com/watch?v=g6G_MSdj_xs', 7, 2);`);
+
+    await db.query(`INSERT INTO Buy(user_id, course_id) VALUES (1, 1);`);
+    await db.query(`INSERT INTO Buy(user_id, course_id) VALUES (1, 3);`);
+    await db.query(`INSERT INTO Buy(user_id, course_id) VALUES (1, 7);`);
+
+    await db.query(`INSERT INTO Buy(user_id, course_id) VALUES (4, 2);`);
+    await db.query(`INSERT INTO Buy(user_id, course_id) VALUES (4, 6);`);
+
+    await db.query(`INSERT INTO Buy(user_id, course_id) VALUES (2, 4);`);
+
+    await db.query(`INSERT INTO Rating(ratingScore, content, user_id, course_id) VALUES (2, 'Not effective', 1, 1);`);
+    await db.query(`INSERT INTO Rating(ratingScore, content, user_id, course_id) VALUES (3, 'Nice', 1, 3);`);
+    await db.query(`INSERT INTO Rating(ratingScore, content, user_id, course_id) VALUES (5, 'The energy is amazing', 1, 7);`);
+
+    await db.query(`INSERT INTO Rating(ratingScore, content, user_id, course_id) VALUES (4, 'Love this course', 4, 2);`);
+    await db.query(`INSERT INTO Rating(ratingScore, content, user_id, course_id) VALUES (5, 'AMAZING', 4, 6);`);
+
+    await db.query(`INSERT INTO Rating(ratingScore, content, user_id, course_id) VALUES (1, 'Not useful', 2, 4);`);
+
+    // await db.query(`INSERT INTO Note(title, content, date, user_id, lecture_id) VALUES ("");`);
 
     // await db.query(`INSERT INTO Buy (user_id, course_id) VALUES (1,1);`);
     // await db.query(`INSERT INTO Buy (user_id, course_id) VALUES (2,1);`);

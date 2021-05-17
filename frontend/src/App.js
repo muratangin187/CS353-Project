@@ -20,6 +20,7 @@ import CreateAnnouncementPage from "./pages/CreateAnnouncementPage";
 import MyCertificatesPage from "./pages/MyCertificatesPage";
 import AnswerQuestionPage from "./pages/AnswerQuestionPage";
 import CreateDiscountPage from "./pages/CreateDiscountPage";
+import StatisticsPage from "./pages/StatisticsPage";
 
 import Homepage from "./pages/Homepage";
 import CreateLecturePage from "./pages/CreateLecturePage";
@@ -128,6 +129,7 @@ function App() {
                           <PrivateRoute path='/my-certificates' component={MyCertificatesPage} role={[userRole]}/>
                           <PrivateRoute path='/create-announcement' component={CreateAnnouncementPage} role={[creatorRole]}/>
                           <PrivateRoute path='/create-discount-page' component={CreateDiscountPage} role={[adminRole]}/>
+                          <Route path='/stats' component={StatisticsPage} role={[adminRole]}/>
                       </Switch>
                   </div>
               </BrowserRouter>

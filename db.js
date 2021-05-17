@@ -156,6 +156,22 @@ class Db{
         });
     }
 
+    getMostBoughtCourses(){
+        return new Promise(resolve=> {
+            this._db.query(
+                `SELECT c.id, c.title, t.user_count FROM Course c, (SELECT b.course_id as id, COUNT(user_id) as user_count FROM Buy b GROUP BY b.course_id) as t WHERE t.id = c.id ORDER BY user_count LIMIT 6`,
+                (error, results, fields) => {
+                    if (error){
+                        console.log(error);
+                        resolve(null);
+                    }else{
+                        resolve(results);
+                    }
+                }
+            );
+        });
+    }
+
     insertCourse(title, price, description, thumbnail, category, creator_id){
         return new Promise(resolve=> {
             let sql = `INSERT INTO Course (title, price, description, thumbnail, category, creator_id) VALUES ('${title}', ${price}, '${description}', '${thumbnail}', '${category}', ${creator_id})`;

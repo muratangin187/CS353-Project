@@ -198,8 +198,8 @@ export default function AdminPage() {
                 </Col>
             </Row>
             <Row>
-                <Link to="/stats">
-                    <Button className="m-auto" variant="danger" type="submit" >
+                <Link to="/stats" className="m-auto">
+                    <Button variant="danger" type="submit" >
                         Statistics
                     </Button>
                 </Link>

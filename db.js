@@ -155,6 +155,22 @@ class Db{
             );
         });
     }
+    
+    averageCategory(){
+        return new Promise(resolve=> {
+            this._db.query(
+                `SELECT c.category, AVG(c.price) as avgPrice FROM Course c GROUP BY c.category ORDER BY avgPrice DESC`,
+                (error, results, fields) => {
+                    if (error){
+                        console.log(error);
+                        resolve(null);
+                    }else{
+                        resolve(results);
+                    }
+                }
+            );
+        });
+    }
 
     getMostBoughtCourses(){
         return new Promise(resolve=> {
@@ -701,17 +717,16 @@ class Db{
         categoryString = categoryString.substr(0, categoryString.length-1);
         let searchString = "%" + search + "%";
         console.log(categoryString);
-        let sql = `WITH DiscountedCourse as (SELECT Course.*, ifnull(DisPrice.percentage, 0) as discount FROM Course LEFT JOIN (SELECT d.course_id as course_id, d.percentage as percentage FROM Allow a, Discount d WHERE a.discount_id = d.id) as DisPrice ON Course.id = DisPrice.course_id )
-SELECT * FROM DiscountedCourse `;
+        let sql = "";
         if(orderDirection == "ASC") orderDirection = "";
         if(maximum == 1000) maximum = 9999;
         if(order == "Price"){
-            sql += `WHERE (category IN (${categoryString})) AND (price*(100-discount)/100 BETWEEN ${minimum} AND ${maximum}) AND (description LIKE '${searchString}' OR title LIKE '${searchString}' OR category LIKE '${searchString}') ORDER BY price*(100-discount)/100 ${orderDirection} LIMIT ${offset}, 11;`;
+            sql += `SELECT * FROM DiscountedCourse WHERE (category IN (${categoryString})) AND (price*(100-discount)/100 BETWEEN ${minimum} AND ${maximum}) AND (description LIKE '${searchString}' OR title LIKE '${searchString}' OR category LIKE '${searchString}') ORDER BY price*(100-discount)/100 ${orderDirection} LIMIT ${offset}, 11;`;
         }else if(order == "Rating"){
-            sql += `WHERE (category IN (${categoryString})) AND (price*(100-discount)/100 BETWEEN ${minimum} AND ${maximum}) AND (description LIKE '${searchString}' OR title LIKE '${searchString}' OR category LIKE '${searchString}') ORDER BY averageRating ${orderDirection} LIMIT ${offset}, 10;`;
+            sql += `SELECT * FROM DiscountedCourse WHERE (category IN (${categoryString})) AND (price*(100-discount)/100 BETWEEN ${minimum} AND ${maximum}) AND (description LIKE '${searchString}' OR title LIKE '${searchString}' OR category LIKE '${searchString}') ORDER BY averageRating ${orderDirection} LIMIT ${offset}, 10;`;
         }else{
             // TODO add it when discount added
-            sql += `WHERE (category IN (${categoryString})) AND (price*(100-discount)/100 BETWEEN ${minimum} AND ${maximum}) AND (description LIKE '${searchString}' OR title LIKE '${searchString}' OR category LIKE '${searchString}') ORDER BY discount ${orderDirection} LIMIT ${offset}, 10;`;
+            sql += `SELECT * FROM DiscountedCourse WHERE (category IN (${categoryString})) AND (price*(100-discount)/100 BETWEEN ${minimum} AND ${maximum}) AND (description LIKE '${searchString}' OR title LIKE '${searchString}' OR category LIKE '${searchString}') ORDER BY discount ${orderDirection} LIMIT ${offset}, 10;`;
         }
         return new Promise(resolve=>{
             this._db.query(sql, (error, results, fields) => {
@@ -1044,10 +1059,12 @@ SELECT * FROM DiscountedCourse `;
         })
     }
 
+    
+
     getLecture(cid, lid){
         return new Promise( resolve => {
             this._db.query(
-                `SELECT * FROM Lecture WHERE course_id = ${cid} AND isVisible = 1 AND lecture_index = ${lid}`,
+                `SELECT * FROM Lecture WHERE course_id = ${cid} AND isVisible = 1 AND id = ${lid}`,
                 (error, results, fields) => {
                     if (error) {
                         console.log(error);

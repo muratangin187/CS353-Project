@@ -1,5 +1,5 @@
 import {Container, Row, Col, Card} from "react-bootstrap";
-import {MostBoughtCourses, MostRatedCourses, DistributionCourses} from "../components/stat_comps";
+import {MostBoughtCourses, MostRatedCourses, DistributionCourses, AveragePricePerCategory} from "../components/stat_comps";
 
 export default function StatisticsPage(){
     return (
@@ -35,6 +35,16 @@ export default function StatisticsPage(){
                             </Card.Title>
                         <Card.Body>
                             <DistributionCourses/>
+                        </Card.Body>
+                        <Card.Footer>
+                        </Card.Footer>
+                    </Card>
+                    <Card style={{margin: 20}}>
+                            <Card.Title>
+                                Average course price per category
+                            </Card.Title>
+                        <Card.Body>
+                            <AveragePricePerCategory/>
                         </Card.Body>
                         <Card.Footer>
                         </Card.Footer>

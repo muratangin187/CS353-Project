@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import { Bar } from 'react-chartjs-2';
+import { Bar, Pie, Line} from 'react-chartjs-2';
 import axios from "axios";
 
 const lightColors = [
@@ -74,7 +74,35 @@ function DistributionCourses(){
     }, []);
     if(!data)
         return (<>Error</>);
-    return (<Bar data={data} width={1000} height={500}/>);
+    return (<Pie data={data} width={500} height={500}/>);
+}
+
+function AveragePricePerCategory(){
+    const [data, setData] = useState(null);
+
+    useEffect(async()=>{
+        let response = await axios({
+            url: "/api/admin/average-category"
+        });
+        console.log(response);
+        if(response.status == 200){
+            setData({
+              labels: response.data.map(r=>r.category),
+              datasets: [
+                {
+                  label: 'Average courses prices per category',
+                  data: response.data.map(r=>r.avgPrice),
+                  backgroundColor: lightColors.slice(0, 6),
+                  borderColor: darkColors.slice(0, 6),
+                  borderWidth: 1,
+                },
+              ],
+            });
+        }
+    }, []);
+    if(!data)
+        return (<>Error</>);
+    return (<Line data={data} width={1000} height={500}/>);
 }
 
 function MostRatedCourses(){
@@ -107,4 +135,4 @@ function MostRatedCourses(){
 
 
 
-export {MostBoughtCourses, MostRatedCourses,DistributionCourses}
+export {MostBoughtCourses, MostRatedCourses,DistributionCourses, AveragePricePerCategory}

@@ -28,7 +28,7 @@ function CustomNavbar(){
 
     return (
         <Navbar bg="light" variant="light">
-            <Navbar.Brand href="/">Ucollege</Navbar.Brand>
+            <Navbar.Brand href="/">Ucollage</Navbar.Brand>
             <Nav className="m-auto">
                 {user ? (user.isAdmin ? null : <Nav.Link href="/my-courses">My Courses</Nav.Link>) : null}
                 <Nav.Link href="/about">About Us</Nav.Link>

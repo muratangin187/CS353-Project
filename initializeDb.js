@@ -13,6 +13,7 @@ async function main (){
     await db.connect();
     console.log("DB connection initialized.");
 
+    await db.query('DROP VIEW IF EXISTS `DiscountedCourse`');
     await db.query('DROP TABLE IF EXISTS `CompletedQuizzes`;')
     await db.query('DROP TABLE IF EXISTS `RefundNotification`;');
     await db.query('DROP TABLE IF EXISTS `AnnouncementNotification`;');
@@ -346,7 +347,9 @@ async function main (){
             FOREIGN KEY(user_id) REFERENCES User(id));
     `);
 
-
+    await db.query(
+        `CREATE VIEW DiscountedCourse AS SELECT Course.*, ifnull(DisPrice.percentage, 0) as discount FROM Course LEFT JOIN (SELECT d.course_id as course_id, d.percentage as percentage FROM Allow a, Discount d WHERE a.discount_id = d.id) as DisPrice ON Course.id = DisPrice.course_id`
+    );
 
     console.log("DB tables created.");
 

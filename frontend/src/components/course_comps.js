@@ -74,7 +74,7 @@ function LecturesComp(props) {
     }
 
     const LectureItem = (lecture, index) => {
-        const lectureLink = "/course/" + cid + "/lecture/" + lecture.lecture_index;
+        const lectureLink = "/course/" + cid + "/lecture/" + lecture.id;
         return (
                 <ListGroup.Item>
                     <Row>

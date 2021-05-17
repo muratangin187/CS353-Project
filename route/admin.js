@@ -29,4 +29,13 @@ router.get("/dist-courses", async (req, res) => {
         res.status(400).send();
 });
 
+router.get("/average-category", async (req, res) => {
+    let result = await db.averageCategory();
+    if(result)
+        res.status(200).send(result);
+    else
+        res.status(400).send();
+});
+
+
 module.exports = router;

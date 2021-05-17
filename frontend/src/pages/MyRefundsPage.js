@@ -149,7 +149,10 @@ export default function MyRefundsPage(){
                     <p>
                         <Form.Group controlId="exampleForm.ControlSelect1">
                             <Form.Label>Course</Form.Label>
-                            <Form.Control as="select" onChange={(e)=>setCourseId(e.target.id)}>
+                            <Form.Control as="select" onChange={(e)=>{
+                                console.log(e.target.value);
+                                setCourseId(e.target.value);
+                                }}>
                                 {courses.map(c=>(<option value={c.id}>{c.title}</option>))}
                             </Form.Control>
                         </Form.Group>

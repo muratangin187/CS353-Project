@@ -485,22 +485,44 @@ async function main (){
     console.log("Triggers have been created.");
 
     let hash = crypto.createHash('md5').update("123").digest('hex');
-    await db.query(`INSERT INTO Person (username, email, name, surname, password, photo) VALUES ('test_user', 'test_user@gmail.com', 'Mehmet', 'Testoglu', '${hash}', 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg');`);
-    await db.query(`INSERT INTO Person (username, email, name, surname, password, photo) VALUES ('test_user2', 'test_user2@gmail.com', 'Mehmet2', 'Testoglu2', '${hash}', 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg');`);
-    await db.query(`INSERT INTO Person (username, email, name, surname, password, photo) VALUES ('test_creator', 'test_creator@gmail.com', 'David', 'Testoglu', '${hash}', 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg');`);
-    await db.query(`INSERT INTO Person (username, email, name, surname, password, photo) VALUES ('test_admin', 'test_admin@gmail.com', 'Atalar', 'Testoglu', '${hash}', 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg');`);
+    await db.query(`INSERT INTO Person (username, email, name, surname, password, photo) VALUES ('user', 'user@gmail.com', 'Umit', 'Basaran', '${hash}', 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg');`);
+    await db.query(`INSERT INTO Person (username, email, name, surname, password, photo) VALUES ('allison', 'allison@gmail.com', 'Allison', 'Becker', '${hash}', 'https://upload.wikimedia.org/wikipedia/commons/4/4f/20180610_FIFA_Friendly_Match_Austria_vs._Brazil_850_1625.jpg');`);
+    await db.query(`INSERT INTO Person (username, email, name, surname, password, photo) VALUES ('kevin', 'debruyne@gmail.com', 'Kevin De', 'Bruyne', '${hash}', 'https://upload.wikimedia.org/wikipedia/commons/4/40/Kevin_De_Bruyne_201807091.jpg');`);
+    await db.query(`INSERT INTO Person (username, email, name, surname, password, photo) VALUES ('mo', 'mo@gmail.com', 'Mohamed', 'Salah', '${hash}', 'https://upload.wikimedia.org/wikipedia/commons/4/4a/Mohamed_Salah_2018.jpg');`);
+    await db.query(`INSERT INTO Person (username, email, name, surname, password, photo) VALUES ('caglar', 'caglar@gmail.com', 'Caglar', 'Soyuncu', '${hash}', 'https://upload.wikimedia.org/wikipedia/commons/b/bb/AUT_vs._TUR_2016-03-29_%28381%29_%28cropped%29.jpg');`);
+    await db.query(`INSERT INTO Person (username, email, name, surname, password, photo) VALUES ('creator', 'creator@gmail.com', 'Sir Alex', 'Ferguson', '${hash}', 'https://upload.wikimedia.org/wikipedia/commons/1/14/Alex_Ferguson.jpg');`);
+    await db.query(`INSERT INTO Person (username, email, name, surname, password, photo) VALUES ('pep', 'pep@gmail.com', 'Pep', 'Guardiola', '${hash}', 'https://upload.wikimedia.org/wikipedia/commons/b/be/Pep_2017_%28cropped%29.jpg');`);
+    await db.query(`INSERT INTO Person (username, email, name, surname, password, photo) VALUES ('jurgen', 'jurgen@gmail.com', 'Jurgen', 'Klopp', '${hash}', 'https://upload.wikimedia.org/wikipedia/commons/6/63/Liverpool_vs._Chelsea%2C_UEFA_Super_Cup_2019-08-14_04.jpg');`);
+    await db.query(`INSERT INTO Person (username, email, name, surname, password, photo) VALUES ('admin', 'admin@gmail.com', 'Gianni', 'Infantino', '${hash}', 'https://upload.wikimedia.org/wikipedia/commons/4/40/Gianni_Infantino_2018.jpg');`);
+
     await db.query(`INSERT INTO User (id,hideCourses,balance) VALUES (1, false, 10000);`);
     await db.query(`INSERT INTO User (id,hideCourses,balance) VALUES (2, false, 10000);`);
-    await db.query(`INSERT INTO Creator (id,about, website, linkedin, youtube) VALUES (3, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus nibh arcu, facilisis nec posuere eget, molestie ac felis. Aenean aliquam, nibh scelerisque pharetra pharetra, mi nunc hendrerit urna, in iaculis sapien est sit amet ex. Quisque sit amet ante eros. In hac habitasse platea dictumst. Cras convallis augue eget libero egestas, luctus malesuada diam pretium.', 'www.google.com', 'www.linkedin.com', 'www.youtube.com');`);
-    await db.query(`INSERT INTO Admin (id) VALUES (4);`);
-    await db.query(`INSERT INTO Course(id, title,price,description,thumbnail,category,creator_id) VALUES (1, 'Python Egitimi', 120, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus nibh arcu, facilisis nec posuere eget, molestie ac felis. Aenean aliquam, nibh scelerisque pharetra pharetra, mi nunc hendrerit urna.', 'https://i1.wp.com/stickker.net/wp-content/uploads/2015/09/python.png?fit=600,600&ssl=1', 'Technology', 3)`);
-    await db.query(`INSERT INTO Course(id, title,price,description,thumbnail,category,creator_id) VALUES (2, 'JavaScript: Understanding the Weird Parts', 100, 'In this course you will gain a deep understanding of Javascript, learn how Javascript works under the hood, and how that knowledge helps you avoid common pitfalls and drastically improve your ability to debug problems.', 'https://www.setxrm.com/wp-content/uploads/2019/11/Javascript-programming-language.jpg', 'Technology', 3)`);
-    await db.query(`INSERT INTO Buy (user_id, course_id) VALUES (1,1);`);
-    await db.query(`INSERT INTO Buy (user_id, course_id) VALUES (2,1);`);
-    await db.query(`INSERT INTO Refund (title, reason, course_id, user_id, admin_id) VALUES ("Cok dandik ", "parami iade edin", 1, 1, NULL);`);
-    await db.query(`INSERT INTO Refund (title, reason, course_id, user_id, admin_id) VALUES ("Cok guzel kurs", "ama gene siz parami iade edin", 1, 2, NULL);`);
-    await db.query(`INSERT INTO Question (content, user_id, course_id) VALUES ("Kurs sonucunda sertifika var mi", 1, 1);`);
-    await db.query(`INSERT INTO Question (content, user_id, course_id, parent_id) VALUES ("Kurs sonucunda sertifika var mi", 2, 1, 1);`);
+    await db.query(`INSERT INTO User (id,hideCourses,balance) VALUES (3, false, 10000);`);
+    await db.query(`INSERT INTO User (id,hideCourses,balance) VALUES (4, false, 10000);`);
+    await db.query(`INSERT INTO User (id,hideCourses,balance) VALUES (5, false, 10000);`);
+
+    await db.query(`INSERT INTO Creator (id,about, website, linkedin, youtube) VALUES (6, 'Sir Alexander Chapman Ferguson CBE (born 31 December 1941) is a Scottish former football manager and player, widely known for managing Manchester United from 1986 to 2013. He is considered by many to be one of the greatest managers of all time and he has won more trophies than any other manager in the history of football.', 'www.google.com', 'www.linkedin.com', 'www.youtube.com');`);
+    await db.query(`INSERT INTO Creator (id,about, website, linkedin, youtube) VALUES (7, 'Josep "Pep" Guardiola Sala (born 18 January 1971) is a Spanish professional football manager and former player, who is the current manager of Premier League club Manchester City. He is often considered to be one of the greatest managers of all time and holds the record for the most consecutive league games won in La Liga, the Bundesliga and the Premier League.', 'www.google.com', 'www.linkedin.com', 'www.youtube.com');`);
+    await db.query(`INSERT INTO Creator (id,about, website, linkedin, youtube) VALUES (8, 'Jürgen Norbert Klopp (born 16 June 1967) is a German professional football manager and former player who is the manager of Premier League club Liverpool. He is widely regarded as one of the best managers in the world.', 'www.google.com', 'www.linkedin.com', 'www.youtube.com');`);
+
+    await db.query(`INSERT INTO Admin (id) VALUES (9);`);
+
+    await db.query(`INSERT INTO Course(title, price, description, thumbnail, category, creator_id) VALUES ('Python Course', 120, 'This course is aimed at complete beginners who have never programmed before, as well as existing programmers who want to increase their career options by learning Python.', 'https://i1.wp.com/stickker.net/wp-content/uploads/2015/09/python.png?fit=600,600&ssl=1', 'Technology', 6)`);
+    await db.query(`INSERT INTO Course(title, price, description, thumbnail, category, creator_id) VALUES ('Bakery Course ', 140, 'Save yourself a TON of time and energy as your business grows, by making sure the first few steps you take while building your bakery business, are wise and knowledgeable. Clear your mind, find your true goals, learn how to network efficiently and plan ahead for the future of your successful bakery business. ', 'https://www.deciccoandsons.com/wp-content/uploads/2019/06/somers_bakery-department-header.jpg', 'Cooking', 6)`);
+    await db.query(`INSERT INTO Course(id, title,price,description,thumbnail,category,creator_id) VALUES (2, 'JavaScript: Understanding the Weird Parts', 100, 'In this course you will gain a deep understanding of Javascript, learn how Javascript works under the hood, and how that knowledge helps you avoid common pitfalls and drastically improve your ability to debug problems.', 'https://www.setxrm.com/wp-content/uploads/2019/11/Javascript-programming-language.jpg', 'Technology', 6)`);
+
+    await db.query(`INSERT INTO Course(title, price, description, thumbnail, category, creator_id) VALUES ('Guitar Course', 80, 'Pep teachings are different than all of the other online teachers.  He has made it super easy to be successful at playing guitar.  All you have to do is follow the videos in order and put together some good practice habits.', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTu7Y_9NMtc8RFWs2Oj1vozuxvj87lFMH9P5w&usqp=CAU', 'Music', 7)`);
+    await db.query(`INSERT INTO Course(title, price, description, thumbnail, category, creator_id) VALUES ('Game Theory Course', 200, 'Game Theory and Decision Theory, model and analyze Interdependence, Cooperation, Competition and Conflict Management. This has given rise to powerful concepts and Strategies.', 'https://onlinecourses.one/wp-content/uploads/2019/08/6-Best-Game-Theory-Course-Certification-2019.jpg', 'Economy', 7)`);
+
+    await db.query(`INSERT INTO Course(title, price, description, thumbnail, category, creator_id) VALUES ('Socialize with Jurgen Klopp', 40, 'DONT HESITATE, JUST RELAX WITH ME', 'https://e0.365dm.com/21/02/2048x1152/skysports-jurgen-klopp-liverpool_5262850.jpg', 'Social', 8)`);
+    await db.query(`INSERT INTO Course(title, price, description, thumbnail, category, creator_id) VALUES ('Life in Liverpool', 150, 'Liverpool is the 6th most visited city in the UK thanks to its rich history, beautiful architecture and diverse nightlife. Although Liverpool is a thriving city, property prices and the cost of living remain low compared to other UK cities, with the cost of living index 19% lower than in London, according to Numbeo.', 'https://i2-prod.liverpoolecho.co.uk/incoming/article16153189.ece/ALTERNATES/s615b/0_JS176643503.jpg', 'Life', 8)`);
+
+    // await db.query(`INSERT INTO Buy (user_id, course_id) VALUES (1,1);`);
+    // await db.query(`INSERT INTO Buy (user_id, course_id) VALUES (2,1);`);
+    // await db.query(`INSERT INTO Refund (title, reason, course_id, user_id, admin_id) VALUES ("Cok dandik ", "parami iade edin", 1, 1, NULL);`);
+    // await db.query(`INSERT INTO Refund (title, reason, course_id, user_id, admin_id) VALUES ("Cok guzel kurs", "ama gene siz parami iade edin", 1, 2, NULL);`);
+    // await db.query(`INSERT INTO Question (content, user_id, course_id) VALUES ("Kurs sonucunda sertifika var mi", 1, 1);`);
+    // await db.query(`INSERT INTO Question (content, user_id, course_id, parent_id) VALUES ("Kurs sonucunda sertifika var mi", 2, 1, 1);`);
 
     console.log("Initialization finished");
 }

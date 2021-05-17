@@ -485,6 +485,8 @@ async function main (){
     console.log("Triggers have been created.");
 
     let hash = crypto.createHash('md5').update("123").digest('hex');
+
+    // PERSON
     await db.query(`INSERT INTO Person (username, email, name, surname, password, photo) VALUES ('user', 'user@gmail.com', 'Umit', 'Basaran', '${hash}', 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg');`);
     await db.query(`INSERT INTO Person (username, email, name, surname, password, photo) VALUES ('allison', 'allison@gmail.com', 'Allison', 'Becker', '${hash}', 'https://upload.wikimedia.org/wikipedia/commons/4/4f/20180610_FIFA_Friendly_Match_Austria_vs._Brazil_850_1625.jpg');`);
     await db.query(`INSERT INTO Person (username, email, name, surname, password, photo) VALUES ('kevin', 'debruyne@gmail.com', 'Kevin De', 'Bruyne', '${hash}', 'https://upload.wikimedia.org/wikipedia/commons/4/40/Kevin_De_Bruyne_201807091.jpg');`);
@@ -495,18 +497,22 @@ async function main (){
     await db.query(`INSERT INTO Person (username, email, name, surname, password, photo) VALUES ('jurgen', 'jurgen@gmail.com', 'Jurgen', 'Klopp', '${hash}', 'https://upload.wikimedia.org/wikipedia/commons/6/63/Liverpool_vs._Chelsea%2C_UEFA_Super_Cup_2019-08-14_04.jpg');`);
     await db.query(`INSERT INTO Person (username, email, name, surname, password, photo) VALUES ('admin', 'admin@gmail.com', 'Gianni', 'Infantino', '${hash}', 'https://upload.wikimedia.org/wikipedia/commons/4/40/Gianni_Infantino_2018.jpg');`);
 
+    // USER
     await db.query(`INSERT INTO User (id,hideCourses,balance) VALUES (1, false, 10000);`);
     await db.query(`INSERT INTO User (id,hideCourses,balance) VALUES (2, false, 10000);`);
     await db.query(`INSERT INTO User (id,hideCourses,balance) VALUES (3, false, 10000);`);
     await db.query(`INSERT INTO User (id,hideCourses,balance) VALUES (4, false, 10000);`);
     await db.query(`INSERT INTO User (id,hideCourses,balance) VALUES (5, false, 10000);`);
 
+    // CREATOR
     await db.query(`INSERT INTO Creator (id,about, website, linkedin, youtube) VALUES (6, 'Sir Alexander Chapman Ferguson CBE (born 31 December 1941) is a Scottish former football manager and player, widely known for managing Manchester United from 1986 to 2013. He is considered by many to be one of the greatest managers of all time and he has won more trophies than any other manager in the history of football.', 'www.google.com', 'www.linkedin.com', 'www.youtube.com');`);
     await db.query(`INSERT INTO Creator (id,about, website, linkedin, youtube) VALUES (7, 'Josep "Pep" Guardiola Sala (born 18 January 1971) is a Spanish professional football manager and former player, who is the current manager of Premier League club Manchester City. He is often considered to be one of the greatest managers of all time and holds the record for the most consecutive league games won in La Liga, the Bundesliga and the Premier League.', 'www.google.com', 'www.linkedin.com', 'www.youtube.com');`);
     await db.query(`INSERT INTO Creator (id,about, website, linkedin, youtube) VALUES (8, 'Jürgen Norbert Klopp (born 16 June 1967) is a German professional football manager and former player who is the manager of Premier League club Liverpool. He is widely regarded as one of the best managers in the world.', 'www.google.com', 'www.linkedin.com', 'www.youtube.com');`);
 
+    // ADMIN
     await db.query(`INSERT INTO Admin (id) VALUES (9);`);
 
+    // COURSE
     await db.query(`INSERT INTO Course(title, price, description, thumbnail, category, creator_id) VALUES ('Python Course', 120, 'This course is aimed at complete beginners who have never programmed before, as well as existing programmers who want to increase their career options by learning Python.', 'https://i1.wp.com/stickker.net/wp-content/uploads/2015/09/python.png?fit=600,600&ssl=1', 'Technology', 6);`);
     await db.query(`INSERT INTO Course(title, price, description, thumbnail, category, creator_id) VALUES ('Bakery Course ', 140, 'Save yourself a TON of time and energy as your business grows, by making sure the first few steps you take while building your bakery business, are wise and knowledgeable.', 'https://www.deciccoandsons.com/wp-content/uploads/2019/06/somers_bakery-department-header.jpg', 'Cooking', 6);`);
     await db.query(`INSERT INTO Course(title,price,description,thumbnail,category,creator_id) VALUES ('JavaScript: Understanding the Weird Parts', 100, 'In this course you will gain a deep understanding of Javascript, learn how Javascript works under the hood, and how that knowledge helps you avoid common pitfalls and drastically improve your ability to debug problems.', 'https://www.setxrm.com/wp-content/uploads/2019/11/Javascript-programming-language.jpg', 'Technology', 6);`);
@@ -517,32 +523,46 @@ async function main (){
     await db.query(`INSERT INTO Course(title, price, description, thumbnail, category, creator_id) VALUES ('Socialize with Jurgen Klopp', 40, 'DONT HESITATE, JUST RELAX WITH ME', 'https://e0.365dm.com/21/02/2048x1152/skysports-jurgen-klopp-liverpool_5262850.jpg', 'Social', 8);`);
     await db.query(`INSERT INTO Course(title, price, description, thumbnail, category, creator_id) VALUES ('Life in Liverpool', 150, 'Liverpool is the 6th most visited city in the UK thanks to its rich history, beautiful architecture and diverse nightlife. Although Liverpool is a thriving city, property prices and the cost of living remain low compared to other UK cities', 'https://i2-prod.liverpoolecho.co.uk/incoming/article16153189.ece/ALTERNATES/s615b/0_JS176643503.jpg', 'Life', 8);`);
 
-    await db.query(`INSERT INTO Lecture(chapterName, title, duration, date, isVisible, additionalMaterial, video, course_id, lecture_index) VALUES ('Chapter - 1', 'Python Introduction', '11:00', '17.05.2021', 1, 'www.drive.google.com', 'https://www.youtube.com/watch?v=g6G_MSdj_xs', 1, 1);`);
-    await db.query(`INSERT INTO Lecture(chapterName, title, duration, date, isVisible, additionalMaterial, video, course_id, lecture_index) VALUES ('Chapter - 2', 'Python Primitive Types', '11:00', '17.05.2021', 1, 'www.drive.google.com', 'https://www.youtube.com/watch?v=g6G_MSdj_xs', 1, 2);`);
-    await db.query(`INSERT INTO Lecture(chapterName, title, duration, date, isVisible, additionalMaterial, video, course_id, lecture_index) VALUES ('Chapter - 1', 'Bakery Introduction', '11:00', '17.05.2021', 1, 'www.drive.google.com', 'https://www.youtube.com/watch?v=g6G_MSdj_xs', 2, 1);`);
-    await db.query(`INSERT INTO Lecture(chapterName, title, duration, date, isVisible, additionalMaterial, video, course_id, lecture_index) VALUES ('Chapter - 2', 'How to Cook', '11:00', '17.05.2021', 1, 'www.drive.google.com', 'https://www.youtube.com/watch?v=g6G_MSdj_xs', 2, 2);`);
-    await db.query(`INSERT INTO Lecture(chapterName, title, duration, date, isVisible, additionalMaterial, video, course_id, lecture_index) VALUES ('Chapter - 1', 'JS Introduction', '11:00', '17.05.2021', 1, 'www.drive.google.com', 'https://www.youtube.com/watch?v=g6G_MSdj_xs', 3, 1);`);
-    await db.query(`INSERT INTO Lecture(chapterName, title, duration, date, isVisible, additionalMaterial, video, course_id, lecture_index) VALUES ('Chapter - 2', 'JS Primitive Types', '11:00', '17.05.2021', 1, 'www.drive.google.com', 'https://www.youtube.com/watch?v=g6G_MSdj_xs', 3, 2);`);
+    // LECTURE
+    await db.query(`INSERT INTO Lecture(chapterName, title, duration, isVisible, additionalMaterial, video, course_id, lecture_index) VALUES ('Chapter - 1', 'Python Introduction', '11:00', 1, 'www.drive.google.com', 'https://www.youtube.com/watch?v=g6G_MSdj_xs', 1, 1);`);
+    await db.query(`INSERT INTO Lecture(chapterName, title, duration, isVisible, additionalMaterial, video, course_id, lecture_index) VALUES ('Chapter - 2', 'Python Primitive Types', '11:00', 1, 'www.drive.google.com', 'https://www.youtube.com/watch?v=g6G_MSdj_xs', 1, 2);`);
+    await db.query(`INSERT INTO Lecture(chapterName, title, duration, isVisible, additionalMaterial, video, course_id, lecture_index) VALUES ('Chapter - 1', 'Bakery Introduction', '11:00', 1, 'www.drive.google.com', 'https://www.youtube.com/watch?v=g6G_MSdj_xs', 2, 1);`);
+    await db.query(`INSERT INTO Lecture(chapterName, title, duration, isVisible, additionalMaterial, video, course_id, lecture_index) VALUES ('Chapter - 2', 'How to Cook', '11:00', 1, 'www.drive.google.com', 'https://www.youtube.com/watch?v=g6G_MSdj_xs', 2, 2);`);
+    await db.query(`INSERT INTO Lecture(chapterName, title, duration, isVisible, additionalMaterial, video, course_id, lecture_index) VALUES ('Chapter - 1', 'JS Introduction', '11:00', 1, 'www.drive.google.com', 'https://www.youtube.com/watch?v=g6G_MSdj_xs', 3, 1);`);
+    await db.query(`INSERT INTO Lecture(chapterName, title, duration, isVisible, additionalMaterial, video, course_id, lecture_index) VALUES ('Chapter - 2', 'JS Primitive Types', '11:00', 1, 'www.drive.google.com', 'https://www.youtube.com/watch?v=g6G_MSdj_xs', 3, 2);`);
 
-    await db.query(`INSERT INTO Lecture(chapterName, title, duration, date, isVisible, additionalMaterial, video, course_id, lecture_index) VALUES ('Chapter - 1', 'Guitar Introduction', '11:00', '17.05.2021', 1, 'www.drive.google.com', 'https://www.youtube.com/watch?v=g6G_MSdj_xs', 4, 1);`);
-    await db.query(`INSERT INTO Lecture(chapterName, title, duration, date, isVisible, additionalMaterial, video, course_id, lecture_index) VALUES ('Chapter - 2', 'Selecting the Best Guitar', '11:00', '17.05.2021', 1, 'www.drive.google.com', 'https://www.youtube.com/watch?v=g6G_MSdj_xs', 4, 2);`);
-    await db.query(`INSERT INTO Lecture(chapterName, title, duration, date, isVisible, additionalMaterial, video, course_id, lecture_index) VALUES ('Chapter - 1', 'Game Theory Introduction', '11:00', '17.05.2021', 1, 'www.drive.google.com', 'https://www.youtube.com/watch?v=g6G_MSdj_xs', 5, 1);`);
-    await db.query(`INSERT INTO Lecture(chapterName, title, duration, date, isVisible, additionalMaterial, video, course_id, lecture_index) VALUES ('Chapter - 2', 'Fundamentals', '11:00', '17.05.2021', 1, 'www.drive.google.com', 'https://www.youtube.com/watch?v=g6G_MSdj_xs', 5, 2);`);
+    await db.query(`INSERT INTO Lecture(chapterName, title, duration, isVisible, additionalMaterial, video, course_id, lecture_index) VALUES ('Chapter - 1', 'Guitar Introduction', '11:00', 1, 'www.drive.google.com', 'https://www.youtube.com/watch?v=g6G_MSdj_xs', 4, 1);`);
+    await db.query(`INSERT INTO Lecture(chapterName, title, duration, isVisible, additionalMaterial, video, course_id, lecture_index) VALUES ('Chapter - 2', 'Selecting the Best Guitar', '11:00', 1, 'www.drive.google.com', 'https://www.youtube.com/watch?v=g6G_MSdj_xs', 4, 2);`);
+    await db.query(`INSERT INTO Lecture(chapterName, title, duration, isVisible, additionalMaterial, video, course_id, lecture_index) VALUES ('Chapter - 1', 'Game Theory Introduction', '11:00', 1, 'www.drive.google.com', 'https://www.youtube.com/watch?v=g6G_MSdj_xs', 5, 1);`);
+    await db.query(`INSERT INTO Lecture(chapterName, title, duration, isVisible, additionalMaterial, video, course_id, lecture_index) VALUES ('Chapter - 2', 'Fundamentals', '11:00', 1, 'www.drive.google.com', 'https://www.youtube.com/watch?v=g6G_MSdj_xs', 5, 2);`);
 
-    await db.query(`INSERT INTO Lecture(chapterName, title, duration, date, isVisible, additionalMaterial, video, course_id, lecture_index) VALUES ('Chapter - 1', 'Who am I', '11:00', '17.05.2021', 1, 'www.drive.google.com', 'https://www.youtube.com/watch?v=g6G_MSdj_xs', 6, 1);`);
-    await db.query(`INSERT INTO Lecture(chapterName, title, duration, date, isVisible, additionalMaterial, video, course_id, lecture_index) VALUES ('Chapter - 2', 'General Structure of the Course', '11:00', '17.05.2021', 1, 'www.drive.google.com', 'https://www.youtube.com/watch?v=g6G_MSdj_xs', 6, 2);`);
-    await db.query(`INSERT INTO Lecture(chapterName, title, duration, date, isVisible, additionalMaterial, video, course_id, lecture_index) VALUES ('Chapter - 1', 'Quick Tour of the Course', '11:00', '17.05.2021', 1, 'www.drive.google.com', 'https://www.youtube.com/watch?v=g6G_MSdj_xs', 7, 1);`);
-    await db.query(`INSERT INTO Lecture(chapterName, title, duration, date, isVisible, additionalMaterial, video, course_id, lecture_index) VALUES ('Chapter - 2', 'Loving Liverpool - You will never walk alone', '11:00', '17.05.2021', 1, 'www.drive.google.com', 'https://www.youtube.com/watch?v=g6G_MSdj_xs', 7, 2);`);
+    await db.query(`INSERT INTO Lecture(chapterName, title, duration, isVisible, additionalMaterial, video, course_id, lecture_index) VALUES ('Chapter - 1', 'Who am I', '11:00', 1, 'www.drive.google.com', 'https://www.youtube.com/watch?v=g6G_MSdj_xs', 6, 1);`);
+    await db.query(`INSERT INTO Lecture(chapterName, title, duration, isVisible, additionalMaterial, video, course_id, lecture_index) VALUES ('Chapter - 2', 'General Structure of the Course', '11:00', 1, 'www.drive.google.com', 'https://www.youtube.com/watch?v=g6G_MSdj_xs', 6, 2);`);
+    await db.query(`INSERT INTO Lecture(chapterName, title, duration, isVisible, additionalMaterial, video, course_id, lecture_index) VALUES ('Chapter - 1', 'Quick Tour of the Course', '11:00', 1, 'www.drive.google.com', 'https://www.youtube.com/watch?v=g6G_MSdj_xs', 7, 1);`);
+    await db.query(`INSERT INTO Lecture(chapterName, title, duration, isVisible, additionalMaterial, video, course_id, lecture_index) VALUES ('Chapter - 2', 'Loving Liverpool - You will never walk alone', '11:00', 1, 'www.drive.google.com', 'https://www.youtube.com/watch?v=g6G_MSdj_xs', 7, 2);`);
 
+    // BUY
     await db.query(`INSERT INTO Buy(user_id, course_id) VALUES (1, 1);`);
     await db.query(`INSERT INTO Buy(user_id, course_id) VALUES (1, 3);`);
     await db.query(`INSERT INTO Buy(user_id, course_id) VALUES (1, 7);`);
+    await db.query(`INSERT INTO Buy(user_id, course_id) VALUES (1, 4);`);
+    await db.query(`INSERT INTO Buy(user_id, course_id) VALUES (1, 2);`);
 
     await db.query(`INSERT INTO Buy(user_id, course_id) VALUES (4, 2);`);
     await db.query(`INSERT INTO Buy(user_id, course_id) VALUES (4, 6);`);
+    await db.query(`INSERT INTO Buy(user_id, course_id) VALUES (4, 3);`);
+    await db.query(`INSERT INTO Buy(user_id, course_id) VALUES (4, 5);`);
+    await db.query(`INSERT INTO Buy(user_id, course_id) VALUES (4, 7);`);
 
     await db.query(`INSERT INTO Buy(user_id, course_id) VALUES (2, 4);`);
+    await db.query(`INSERT INTO Buy(user_id, course_id) VALUES (2, 3);`);
+    await db.query(`INSERT INTO Buy(user_id, course_id) VALUES (2, 7);`);
+    await db.query(`INSERT INTO Buy(user_id, course_id) VALUES (2, 2);`);
+    await db.query(`INSERT INTO Buy(user_id, course_id) VALUES (2, 1);`);
 
+    await db.query(`INSERT INTO Buy(user_id, course_id) VALUES (3, 3);`);
+
+    // RATING
     await db.query(`INSERT INTO Rating(ratingScore, content, user_id, course_id) VALUES (2, 'Not effective', 1, 1);`);
     await db.query(`INSERT INTO Rating(ratingScore, content, user_id, course_id) VALUES (3, 'Nice', 1, 3);`);
     await db.query(`INSERT INTO Rating(ratingScore, content, user_id, course_id) VALUES (5, 'The energy is amazing', 1, 7);`);
@@ -552,14 +572,111 @@ async function main (){
 
     await db.query(`INSERT INTO Rating(ratingScore, content, user_id, course_id) VALUES (1, 'Not useful', 2, 4);`);
 
-    // await db.query(`INSERT INTO Note(title, content, date, user_id, lecture_id) VALUES ("");`);
+    // NOTE
+    await db.query(`INSERT INTO Note(title, content, user_id, lecture_id) VALUES ('Note - 1', 'Important point', 1, 1);`);
+    await db.query(`INSERT INTO Note(title, content, user_id, lecture_id) VALUES ('Note - 2', 'Dont understand', 1, 1);`);
+    await db.query(`INSERT INTO Note(title, content, user_id, lecture_id) VALUES ('Note - 3', 'Look again this point', 1, 1);`);
 
-    // await db.query(`INSERT INTO Buy (user_id, course_id) VALUES (1,1);`);
-    // await db.query(`INSERT INTO Buy (user_id, course_id) VALUES (2,1);`);
-    // await db.query(`INSERT INTO Refund (title, reason, course_id, user_id, admin_id) VALUES ("Cok dandik ", "parami iade edin", 1, 1, NULL);`);
-    // await db.query(`INSERT INTO Refund (title, reason, course_id, user_id, admin_id) VALUES ("Cok guzel kurs", "ama gene siz parami iade edin", 1, 2, NULL);`);
-    // await db.query(`INSERT INTO Question (content, user_id, course_id) VALUES ("Kurs sonucunda sertifika var mi", 1, 1);`);
-    // await db.query(`INSERT INTO Question (content, user_id, course_id, parent_id) VALUES ("Kurs sonucunda sertifika var mi", 2, 1, 1);`);
+    await db.query(`INSERT INTO Note(title, content, user_id, lecture_id) VALUES ('Note - 1', 'Important point', 4, 4);`);
+    await db.query(`INSERT INTO Note(title, content, user_id, lecture_id) VALUES ('Note - 2', 'Dont understand', 4, 5);`);
+
+    await db.query(`INSERT INTO Note(title, content, user_id, lecture_id) VALUES ('Note - 1', 'Important point', 2, 6);`);
+    await db.query(`INSERT INTO Note(title, content, user_id, lecture_id) VALUES ('Note - 2', 'Love you Jurgen', 2, 6);`);
+
+    // BOOKMARK
+    await db.query(`INSERT INTO Bookmark(videoTimestamp, user_id, lecture_id) VALUES ('10:00', 1, 1);`);
+    await db.query(`INSERT INTO Bookmark(videoTimestamp, user_id, lecture_id) VALUES ('8:00', 1, 1);`);
+    await db.query(`INSERT INTO Bookmark(videoTimestamp, user_id, lecture_id) VALUES ('10:00', 1, 1);`);
+
+    await db.query(`INSERT INTO Bookmark(videoTimestamp, user_id, lecture_id) VALUES ('7:00', 4, 4);`);
+    await db.query(`INSERT INTO Bookmark(videoTimestamp, user_id, lecture_id) VALUES ('4:00', 4, 5);`);
+
+    await db.query(`INSERT INTO Bookmark(videoTimestamp, user_id, lecture_id) VALUES ('2:00', 2, 6);`);
+    await db.query(`INSERT INTO Bookmark(videoTimestamp, user_id, lecture_id) VALUES ('5:00', 2, 6);`);
+
+    // DISCOUNT
+    await db.query(`INSERT INTO Discount(percentage, startDate, endDate, course_id, admin_id) VALUES (49.5, '15.05.2021', '20.05.2021', 2, 9);`);
+    await db.query(`INSERT INTO Discount(percentage, startDate, endDate, course_id, admin_id) VALUES (60, '16.05.2021', '20.05.2021', 1, 9);`);
+    await db.query(`INSERT INTO Discount(percentage, startDate, endDate, course_id, admin_id) VALUES (67.15, '17.05.2021', '20.05.2021', 4, 9);`);
+    await db.query(`INSERT INTO Discount(percentage, startDate, endDate, course_id, admin_id) VALUES (45.25, '14.05.2021', '20.05.2021', 5, 9);`);
+
+    // REFUND
+    await db.query(`INSERT INTO Refund(title, reason, user_id, course_id, admin_id) VALUES ('Refund - 1', 'Dont like it', 1, 2, 9);`);
+    await db.query(`INSERT INTO Refund(title, reason, user_id, course_id, admin_id) VALUES ('Refund - 2', 'I dont need it', 2, 1, 9);`);
+    await db.query(`INSERT INTO Refund(title, reason, user_id, course_id, admin_id) VALUES ('Refund - 3', 'My internet connection is unstable', 4, 7, 9);`);
+
+    // COMPLETE LECTURE
+    await db.query(`INSERT INTO CompleteLecture(lecture_id, user_id, course_id) VALUES (1, 1, 1);`);
+    await db.query(`INSERT INTO CompleteLecture(lecture_id, user_id, course_id) VALUES (2, 1, 1);`);
+
+    await db.query(`INSERT INTO CompleteLecture(lecture_id, user_id, course_id) VALUES (3, 4, 2);`);
+    await db.query(`INSERT INTO CompleteLecture(lecture_id, user_id, course_id) VALUES (4, 4, 2);`);
+
+    // QUIZ
+    await db.query(`INSERT INTO Quiz(duration, name, creator_id, course_id) VALUES ('3:00', 'Python Quiz - 1', 6, 1);`);
+    await db.query(`INSERT INTO Quiz(duration, name, creator_id, course_id) VALUES ('12:00', 'Python Quiz - 2', 6, 1);`);
+    await db.query(`INSERT INTO Quiz(duration, name, creator_id, course_id) VALUES ('9:00', 'Python Quiz - 3', 6, 1);`);
+
+    await db.query(`INSERT INTO Quiz(duration, name, creator_id, course_id) VALUES ('5:00', 'JS Quiz - 1', 6, 3);`);
+    await db.query(`INSERT INTO Quiz(duration, name, creator_id, course_id) VALUES ('8:00', 'JS Quiz - 2', 6, 3);`);
+
+    await db.query(`INSERT INTO Quiz(duration, name, creator_id, course_id) VALUES ('2:00', 'Are You Enjoying?', 8, 6);`);
+
+    // FLASHCARD
+    await db.query(`INSERT INTO FlashCard(question, quiz_id) VALUES ('Is this expression correct? (int a)', 1);`);
+    await db.query(`INSERT INTO FlashCard(question, quiz_id) VALUES ('Select the correct expression.', 1);`);
+
+    await db.query(`INSERT INTO FlashCard(question, quiz_id) VALUES ('What is the data type of the expression? (a = 5)', 2);`);
+    await db.query(`INSERT INTO FlashCard(question, quiz_id) VALUES ('Is this course easy?', 2);`);
+
+    await db.query(`INSERT INTO FlashCard(question, quiz_id) VALUES ('Which usage cause an error in Python?', 3);`);
+    await db.query(`INSERT INTO FlashCard(question, quiz_id) VALUES ('What is the output? (print("Hello"))', 3);`);
+
+    await db.query(`INSERT INTO FlashCard(question, quiz_id) VALUES ('Is this expression correct? (let a)', 4);`);
+    await db.query(`INSERT INTO FlashCard(question, quiz_id) VALUES ('Select the correct expression.', 4);`);
+
+    await db.query(`INSERT INTO FlashCard(question, quiz_id) VALUES ('Is this expression correct? (string a)', 5);`);
+    await db.query(`INSERT INTO FlashCard(question, quiz_id) VALUES ('Is this course hard?', 5);`);
+
+    await db.query(`INSERT INTO FlashCard(question, quiz_id) VALUES ('This course is amazing', 6);`);
+
+    // TRUE FALSE
+    await db.query(`INSERT INTO TrueFalse(id, answer) VALUES (1, 0);`);
+    await db.query(`INSERT INTO TrueFalse(id, answer) VALUES (4, 1);`);
+    await db.query(`INSERT INTO TrueFalse(id, answer) VALUES (7, 1);`);
+    await db.query(`INSERT INTO TrueFalse(id, answer) VALUES (9, 0);`);
+    await db.query(`INSERT INTO TrueFalse(id, answer) VALUES (10, 0);`);
+    await db.query(`INSERT INTO TrueFalse(id, answer) VALUES (11, 1);`);
+
+    // MULTIPLE CHOICE
+    await db.query(`INSERT INTO MultipleChoice(id, choice1, choice2, choice3, choice4, answer) VALUES (2, "int b", "let b", "#b", "b = 5", 4);`);
+    await db.query(`INSERT INTO MultipleChoice(id, choice1, choice2, choice3, choice4, answer) VALUES (3, "number", "string", "date", "character", 1);`);
+    await db.query(`INSERT INTO MultipleChoice(id, choice1, choice2, choice3, choice4, answer) VALUES (5, "b = 6", "c = a * c", "c++", "double d = 1.5", 4);`);
+    await db.query(`INSERT INTO MultipleChoice(id, choice1, choice2, choice3, choice4, answer) VALUES (6, "H e l l o", "Hello", "hello", "HELLO", 2);`);
+    await db.query(`INSERT INTO MultipleChoice(id, choice1, choice2, choice3, choice4, answer) VALUES (8, "let b", "string str", "char c", "double d", 1);`);
+
+    //ALLOW
+    await db.query(`INSERT INTO Allow(creator_id, discount_id) VALUES (6, 1);`);
+    await db.query(`INSERT INTO Allow(creator_id, discount_id) VALUES (7, 3);`);
+
+    // QUESTION
+    await db.query(`INSERT INTO Question(content, user_id, course_id) VALUES ("How can I find additional materials?", 1, 3);`);
+    await db.query(`INSERT INTO Question(content, user_id, course_id, parent_id) VALUES ("I agree, I am curious about that, too?", 2, 3, 1);`);
+    await db.query(`INSERT INTO Question(content, user_id, course_id, parent_id) VALUES ("Also, will there be any update for that course?", 4, 3, 2);`);
+
+    await db.query(`INSERT INTO Question(content, user_id, course_id) VALUES ("Is Jurgen a bit too happy or not :)???", 2, 7);`);
+
+    // ANSWER
+    await db.query(`INSERT INTO Answer(content, question_id, creator_id) VALUES ("You can find some materials from youtube", 1, 6);`);
+    await db.query(`INSERT INTO Answer(content, question_id, creator_id) VALUES ("Liverpool effect is true :-)))) YOUUU WIIIL NEVEER WAAALK AAAALOOONE", 4, 8);`);
+
+    // ANNOUNCEMENT
+    await db.query(`INSERT INTO Announcement(title, content, creator_id, course_id) VALUES ("UPDATE", "The course materials are updated", 6, 1);`);
+
+    // COMPLETED QUIZZES
+    await db.query(`INSERT INTO CompletedQuizzes(quiz_id, user_id, score) VALUES (4, 1, 10);`);
+    await db.query(`INSERT INTO CompletedQuizzes(quiz_id, user_id, score) VALUES (4, 2, 10);`);
+    await db.query(`INSERT INTO CompletedQuizzes(quiz_id, user_id, score) VALUES (4, 4, 5);`);
 
     console.log("Initialization finished");
 }
